@@ -1,0 +1,26 @@
+{
+    "id": "/prueba1/index.html",
+    "name": "DL Luxury",
+    "short_name": "DL Luxury",
+    "description": "DL Luxury - Tienda",
+    "start_url": "./index.html",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "./icono2.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "./icono1.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

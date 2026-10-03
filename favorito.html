@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DL Luxury - Favoritos</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="favoritos.css">
+
+
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- =====================================================
+             ENCABEZADO
+        ====================================================== -->
+
+        <header class="hearder">
+
+            <!-- MENÚ -->
+
+            <button class="menu-btn" type="button" id="menuBtn">
+
+                <i class="fa-solid fa-bars"></i>
+
+            </button>
+
+
+            <!-- YA NO HAY LOGO AQUÍ -->
+
+
+            <!-- NOTIFICACIONES -->
+
+            <button class="notificacion" type="button" id="notificacionBtn">
+
+                <i class="fa-regular fa-bell"></i>
+
+                <span></span>
+
+            </button>
+
+        </header>
+
+
+        <!-- =====================================================
+             CONTENIDO
+        ====================================================== -->
+
+        <main class="content">
+
+            <!-- ENCABEZADO -->
+
+            <section class="favoritos-header">
+
+                <div>
+
+                    <span class="favoritos-label">
+                        TU COLECCIÓN
+                    </span>
+
+                    <h1>
+                        Mis Favoritos
+                    </h1>
+
+                    <p>
+                        Guarda aquí los productos que más te gustan.
+                    </p>
+
+                </div>
+
+
+                <div class="favoritos-contador">
+
+                    <i class="fa-regular fa-heart"></i>
+
+                    <span id="contadorFavoritos">
+                        0
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 FILTROS / ACCIONES
+            ================================================== -->
+
+            <section class="favoritos-barra">
+
+                <div class="favoritos-resultados">
+
+                    <strong id="textoResultados">
+                        0 productos
+                    </strong>
+
+                </div>
+
+
+                <button type="button" class="btn-limpiar" id="limpiarFavoritos">
+
+                    <i class="fa-solid fa-trash-can"></i>
+
+                    Limpiar favoritos
+
+                </button>
+
+            </section>
+
+
+            <!-- =================================================
+                 PRODUCTOS FAVORITOS
+            ================================================== -->
+
+            <section class="favoritos-container" id="favoritosContainer">
+
+                <!-- JAVASCRIPT INSERTA LOS PRODUCTOS -->
+
+            </section>
+
+
+            <!-- =================================================
+                 SIN FAVORITOS
+            ================================================== -->
+
+            <section class="sin-favoritos" id="sinFavoritos">
+
+                <div class="sin-favoritos-icon">
+
+                    <i class="fa-regular fa-heart"></i>
+
+                </div>
+
+
+                <h2>
+                    Aún no tienes favoritos
+                </h2>
+
+
+                <p>
+                    Explora nuestra tienda y guarda los productos
+                    que más te gusten.
+                </p>
+
+
+                <a href="tienda.html" class="btn-ir-tienda">
+
+                    <i class="fa-solid fa-bag-shopping"></i>
+
+                    Explorar tienda
+
+                </a>
+
+            </section>
+
+        </main>
+
+
+        <!-- =====================================================
+             NAVEGACIÓN INFERIOR
+        ====================================================== -->
+
+        <nav class="bottom-nav">
+
+            <!-- INICIO -->
+
+            <a href="index.html" class="nav-item">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Inicio
+                </span>
+
+            </a>
+
+
+            <!-- TIENDA -->
+
+            <a href="tienda.html" class="nav-item">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+                <span>
+                    Tienda
+                </span>
+
+            </a>
+
+
+            <!-- FAVORITOS -->
+
+            <a href="favoritos.html" class="nav-item active">
+
+                <i class="fa-solid fa-heart"></i>
+
+                <span>
+                    Favoritos
+                </span>
+
+            </a>
+
+
+            <!-- CARRITO -->
+
+            <a href="carrito.html" class="nav-item cart">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <b id="contadorCarrito">
+                    0
+                </b>
+
+                <span>
+                    Carrito
+                </span>
+
+            </a>
+
+
+            <!-- PERFIL -->
+
+            <a href="perfil.html" class="nav-item">
+
+                <i class="fa-regular fa-user"></i>
+
+                <span>
+                    Perfil
+                </span>
+
+            </a>
+
+        </nav>
+
+    </div>
+
+
+    <!-- =========================================================
+         MODAL PRODUCTO
+    ========================================================== -->
+
+    <div class="modal-producto" id="modalProducto">
+
+        <div class="modal-producto-contenido">
+
+            <!-- CERRAR -->
+
+            <button type="button" class="modal-cerrar" id="cerrarModal">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+
+            <!-- IMAGEN -->
+
+            <div class="modal-producto-imagen">
+
+                <img id="modalImagen" src="" alt="Producto">
+
+            </div>
+
+
+            <!-- INFORMACIÓN -->
+
+            <div class="modal-producto-info">
+
+                <span class="modal-categoria" id="modalCategoria">
+
+                    Producto
+
+                </span>
+
+
+                <h2 id="modalNombre">
+                    Producto
+                </h2>
+
+
+                <p class="modal-descripcion" id="modalDescripcion">
+                </p>
+
+
+                <div class="modal-precios">
+
+                    <span class="modal-precio" id="modalPrecio">
+
+                        Q0.00
+
+                    </span>
+
+                </div>
+
+
+                <p class="modal-stock">
+
+                    Stock disponible:
+
+                    <strong id="modalStock">
+                        0
+                    </strong>
+
+                </p>
+
+
+                <!-- =================================================
+                     BOTÓN DEL MODAL
+                ================================================== -->
+
+                <button type="button" class="modal-btn-carrito" id="modalAgregarCarrito">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    Agregar al carrito
+
+                </button>
+
+
+                <!-- QUITAR FAVORITO -->
+
+                <button type="button" class="modal-btn-favorito" id="modalQuitarFavorito">
+
+                    <i class="fa-solid fa-heart"></i>
+
+                    Quitar de favoritos
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         SUPABASE
+    ========================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <!-- =========================================================
+         JAVASCRIPT FAVORITOS
+    ========================================================== -->
+
+    <script src="favoritos.js"></script>
+
+</body>
+
+</html>

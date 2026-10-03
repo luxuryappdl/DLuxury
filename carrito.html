@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DL Luxury - Carrito</title>
+
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
+
+    <link rel="stylesheet" href="carrito.css">
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+
+<body>
+
+    <div class="app">
+
+
+        <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+        <header class="hearder">
+
+            <a href="tienda.html" class="carrito-volver" aria-label="Volver a la tienda">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+            </a>
+
+
+            <div class="carrito-header-titulo">
+
+                <span>
+                    DL LUXURY
+                </span>
+
+                <h1>
+                    Mi carrito
+                </h1>
+
+            </div>
+
+
+            <div class="carrito-header-icono">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
+        <main class="content">
+
+
+            <!-- =================================================
+             INTRO
+        ================================================== -->
+
+            <section class="carrito-intro">
+
+                <div>
+
+                    <span class="carrito-label">
+                        TU COMPRA
+                    </span>
+
+                    <h2>
+                        Carrito
+                    </h2>
+
+                    <p>
+                        Revisa tus productos antes de realizar tu pedido.
+                    </p>
+
+                </div>
+
+
+                <div class="carrito-contador">
+
+                    <i class="fa-solid fa-bag-shopping"></i>
+
+                    <strong id="cantidadProductos">
+                        0
+                    </strong>
+
+                    <span id="textoProductos">
+                        productos
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+             LAYOUT
+        ================================================== -->
+
+            <div class="carrito-layout">
+
+
+                <!-- =================================================
+                 PRODUCTOS
+            ================================================== -->
+
+                <section class="carrito-productos">
+
+
+                    <!-- BARRA -->
+
+                    <div class="carrito-barra">
+
+                        <strong>
+                            Productos seleccionados
+                        </strong>
+
+
+                        <button type="button" class="btn-vaciar" id="vaciarCarrito">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                            Vaciar carrito
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- LISTA -->
+
+                    <div class="lista-carrito" id="listaCarrito">
+                    </div>
+
+
+                    <!-- =================================================
+                     CARRITO VACÍO
+                ================================================== -->
+
+                    <div class="carrito-vacio" id="carritoVacio">
+
+                        <div class="carrito-vacio-icono">
+
+                            <i class="fa-solid fa-cart-shopping"></i>
+
+                        </div>
+
+
+                        <h3>
+                            Tu carrito está vacío
+                        </h3>
+
+
+                        <p>
+                            Agrega productos a tu carrito para comenzar tu compra.
+                        </p>
+
+
+                        <a href="tienda.html" class="btn-ir-tienda">
+
+                            <i class="fa-solid fa-bag-shopping"></i>
+
+                            Ir a la tienda
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                 RESUMEN
+            ================================================== -->
+
+                <aside class="carrito-resumen">
+
+
+                    <!-- HEADER RESUMEN -->
+
+                    <div class="resumen-header">
+
+                        <span>
+                            RESUMEN
+                        </span>
+
+                        <h2>
+                            Tu compra
+                        </h2>
+
+                    </div>
+
+
+                    <!-- PRODUCTOS -->
+
+                    <div class="resumen-linea">
+
+                        <span>
+                            Productos
+                        </span>
+
+                        <strong id="resumenCantidad">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <!-- SUBTOTAL -->
+
+                    <div class="resumen-linea">
+
+                        <span>
+                            Subtotal
+                        </span>
+
+                        <strong id="subtotalCarrito">
+                            Q 0.00
+                        </strong>
+
+                    </div>
+
+
+
+
+                    <!-- SEPARADOR -->
+
+                    <div class="resumen-separador"></div>
+
+
+                    <!-- TOTAL -->
+
+                    <div class="resumen-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong id="totalCarrito">
+                            Q 0.00
+                        </strong>
+
+                    </div>
+
+
+                    <!-- =================================================
+                     FINALIZAR POR WHATSAPP
+                ================================================== -->
+
+                    <button type="button" class="btn-finalizar" id="btnFinalizarCompra">
+
+                        <i class="fa-brands fa-whatsapp"></i>
+
+                        Finalizar compra
+
+                    </button>
+
+
+                    <!-- NOTA -->
+
+                    <p class="resumen-nota">
+
+                        Al finalizar, se abrirá WhatsApp con el detalle
+                        de los productos de tu pedido.
+
+                    </p>
+
+                </aside>
+
+            </div>
+
+        </main>
+
+
+        <!-- =====================================================
+         NAVEGACIÓN INFERIOR
+    ====================================================== -->
+
+        <nav class="bottom-nav">
+
+
+            <!-- INICIO -->
+
+            <a href="index.html" class="nav-item">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Inicio
+                </span>
+
+            </a>
+
+
+            <!-- TIENDA -->
+
+            <a href="tienda.html" class="nav-item">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+                <span>
+                    Tienda
+                </span>
+
+            </a>
+
+
+            <!-- FAVORITOS -->
+
+            <a href="favorito.html" class="nav-item">
+
+                <i class="fa-regular fa-heart"></i>
+
+                <span>
+                    Favoritos
+                </span>
+
+            </a>
+
+
+            <!-- CARRITO -->
+
+            <a href="carrito.html" class="nav-item cart active">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <b id="contadorCarrito">
+                    0
+                </b>
+
+                <span>
+                    Carrito
+                </span>
+
+            </a>
+
+
+            <!-- PERFIL -->
+
+            <a href="perfil.html" class="nav-item">
+
+                <i class="fa-regular fa-user"></i>
+
+                <span>
+                    Perfil
+                </span>
+
+            </a>
+
+        </nav>
+
+    </div>
+
+
+    <!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="carrito.js"></script>
+
+    <script src="pedidos.js"></script>

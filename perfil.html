@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mi Perfil - DL Luxury</title>
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- CSS DEL PERFIL -->
+    <link rel="stylesheet" href="perfil.css">
+
+
+    <!-- =====================================================
+         CSS DEL MODAL DE CANJE
+    ====================================================== -->
+
+    <style>
+        #modalCanjeProducto {
+
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background: rgba(0, 0, 0, 0.80);
+
+            backdrop-filter: blur(5px);
+
+        }
+
+
+        #modalCanjeProducto .modal-canje-contenido {
+
+            position: relative;
+
+            width: 100%;
+            max-width: 1050px;
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            padding: 30px;
+
+            background: #111;
+
+            border: 1px solid rgba(212, 175, 55, 0.45);
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.60);
+
+        }
+
+
+        /* =====================================================
+           BOTÓN CERRAR
+        ====================================================== */
+
+        #modalCanjeProducto .cerrar-modal-canje {
+
+            position: absolute;
+
+            top: 15px;
+            right: 15px;
+
+            width: 40px;
+            height: 40px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: none;
+            border-radius: 50%;
+
+            background: rgba(255, 255, 255, 0.08);
+
+            color: #fff;
+
+            font-size: 20px;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+
+            z-index: 20;
+
+        }
+
+
+        #modalCanjeProducto .cerrar-modal-canje:hover {
+
+            background: #d4af37;
+
+            color: #111;
+
+            transform: rotate(90deg);
+
+        }
+
+
+        /* =====================================================
+           ENCABEZADO
+        ====================================================== */
+
+        #modalCanjeProducto .modal-canje-header {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+
+            padding-right: 50px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        #modalCanjeProducto .modal-canje-icono {
+
+            width: 60px;
+            height: 60px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 16px;
+
+            background: linear-gradient(135deg,
+                    #d4af37,
+                    #a67c00);
+
+            color: #111;
+
+            font-size: 25px;
+
+        }
+
+
+        #modalCanjeProducto .modal-canje-label {
+
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: #d4af37;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            letter-spacing: 2px;
+
+        }
+
+
+        #modalCanjeProducto .modal-canje-header h2 {
+
+            margin: 0 0 6px;
+
+            color: #fff;
+
+            font-size: 25px;
+
+        }
+
+
+        #modalCanjeProducto .modal-canje-header p {
+
+            margin: 0;
+
+            color: #aaa;
+
+            font-size: 14px;
+
+        }
+
+
+        /* =====================================================
+           MENSAJE
+        ====================================================== */
+
+        #modalCanjeProducto .mensaje-canje-producto {
+
+            margin-bottom: 15px;
+
+            color: #d4af37;
+
+            font-size: 14px;
+
+        }
+
+
+        /* =====================================================
+           PRODUCTOS
+        ====================================================== */
+
+        #modalCanjeProducto .productos-canje {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 18px;
+
+        }
+
+
+        /* =====================================================
+           TARJETA
+        ====================================================== */
+
+        #modalCanjeProducto .producto-canje-card {
+
+            overflow: hidden;
+
+            background: #181818;
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            border-radius: 15px;
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+
+        }
+
+
+        #modalCanjeProducto .producto-canje-card:hover {
+
+            transform: translateY(-4px);
+
+            border-color:
+                rgba(212, 175, 55, 0.60);
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.35);
+
+        }
+
+
+        /* =====================================================
+           FOTO
+        ====================================================== */
+
+        #modalCanjeProducto .producto-canje-foto {
+
+            width: 100%;
+            height: 190px;
+
+            overflow: hidden;
+
+            background: #222;
+
+        }
+
+
+        #modalCanjeProducto .producto-canje-foto img {
+
+            width: 100%;
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+        }
+
+
+        #modalCanjeProducto .producto-canje-sin-imagen {
+
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            color: #777;
+
+            font-size: 40px;
+
+        }
+
+
+        #modalCanjeProducto .producto-canje-error-imagen {
+
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+            color: #777;
+
+            font-size: 12px;
+
+            text-align: center;
+
+        }
+
+
+        #modalCanjeProducto .producto-canje-error-imagen i {
+
+            color: #d4af37;
+
+            font-size: 35px;
+
+        }
+
+
+        /* =====================================================
+           INFORMACIÓN
+        ====================================================== */
+
+        #modalCanjeProducto .producto-canje-info {
+
+            padding: 15px;
+
+        }
+
+
+        #modalCanjeProducto .producto-canje-categoria {
+
+            display: inline-block;
+
+            margin-bottom: 7px;
+
+            color: #d4af37;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        #modalCanjeProducto .producto-canje-info h3 {
+
+            min-height: 42px;
+
+            margin: 0 0 8px;
+
+            color: #fff;
+
+            font-size: 16px;
+
+            line-height: 1.3;
+
+        }
+
+
+        #modalCanjeProducto .producto-canje-precio {
+
+            margin: 0 0 14px;
+
+            color: #d4af37;
+
+            font-size: 17px;
+
+            font-weight: 700;
+
+        }
+
+
+        /* =====================================================
+           BOTÓN
+        ====================================================== */
+
+        #modalCanjeProducto .btn-seleccionar-producto-canje {
+
+            width: 100%;
+
+            padding: 11px 14px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background: #d4af37;
+
+            color: #111;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+
+        }
+
+
+        #modalCanjeProducto .btn-seleccionar-producto-canje:hover {
+
+            background: #f0cf5c;
+
+            transform: translateY(-1px);
+
+        }
+
+
+        #modalCanjeProducto .btn-seleccionar-producto-canje i {
+
+            margin-right: 5px;
+
+        }
+
+
+        /* =====================================================
+           CARGANDO
+        ====================================================== */
+
+        #modalCanjeProducto .productos-canje-cargando {
+
+            grid-column: 1 / -1;
+
+            min-height: 220px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            color: #aaa;
+
+        }
+
+
+        #modalCanjeProducto .productos-canje-cargando i {
+
+            color: #d4af37;
+
+            font-size: 32px;
+
+        }
+
+
+        /* =====================================================
+           VACÍO
+        ====================================================== */
+
+        #modalCanjeProducto .productos-canje-vacio {
+
+            grid-column: 1 / -1;
+
+            min-height: 220px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            color: #aaa;
+
+            text-align: center;
+
+        }
+
+
+        #modalCanjeProducto .productos-canje-vacio i {
+
+            color: #d4af37;
+
+            font-size: 40px;
+
+        }
+
+
+        /* =====================================================
+           TABLET
+        ====================================================== */
+
+        @media (max-width: 900px) {
+
+            #modalCanjeProducto .productos-canje {
+
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+
+            }
+
+        }
+
+
+        /* =====================================================
+           MÓVIL
+        ====================================================== */
+
+        @media (max-width: 650px) {
+
+            #modalCanjeProducto {
+
+                padding: 10px;
+
+            }
+
+
+            #modalCanjeProducto .modal-canje-contenido {
+
+                max-height: 94vh;
+
+                padding: 20px;
+
+                border-radius: 16px;
+
+            }
+
+
+            #modalCanjeProducto .modal-canje-header {
+
+                gap: 12px;
+
+            }
+
+
+            #modalCanjeProducto .modal-canje-icono {
+
+                width: 48px;
+                height: 48px;
+
+                font-size: 19px;
+
+            }
+
+
+            #modalCanjeProducto .modal-canje-header h2 {
+
+                font-size: 20px;
+
+            }
+
+
+            #modalCanjeProducto .modal-canje-header p {
+
+                font-size: 12px;
+
+            }
+
+
+            #modalCanjeProducto .productos-canje {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+                gap: 12px;
+
+            }
+
+
+            #modalCanjeProducto .producto-canje-foto {
+
+                height: 150px;
+
+            }
+
+
+            #modalCanjeProducto .producto-canje-info {
+
+                padding: 11px;
+
+            }
+
+
+            #modalCanjeProducto .producto-canje-info h3 {
+
+                font-size: 14px;
+
+                min-height: 36px;
+
+            }
+
+
+            #modalCanjeProducto .producto-canje-precio {
+
+                font-size: 15px;
+
+            }
+
+
+            #modalCanjeProducto .btn-seleccionar-producto-canje {
+
+                padding: 9px 8px;
+
+                font-size: 12px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           MÓVIL PEQUEÑO
+        ====================================================== */
+
+        @media (max-width: 420px) {
+
+            #modalCanjeProducto .productos-canje {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            #modalCanjeProducto .producto-canje-foto {
+
+                height: 210px;
+
+            }
+
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <main class="perfil-container">
+
+
+        <!-- =================================================
+             ENCABEZADO
+        ================================================== -->
+
+        <section class="perfil-header">
+
+            <div class="perfil-avatar">
+
+                <i class="fa-regular fa-user"></i>
+
+            </div>
+
+
+            <div class="perfil-header-info">
+
+                <span class="perfil-label">
+                    DL LUXURY
+                </span>
+
+
+                <h1>
+                    Mi Perfil
+                </h1>
+
+
+                <p id="estadoSesion">
+                    Inicia sesión para continuar
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             LOGIN
+        ================================================== -->
+
+        <section id="seccionLogin" class="perfil-section">
+
+            <div class="section-title">
+
+                <i class="fa-solid fa-right-to-bracket"></i>
+
+                <div>
+
+                    <h2>
+                        Iniciar sesión
+                    </h2>
+
+                    <p>
+                        Accede a tu cuenta DL Luxury
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form id="formLogin" class="perfil-form">
+
+                <div class="input-group">
+
+                    <label for="loginCorreo">
+                        Correo electrónico
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-regular fa-envelope"></i>
+
+                        <input type="email" id="loginCorreo" placeholder="tu@correo.com" autocomplete="email" required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label for="loginPassword">
+                        Contraseña
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input type="password" id="loginPassword" placeholder="Tu contraseña"
+                            autocomplete="current-password" required>
+
+
+                        <button type="button" id="mostrarPassword" class="btn-mostrar-password"
+                            aria-label="Mostrar contraseña">
+
+                            <i class="fa-regular fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <button type="submit" class="btn-principal" id="btnLogin">
+
+                    <i class="fa-solid fa-right-to-bracket"></i>
+
+                    Iniciar sesión
+
+                </button>
+
+
+                <p id="mensajeLogin" class="mensaje-form"></p>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- =================================================
+             USUARIO
+        ================================================== -->
+
+        <section id="seccionUsuario" class="perfil-section" style="display:none;">
+
+            <div class="usuario-card">
+
+                <div class="usuario-avatar">
+
+                    <i class="fa-regular fa-user"></i>
+
+                </div>
+
+
+                <div class="usuario-info">
+
+                    <span class="usuario-verificado">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        Cuenta activa
+
+                    </span>
+
+
+                    <h2 id="usuarioNombre">
+                        Usuario
+                    </h2>
+
+
+                    <p id="usuarioCorreo">
+                        correo@ejemplo.com
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button type="button" id="btnCerrarSesion" class="btn-cerrar-sesion">
+
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+                Cerrar sesión
+
+            </button>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PUNTOS
+        ================================================== -->
+
+        <section id="seccionPuntos" class="perfil-section" style="display:none;">
+
+            <div class="section-title">
+
+                <i class="fa-solid fa-star"></i>
+
+                <div>
+
+                    <h2>
+                        Mis puntos
+                    </h2>
+
+                    <p>
+                        Acumula puntos con tus compras y canjéalos
+                        por recompensas DL Luxury
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="puntos-panel">
+
+                <div class="puntos-panel-icono">
+
+                    <i class="fa-solid fa-star"></i>
+
+                </div>
+
+
+                <div class="puntos-panel-info">
+
+                    <span>
+                        PUNTOS DISPONIBLES
+                    </span>
+
+
+                    <strong id="puntosUsuario">
+                        0
+                    </strong>
+
+
+                    <small>
+                        puntos
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="puntos-beneficios">
+
+                <div class="beneficio">
+
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    <span>
+                        Compra productos
+                    </span>
+
+                </div>
+
+
+                <div class="beneficio">
+
+                    <i class="fa-solid fa-star"></i>
+
+                    <span>
+                        Acumula puntos
+                    </span>
+
+                </div>
+
+
+                <div class="beneficio">
+
+                    <i class="fa-solid fa-gift"></i>
+
+                    <span>
+                        Canjea recompensas
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="aviso-puntos">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <p>
+
+                    Tus puntos son exclusivos de DL Luxury.
+                    Puedes utilizarlos para obtener productos
+                    y recompensas seleccionadas de la tienda.
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CANJEAR
+        ================================================== -->
+
+        <section id="seccionCanje" class="perfil-section" style="display:none;">
+
+            <div class="section-title">
+
+                <i class="fa-solid fa-gift"></i>
+
+                <div>
+
+                    <h2>
+                        Canjear puntos
+                    </h2>
+
+                    <p>
+                        Selecciona una categoría para ver sus productos
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="recompensas-card">
+
+
+                <!-- =========================================
+                     PLAYERAS - 150
+                ========================================== -->
+
+                <div class="recompensa" data-puntos="150" data-recompensa="Playeras" data-categoria="Playeras"
+                    data-url="playeras.html" onclick="irCategoria(event, 'playeras.html')" style="cursor:pointer;">
+
+                    <div class="recompensa-icono">
+
+                        <i class="fa-solid fa-shirt"></i>
+
+                    </div>
+
+
+                    <div class="recompensa-info">
+
+                        <h3>
+                            Playeras
+                        </h3>
+
+                        <p>
+                            Ver playeras disponibles
+                        </p>
+
+                        <span>
+
+                            <i class="fa-solid fa-star"></i>
+
+                            150 puntos
+
+                        </span>
+
+                    </div>
+
+
+                    <button type="button" class="btn-canjear" data-puntos="150" data-recompensa="Playeras"
+                        data-categoria="Playeras">
+
+                        Canjear
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     GORRAS - 250
+                ========================================== -->
+
+                <div class="recompensa" data-puntos="250" data-recompensa="Gorras" data-categoria="Gorras"
+                    data-url="gorras.html" onclick="irCategoria(event, 'gorras.html')" style="cursor:pointer;">
+
+                    <div class="recompensa-icono">
+
+                        <i class="fa-solid fa-hat-cowboy"></i>
+
+                    </div>
+
+
+                    <div class="recompensa-info">
+
+                        <h3>
+                            Gorras
+                        </h3>
+
+                        <p>
+                            Ver gorras disponibles
+                        </p>
+
+                        <span>
+
+                            <i class="fa-solid fa-star"></i>
+
+                            250 puntos
+
+                        </span>
+
+                    </div>
+
+
+                    <button type="button" class="btn-canjear" data-puntos="250" data-recompensa="Gorras"
+                        data-categoria="Gorras">
+
+                        Canjear
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     ACCESORIOS - 350
+                ========================================== -->
+
+                <div class="recompensa" data-puntos="350" data-recompensa="Accesorios" data-categoria="Accesorios"
+                    data-url="accesorios.html" onclick="irCategoria(event, 'accesorios.html')" style="cursor:pointer;">
+
+                    <div class="recompensa-icono">
+
+                        <i class="fa-solid fa-gem"></i>
+
+                    </div>
+
+
+                    <div class="recompensa-info">
+
+                        <h3>
+                            Accesorios
+                        </h3>
+
+                        <p>
+                            Ver accesorios disponibles
+                        </p>
+
+                        <span>
+
+                            <i class="fa-solid fa-star"></i>
+
+                            350 puntos
+
+                        </span>
+
+                    </div>
+
+
+                    <button type="button" class="btn-canjear" data-puntos="350" data-recompensa="Accesorios"
+                        data-categoria="Accesorios">
+
+                        Canjear
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     HOODIES - 450
+                ========================================== -->
+
+                <div class="recompensa" data-puntos="450" data-recompensa="Hoodies" data-categoria="Hoodies"
+                    data-url="hoodies.html" onclick="irCategoria(event, 'hoodies.html')" style="cursor:pointer;">
+
+                    <div class="recompensa-icono">
+
+                        <i class="fa-solid fa-shirt"></i>
+
+                    </div>
+
+
+                    <div class="recompensa-info">
+
+                        <h3>
+                            Hoodies
+                        </h3>
+
+                        <p>
+                            Ver hoodies disponibles
+                        </p>
+
+                        <span>
+
+                            <i class="fa-solid fa-star"></i>
+
+                            450 puntos
+
+                        </span>
+
+                    </div>
+
+
+                    <button type="button" class="btn-canjear" data-puntos="450" data-recompensa="Hoodies"
+                        data-categoria="Hoodies">
+
+                        Canjear
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     PERFUMES - 750
+                ========================================== -->
+
+                <div class="recompensa" data-puntos="750" data-recompensa="Perfumes" data-categoria="Perfumes"
+                    data-url="perfumes.html" onclick="irCategoria(event, 'perfumes.html')" style="cursor:pointer;">
+
+                    <div class="recompensa-icono">
+
+                        <i class="fa-solid fa-spray-can-sparkles"></i>
+
+                    </div>
+
+
+                    <div class="recompensa-info">
+
+                        <h3>
+                            Perfumes
+                        </h3>
+
+                        <p>
+                            Ver perfumes disponibles
+                        </p>
+
+                        <span>
+
+                            <i class="fa-solid fa-star"></i>
+
+                            750 puntos
+
+                        </span>
+
+                    </div>
+
+
+                    <button type="button" class="btn-canjear" data-puntos="750" data-recompensa="Perfumes"
+                        data-categoria="Perfumes">
+
+                        Canjear
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="aviso-canje">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <p>
+
+                    Selecciona una categoría para ver los productos
+                    disponibles para canje. Las recompensas están
+                    sujetas a disponibilidad.
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             HISTORIAL
+        ================================================== -->
+
+        <section id="seccionHistorial" class="perfil-section" style="display:none;">
+
+            <div class="section-title">
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+                <div>
+
+                    <h2>
+                        Historial de canjes
+                    </h2>
+
+                    <p>
+                        Consulta tus recompensas canjeadas
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div id="historialCanjes" class="historial-canjes">
+
+                <div class="historial-vacio">
+
+                    <i class="fa-solid fa-gift"></i>
+
+                    <p>
+                        Aún no has realizado ningún canje.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         MODAL
+    ====================================================== -->
+
+    <div id="modalCanjeProducto" class="modal-canje-producto">
+
+        <div class="modal-canje-contenido">
+
+
+            <button type="button" id="cerrarModalCanje" class="cerrar-modal-canje" aria-label="Cerrar">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+
+            <div class="modal-canje-header">
+
+                <div class="modal-canje-icono">
+
+                    <i class="fa-solid fa-gift"></i>
+
+                </div>
+
+
+                <div>
+
+                    <span class="modal-canje-label">
+                        DL LUXURY
+                    </span>
+
+
+                    <h2>
+                        Elige tu producto
+                    </h2>
+
+
+                    <p id="textoPuntosCanje">
+                        Selecciona el producto que deseas canjear.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div id="mensajeCanjeProducto" class="mensaje-canje-producto">
+            </div>
+
+
+            <div id="productosCanje" class="productos-canje">
+
+                <div class="productos-canje-cargando">
+
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+
+                    <p>
+                        Cargando productos...
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MENÚ
+    ====================================================== -->
+
+    <nav class="bottom-nav">
+
+
+        <a href="index.html" class="nav-item">
+
+            <i class="fa-solid fa-house"></i>
+
+            <span>
+                Inicio
+            </span>
+
+        </a>
+
+
+        <a href="tienda.html" class="nav-item">
+
+            <i class="fa-solid fa-bag-shopping"></i>
+
+            <span>
+                Tienda
+            </span>
+
+        </a>
+
+
+        <a href="favorito.html" class="nav-item">
+
+            <i class="fa-regular fa-heart"></i>
+
+            <span>
+                Favoritos
+            </span>
+
+        </a>
+
+
+        <a href="carrito.html" class="nav-item cart">
+
+            <i class="fa-solid fa-cart-shopping"></i>
+
+            <b id="contadorCarrito">
+                0
+            </b>
+
+            <span>
+                Carrito
+            </span>
+
+        </a>
+
+
+        <a href="perfil.html" class="nav-item active">
+
+            <i class="fa-regular fa-user"></i>
+
+            <span>
+                Perfil
+            </span>
+
+        </a>
+
+    </nav>
+
+
+
+    <!-- =====================================================
+         SUPABASE
+    ====================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="perfil.js"></script>
+
+
+    <!-- NAVEGACIÓN -->
+
+    <script>
+
+        function irCategoria(event, pagina) {
+
+            if (
+                event.target.closest(".btn-canjear")
+            ) {
+
+                return;
+
+            }
+
+            window.location.href = pagina;
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

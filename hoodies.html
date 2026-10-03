@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Drip Luxury - Hoodies</title>
+
+
+    <!-- =====================================================
+         ESTILOS GENERALES
+    ===================================================== -->
+
+    <link rel="stylesheet" href="playeras.css">
+
+
+    <!-- =====================================================
+         ICONOS
+    ===================================================== -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         APP
+    ===================================================== -->
+
+    <div class="app">
+
+
+        <!-- =================================================
+             TIENDA
+        ================================================= -->
+
+        <main class="tienda">
+
+
+            <!-- =================================================
+                 ENCABEZADO
+            ================================================= -->
+
+            <div class="tienda-header">
+
+                <h1>
+                    Hoodies
+                </h1>
+
+                <p>
+                    Encuentra las mejores hoodies.
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 HOMBRE / MUJER
+            ================================================= -->
+
+            <div class="categorias-genero">
+
+
+                <!-- TODOS -->
+
+                <button type="button" class="genero-btn active" data-genero="todos">
+
+                    <i class="fa-solid fa-border-all"></i>
+
+                    <span>
+                        Todos
+                    </span>
+
+                </button>
+
+
+
+                <!-- HOMBRE -->
+
+                <button type="button" class="genero-btn" data-genero="hombre">
+
+                    <i class="fa-solid fa-person"></i>
+
+                    <span>
+                        Hoodies para él
+                    </span>
+
+                </button>
+
+
+
+                <!-- MUJER -->
+
+                <button type="button" class="genero-btn" data-genero="mujer">
+
+                    <i class="fa-solid fa-person-dress"></i>
+
+                    <span>
+                        Hoodies para ella
+                    </span>
+
+                </button>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 BUSCADOR
+            ================================================= -->
+
+            <div class="buscador-tienda">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input type="text" id="buscarProducto" placeholder="Buscar hoodies..." autocomplete="off">
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FILTROS
+            ================================================= -->
+
+            <div class="tienda-controles">
+
+
+                <!-- CATEGORÍA -->
+
+                <select id="filtroCategoria">
+
+                    <option value="todos">
+                        Todas las categorías
+                    </option>
+
+                    <option value="hoodies">
+                        Hoodies
+                    </option>
+
+                </select>
+
+
+
+                <!-- ORDEN -->
+
+                <select id="ordenarProductos">
+
+                    <option value="default">
+                        Ordenar por
+                    </option>
+
+                    <option value="precio-menor">
+                        Precio: menor a mayor
+                    </option>
+
+                    <option value="precio-mayor">
+                        Precio: mayor a menor
+                    </option>
+
+                    <option value="nombre-az">
+                        Nombre: A - Z
+                    </option>
+
+                    <option value="nombre-za">
+                        Nombre: Z - A
+                    </option>
+
+                </select>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PRODUCTOS
+            ================================================= -->
+
+            <div class="productos-tienda" id="productosTienda">
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SIN RESULTADOS
+            ================================================= -->
+
+            <div id="sinResultados" class="sin-resultados" style="display: none;">
+
+                <i class="fa-solid fa-box-open"></i>
+
+                <h3>
+                    No encontramos Hoodies
+                </h3>
+
+                <p>
+                    Intenta buscar otro producto.
+                </p>
+
+            </div>
+
+
+        </main>
+
+
+
+        <!-- =====================================================
+             MODAL PRODUCTO
+        ===================================================== -->
+
+        <div class="modal-producto" id="modalProducto">
+
+            <div class="modal-producto-contenido">
+
+
+                <!-- =================================================
+                     BOTÓN CERRAR
+                ================================================= -->
+
+                <button class="modal-cerrar" id="cerrarModalProducto" type="button" aria-label="Cerrar">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+
+
+                <!-- =================================================
+                     IMAGEN DEL PRODUCTO
+                ================================================= -->
+
+                <div class="modal-producto-imagen">
+
+                    <img id="modalProductoImagen" src="" alt="Producto">
+
+                </div>
+
+
+
+                <!-- =================================================
+                     INFORMACIÓN DEL PRODUCTO
+                ================================================= -->
+
+                <div class="modal-producto-info">
+
+
+                    <!-- CATEGORÍA -->
+
+                    <span class="modal-producto-categoria">
+                        Hoodies
+                    </span>
+
+
+
+                    <!-- NOMBRE -->
+
+                    <h2 id="modalProductoNombre">
+                        Producto
+                    </h2>
+
+
+
+                    <!-- =================================================
+                         DESCRIPCIÓN
+                    ================================================= -->
+
+                    <div class="modal-producto-descripcion">
+
+                        <span class="modal-descripcion-titulo">
+                            Descripción
+                        </span>
+
+                        <p id="modalProductoDescripcion">
+                            Sin descripción disponible.
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         PRECIOS
+                    ================================================= -->
+
+                    <div class="modal-producto-precios">
+
+                        <span class="modal-precio-original" id="modalProductoPrecioOriginal">
+                            Q0.00
+                        </span>
+
+                        <span class="modal-precio-final" id="modalProductoPrecio">
+                            Q0.00
+                        </span>
+
+                        <span class="modal-descuento" id="modalProductoDescuento">
+                            -0%
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         STOCK
+                    ================================================= -->
+
+                    <p class="modal-producto-stock">
+
+                        Stock disponible:
+
+                        <strong id="modalProductoStock">
+                            0
+                        </strong>
+
+                    </p>
+
+
+
+                    <!-- =================================================
+                         CARRITO
+                    ================================================= -->
+
+                    <button class="modal-btn-carrito" id="modalProductoComprar" type="button">
+
+                        <i class="fa-solid fa-cart-shopping"></i>
+
+                        Carrito de compras
+
+                    </button>
+
+
+
+                    <!-- =================================================
+                         FAVORITO
+                    ================================================= -->
+
+                    <button class="modal-btn-favorito" id="modalProductoFavorito" type="button">
+
+                        <i class="fa-regular fa-heart"></i>
+
+                        Favorito
+
+                    </button>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================================
+             NAVEGACIÓN INFERIOR
+        ===================================================== -->
+
+        <nav class="bottom-nav">
+
+
+            <!-- INICIO -->
+
+            <a href="index.html" class="nav-item">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Inicio
+                </span>
+
+            </a>
+
+
+
+            <!-- TIENDA -->
+
+            <a href="tienda.html" class="nav-item active">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+                <span>
+                    Tienda
+                </span>
+
+            </a>
+
+
+
+            <!-- FAVORITOS -->
+
+            <a href="favorito.html" class="nav-item">
+
+                <i class="fa-regular fa-heart"></i>
+
+                <span>
+                    Favoritos
+                </span>
+
+            </a>
+
+
+
+            <!-- CARRITO -->
+
+            <a href="carrito.html" class="nav-item cart">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <b id="contadorCarrito">
+                    0
+                </b>
+
+                <span>
+                    Carrito
+                </span>
+
+            </a>
+
+
+
+            <!-- PERFIL -->
+
+            <a href="perfil.html" class="nav-item">
+
+                <i class="fa-regular fa-user"></i>
+
+                <span>
+                    Perfil
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         SUPABASE
+    ===================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+
+    <!-- =====================================================
+         HOODIES JS
+    ===================================================== -->
+
+    <script src="hoodies.js"></script>
+
+
+</body>
+
+</html>
