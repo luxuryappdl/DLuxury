@@ -1,8 +1,8 @@
 {
     "id": "/prueba1/index.html",
-    "name": "DL Luxury",
-    "short_name": "DL Luxury",
-    "description": "DL Luxury - Tienda",
+    "name": "Drip Luxury",
+    "short_name": "Drip Luxury",
+    "description": "Drip Luxury - Tienda",
     "start_url": "./index.html",
     "scope": "./",
     "display": "standalone",
