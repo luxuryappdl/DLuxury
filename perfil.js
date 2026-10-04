@@ -1,11 +1,28 @@
 /* =========================================================
-   DL LUXURY - PERFIL / LOGIN / PUNTOS / CANJES
-   + MODAL DETALLE DE PRODUCTO
+   DL LUXURY
+   PERFIL + LOGIN + PUNTOS + CANJE DE PRODUCTOS
+
+   FUNCIONES:
+   - Inicio de sesión con Supabase
+   - Perfil del usuario
+   - Puntos
+   - Catálogo completo de productos para canje
+   - Modal de detalle
+   - Canje de productos
+   - Control de puntos y stock
+   - Historial de canjes
+   - Cerrar sesión
+   - Contador del carrito
+   - Imágenes desde Supabase Storage
+   - Envío del canje por WhatsApp
+
+   REGLA:
+   1 punto = Q1
 ========================================================= */
 
 
 /* =========================================================
-   SUPABASE
+   1. SUPABASE
 ========================================================= */
 
 const SUPABASE_URL =
@@ -14,35 +31,45 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable_Qdae9GUtmuosAPP4kemF3A_Vr4HFo0n";
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
 
 /* =========================================================
-   VARIABLES GLOBALES
+   2. CONFIGURACIÓN
+========================================================= */
+
+const CLAVE_CARRITO = "dlLuxuryCarrito";
+const CLAVE_CANJE = "dlLuxuryCanje";
+
+/*
+   WhatsApp DL Luxury
+
+   Número:
+   +502 5725 5468
+
+   Formato internacional sin:
+   + espacios guiones
+*/
+const NUMERO_WHATSAPP_CANJE = "50257255468";
+
+
+/* =========================================================
+   3. VARIABLES GLOBALES
 ========================================================= */
 
 let usuarioActual = null;
 let perfilActual = null;
-
-const mapaCategorias = new Map();
-
-let resolverConfirmacionCanje = null;
-
-
-/* =========================================================
-   MODAL DETALLE
-========================================================= */
-
-let productoDetalleActual = null;
-
-let productosCatalogoCanje = [];
+let productosCanje = [];
+let productoSeleccionadoCanje = null;
+let mapaCategorias = new Map();
 
 
 /* =========================================================
-   DOM
+   4. ELEMENTOS DEL DOM
 ========================================================= */
 
 const formLogin =
@@ -99,437 +126,322 @@ const btnCerrarSesion =
 const contadorCarrito =
     document.getElementById("contadorCarrito");
 
+const catalogoCanje =
+    document.getElementById("catalogoCanje");
+
 
 /* =========================================================
-   FUNCIONES GENERALES
+   5. MODAL DETALLE
 ========================================================= */
 
-function escapeHTML(texto) {
+const modalDetalleProducto =
+    document.getElementById(
+        "modalDetalleProducto"
+    );
 
-    return String(texto ?? "")
+const cerrarModalDetalleProducto =
+    document.getElementById(
+        "cerrarModalDetalleProducto"
+    );
+
+const detalleImagenProducto =
+    document.getElementById(
+        "detalleImagenProducto"
+    );
+
+const detalleSinImagenProducto =
+    document.getElementById(
+        "detalleSinImagenProducto"
+    );
+
+const detalleCategoriaProducto =
+    document.getElementById(
+        "detalleCategoriaProducto"
+    );
+
+const detalleNombreProducto =
+    document.getElementById(
+        "detalleNombreProducto"
+    );
+
+const detalleDescripcionProducto =
+    document.getElementById(
+        "detalleDescripcionProducto"
+    );
+
+const detallePrecioProducto =
+    document.getElementById(
+        "detallePrecioProducto"
+    );
+
+const detallePuntosProducto =
+    document.getElementById(
+        "detallePuntosProducto"
+    );
+
+const detalleStockProducto =
+    document.getElementById(
+        "detalleStockProducto"
+    );
+
+const btnCanjearDesdeDetalle =
+    document.getElementById(
+        "btnCanjearDesdeDetalle"
+    );
+
+
+/* =========================================================
+   6. ESCAPE HTML
+========================================================= */
+
+function escapeHTML(valor) {
+
+    if (
+        valor === null ||
+        valor === undefined
+    ) {
+        return "";
+    }
+
+    return String(valor)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
-
 }
 
 
-function normalizarTexto(texto) {
+/* =========================================================
+   7. NORMALIZAR TEXTO
+========================================================= */
 
-    return String(texto ?? "")
+function normalizarTexto(valor) {
+
+    return String(valor ?? "")
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
-        .trim()
-        .toLowerCase();
-
+        .toLowerCase()
+        .trim();
 }
 
 
 /* =========================================================
-   SISTEMA DE PUNTOS
+   8. OBTENER PRECIO
 ========================================================= */
 
-function calcularPuntosVenta(totalVenta) {
+function obtenerPrecioProducto(producto) {
 
-    const total = Number(totalVenta);
+    const precio =
+        producto?.precio_final ??
+        producto?.precio ??
+        producto?.precioFinal ??
+        0;
+
+    const numero = Number(precio);
 
     if (
-        !Number.isFinite(total) ||
-        total <= 0
+        !Number.isFinite(numero) ||
+        numero < 0
     ) {
-
         return 0;
-
     }
 
-    return Math.floor(total * 0.05);
-
-}
-
-
-function calcularValorPuntos(puntos) {
-
-    const cantidad = Number(puntos);
-
-    if (
-        !Number.isFinite(cantidad) ||
-        cantidad <= 0
-    ) {
-
-        return 0;
-
-    }
-
-    return cantidad;
-
-}
-
-
-async function consultarPuntosCliente(usuarioId) {
-
-    if (!usuarioId) {
-
-        throw new Error(
-            "No se identificó al usuario."
-        );
-
-    }
-
-    const { data, error } =
-        await supabaseClient
-            .from("perfiles")
-            .select('"Puntos"')
-            .eq("id", usuarioId)
-            .maybeSingle();
-
-    if (error) {
-
-        throw error;
-
-    }
-
-    if (!data) {
-
-        throw new Error(
-            "No se encontró el perfil."
-        );
-
-    }
-
-    const puntos =
-        Number(data["Puntos"] || 0);
-
-    return {
-
-        puntos,
-
-        valorQuetzales:
-            calcularValorPuntos(puntos)
-
-    };
-
-}
-
-
-async function actualizarPuntosPerfil() {
-
-    if (
-        !usuarioActual ||
-        !puntosUsuario
-    ) {
-
-        return;
-
-    }
-
-    try {
-
-        const saldo =
-            await consultarPuntosCliente(
-                usuarioActual.id
-            );
-
-        if (perfilActual) {
-
-            perfilActual["Puntos"] =
-                saldo.puntos;
-
-        }
-
-        puntosUsuario.textContent =
-            saldo.puntos.toLocaleString(
-                "es-GT"
-            );
-
-        actualizarBotonesCanje();
-
-        return saldo;
-
-    } catch (error) {
-
-        console.error(
-            "Error actualizando puntos:",
-            error
-        );
-
-    }
-
-}
-
-
-function mostrarCalculoPuntos(totalVenta) {
-
-    const total =
-        Number(totalVenta);
-
-    const puntos =
-        calcularPuntosVenta(total);
-
-    return {
-
-        totalCompra:
-            total,
-
-        puntosGanados:
-            puntos,
-
-        valorCanjeable:
-            calcularValorPuntos(puntos)
-
-    };
-
+    return numero;
 }
 
 
 /* =========================================================
-   IMÁGENES DE SUPABASE STORAGE
+   9. OBTENER PUNTOS
 ========================================================= */
 
-function obtenerUrlImagen(imagen) {
+function obtenerPuntosProducto(producto) {
 
-    if (!imagen) {
+    const precio =
+        obtenerPrecioProducto(producto);
 
+    /*
+       1 punto = Q1
+
+       Q5      = 5 puntos
+       Q100    = 100 puntos
+       Q150    = 150 puntos
+       Q199.50 = 200 puntos
+    */
+
+    return Math.ceil(precio);
+}
+
+
+/* =========================================================
+   10. OBTENER URL DE IMAGEN
+========================================================= */
+
+function obtenerUrlImagen(valor) {
+
+    if (!valor) {
         return "";
-
     }
 
-    let ruta =
-        String(imagen).trim();
+    let texto = String(valor).trim();
 
-    if (!ruta) {
-
+    if (!texto) {
         return "";
-
     }
 
     if (
-        /^https?:\/\//i.test(ruta) ||
-        /^data:/i.test(ruta)
+        texto.startsWith("http://") ||
+        texto.startsWith("https://") ||
+        texto.startsWith("data:image/")
     ) {
-
-        return ruta;
-
+        return texto;
     }
 
-    ruta =
-        ruta.replace(/^\/+/, "");
+    texto = texto.replace(/^\/+/, "");
 
     if (
-        /^storage\/v1\/object\/public\/productos\//i.test(
-            ruta
+        texto.startsWith(
+            "storage/v1/object/"
         )
     ) {
 
-        ruta =
-            ruta.replace(
-                /^storage\/v1\/object\/public\/productos\//i,
-                ""
-            );
-
+        return (
+            SUPABASE_URL +
+            "/" +
+            texto
+        );
     }
 
     if (
-        /^productos\//i.test(ruta)
+        texto.startsWith("productos/")
     ) {
 
-        ruta =
-            ruta.replace(
-                /^productos\//i,
-                ""
+        texto =
+            texto.substring(
+                "productos/".length
             );
-
     }
 
     return (
         SUPABASE_URL +
         "/storage/v1/object/public/productos/" +
-        ruta
+        texto
     );
-
 }
 
 
 /* =========================================================
-   OBTENER IMAGEN DEL PRODUCTO
+   11. OBTENER IMAGEN DEL PRODUCTO
 ========================================================= */
 
 function obtenerImagenProducto(producto) {
 
     if (!producto) {
-
         return "";
-
     }
 
     const imagen =
-        producto.imagen ??
-        producto.imagen_url ??
-        producto.image ??
-        producto.foto ??
-        producto.foto_url ??
+        producto.imagen ||
+        producto.imagenBase64 ||
+        producto.image ||
+        producto.foto ||
+        producto.imagen_url ||
+        producto.url_imagen ||
         "";
 
     return obtenerUrlImagen(imagen);
-
 }
 
 
 /* =========================================================
-   OBTENER PRECIO
-========================================================= */
-
-function obtenerPrecioProducto(producto) {
-
-    if (!producto) {
-
-        return 0;
-
-    }
-
-    const precio =
-        Number(
-            producto.precio_final ??
-            producto.precio ??
-            producto.precioFinal ??
-            0
-        );
-
-    if (
-        !Number.isFinite(precio) ||
-        precio < 0
-    ) {
-
-        return 0;
-
-    }
-
-    return precio;
-
-}
-
-
-/* =========================================================
-   OBTENER DESCRIPCIÓN
-========================================================= */
-
-function obtenerDescripcionProducto(producto) {
-
-    if (!producto) {
-
-        return "";
-
-    }
-
-    return String(
-        producto.descripcion ??
-        producto.description ??
-        producto.detalle ??
-        producto.detalles ??
-        ""
-    ).trim();
-
-}
-
-
-/* =========================================================
-   CATEGORÍAS
-========================================================= */
-
-function obtenerCategoriaProducto(producto) {
-
-    if (!producto) {
-
-        return "";
-
-    }
-
-    return (
-        producto.categoriaNombre ||
-        producto.categoria_nombre ||
-        producto.categoria ||
-        producto.categoria_name ||
-        producto.categoriaName ||
-        mapaCategorias.get(
-            String(producto.categoria_id)
-        ) ||
-        ""
-    );
-
-}
-
-
-/* =========================================================
-   CARGAR CATEGORÍAS
+   12. CARGAR CATEGORÍAS
 ========================================================= */
 
 async function cargarCategorias() {
 
-    mapaCategorias.clear();
-
     try {
 
-        const { data, error } =
-            await supabaseClient
-                .from("categorias")
-                .select("*");
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("categorias")
+            .select("*");
 
         if (error) {
 
             console.warn(
-                "No se pudieron cargar las categorías:",
+                "No se pudieron cargar categorías:",
                 error
             );
 
             return;
-
         }
 
+        mapaCategorias.clear();
+
         (data || []).forEach(
-            function (categoria) {
+            categoria => {
 
                 const id =
-                    categoria.id ??
-                    categoria.categoria_id;
+                    categoria.id;
 
                 const nombre =
-                    categoria.nombre ??
-                    categoria.nombre_categoria ??
-                    categoria.categoria ??
-                    categoria.descripcion ??
+                    categoria.nombre ||
+                    categoria.name ||
+                    categoria.titulo ||
                     "";
 
                 if (
                     id !== undefined &&
-                    id !== null &&
                     nombre
                 ) {
 
                     mapaCategorias.set(
                         String(id),
-                        String(nombre)
+                        nombre
                     );
-
                 }
-
             }
         );
 
     } catch (error) {
 
-        console.error(
+        console.warn(
             "Error cargando categorías:",
             error
         );
-
     }
-
 }
 
 
 /* =========================================================
-   MENSAJE DE LOGIN
+   13. OBTENER CATEGORÍA
+========================================================= */
+
+function obtenerCategoriaProducto(producto) {
+
+    const categoria =
+        producto?.categoriaNombre ||
+        producto?.categoria_nombre ||
+        producto?.categoria ||
+        producto?.categoria_name ||
+        producto?.categoriaName ||
+        mapaCategorias.get(
+            String(
+                producto?.categoria_id
+            )
+        ) ||
+        "";
+
+    return String(
+        categoria
+    ).trim();
+}
+
+
+/* =========================================================
+   14. MENSAJE LOGIN
 ========================================================= */
 
 function mostrarMensajeLogin(
@@ -538,71 +450,43 @@ function mostrarMensajeLogin(
 ) {
 
     if (!mensajeLogin) {
-
         return;
-
     }
 
     mensajeLogin.textContent =
         mensaje;
 
     mensajeLogin.className =
-        "mensaje-login";
-
-    if (tipo) {
-
-        mensajeLogin.classList.add(
-            tipo
-        );
-
-    }
-
+        "mensaje-login " + tipo;
 }
 
 
 /* =========================================================
-   CARGAR PERFIL
+   15. CARGAR PERFIL
 ========================================================= */
 
 async function cargarPerfil(user) {
 
     if (!user) {
-
         return;
-
     }
 
     usuarioActual = user;
 
     try {
 
-        const { data, error } =
-            await supabaseClient
-                .from("perfiles")
-                .select(`
-                    id,
-                    nombre,
-                    apellido,
-                    rol,
-                    "Puntos",
-                    creado_en,
-                    actualizado_en
-                `)
-                .eq("id", user.id)
-                .maybeSingle();
+        let {
+            data: perfil,
+            error
+        } = await supabaseClient
+            .from("perfiles")
+            .select("*")
+            .eq("id", user.id)
+            .maybeSingle();
 
         if (error) {
-
-            console.error(
-                "Error cargando perfil:",
-                error
-            );
-
-            return;
-
+            throw error;
         }
-
-        let perfil = data;
 
         if (!perfil) {
 
@@ -617,51 +501,38 @@ async function cargarPerfil(user) {
                 rol: "cliente",
 
                 "Puntos": 0
-
             };
 
             const {
                 data: perfilCreado,
-                error: errorInsertar
-            } =
-                await supabaseClient
-                    .from("perfiles")
-                    .insert(nuevoPerfil)
-                    .select(`
-                        id,
-                        nombre,
-                        apellido,
-                        rol,
-                        "Puntos",
-                        creado_en,
-                        actualizado_en
-                    `)
-                    .single();
+                error: errorCrear
+            } = await supabaseClient
+                .from("perfiles")
+                .insert(nuevoPerfil)
+                .select("*")
+                .single();
 
-            if (errorInsertar) {
-
-                console.error(
-                    "Error creando perfil:",
-                    errorInsertar
-                );
-
-                return;
-
+            if (errorCrear) {
+                throw errorCrear;
             }
 
             perfil =
                 perfilCreado;
-
         }
 
         perfilActual =
             perfil;
 
+        console.log(
+            "PERFIL CARGADO:",
+            perfilActual
+        );
+
         actualizarInterfazUsuario();
 
-        await cargarHistorialCanjes();
+        await cargarCatalogoCanje();
 
-        actualizarBotonesCanje();
+        await cargarHistorialCanjes();
 
     } catch (error) {
 
@@ -670,112 +541,106 @@ async function cargarPerfil(user) {
             error
         );
 
+        mostrarMensajeLogin(
+            "No se pudo cargar el perfil.",
+            "error"
+        );
     }
-
 }
 
 
 /* =========================================================
-   ACTUALIZAR INTERFAZ DEL USUARIO
+   16. ACTUALIZAR INTERFAZ
 ========================================================= */
 
 function actualizarInterfazUsuario() {
 
     if (!usuarioActual) {
-
         return;
-
     }
 
-    const nombre =
-        perfilActual?.nombre ||
-        usuarioActual.user_metadata?.nombre ||
-        usuarioActual.email?.split("@")[0] ||
-        "Usuario";
+    const nombre = [
 
-    const apellido =
-        perfilActual?.apellido ||
-        usuarioActual.user_metadata?.apellido ||
-        "";
+        perfilActual?.nombre,
 
-    const nombreCompleto =
-        `${nombre} ${apellido}`.trim();
+        perfilActual?.apellido
+
+    ]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
 
     if (usuarioNombre) {
 
         usuarioNombre.textContent =
-            nombreCompleto;
-
+            nombre ||
+            usuarioActual.email ||
+            "Usuario";
     }
 
     if (usuarioCorreo) {
 
         usuarioCorreo.textContent =
             usuarioActual.email || "";
-
     }
 
     const puntos =
         Number(
-            perfilActual?.["Puntos"] ?? 0
+            perfilActual?.["Puntos"] ??
+            perfilActual?.puntos ??
+            0
         );
 
     if (puntosUsuario) {
 
         puntosUsuario.textContent =
-            puntos.toLocaleString(
+            Math.max(
+                0,
+                Number.isFinite(puntos)
+                    ? puntos
+                    : 0
+            ).toLocaleString(
                 "es-GT"
             );
+    }
 
+    if (seccionLogin) {
+        seccionLogin.style.display =
+            "none";
+    }
+
+    if (seccionUsuario) {
+        seccionUsuario.style.display =
+            "";
+    }
+
+    if (seccionPuntos) {
+        seccionPuntos.style.display =
+            "";
+    }
+
+    if (seccionCanje) {
+        seccionCanje.style.display =
+            "";
+    }
+
+    if (seccionHistorial) {
+        seccionHistorial.style.display =
+            "";
     }
 
     if (estadoSesion) {
 
         estadoSesion.textContent =
             "Sesión iniciada";
-
     }
 
-    if (seccionLogin) {
-
-        seccionLogin.style.display =
-            "none";
-
-    }
-
-    if (seccionUsuario) {
-
-        seccionUsuario.style.display =
-            "";
-
-    }
-
-    if (seccionPuntos) {
-
-        seccionPuntos.style.display =
-            "";
-
-    }
-
-    if (seccionCanje) {
-
-        seccionCanje.style.display =
-            "";
-
-    }
-
-    if (seccionHistorial) {
-
-        seccionHistorial.style.display =
-            "";
-
-    }
-
+    actualizarCatalogoSegunPuntos();
 }
 
 
 /* =========================================================
-   MOSTRAR FORMULARIO DE LOGIN
+   17. MOSTRAR LOGIN
 ========================================================= */
 
 function mostrarFormularioLogin() {
@@ -784,74 +649,71 @@ function mostrarFormularioLogin() {
 
     perfilActual = null;
 
-    cerrarModalDetalleProducto();
+    productosCanje = [];
 
-    if (estadoSesion) {
-
-        estadoSesion.textContent =
-            "No has iniciado sesión";
-
-    }
+    productoSeleccionadoCanje = null;
 
     if (seccionLogin) {
-
-        seccionLogin.style.display =
-            "";
-
+        seccionLogin.style.display = "";
     }
 
     if (seccionUsuario) {
-
-        seccionUsuario.style.display =
-            "none";
-
+        seccionUsuario.style.display = "none";
     }
 
     if (seccionPuntos) {
-
-        seccionPuntos.style.display =
-            "none";
-
+        seccionPuntos.style.display = "none";
     }
 
     if (seccionCanje) {
-
-        seccionCanje.style.display =
-            "none";
-
+        seccionCanje.style.display = "none";
     }
 
     if (seccionHistorial) {
-
-        seccionHistorial.style.display =
-            "none";
-
+        seccionHistorial.style.display = "none";
     }
 
-    actualizarBotonesCanje();
+    if (historialCanjes) {
+        historialCanjes.innerHTML = "";
+    }
 
+    if (catalogoCanje) {
+        catalogoCanje.innerHTML = "";
+    }
+
+    if (estadoSesion) {
+        estadoSesion.textContent =
+            "Inicia sesión";
+    }
+
+    cerrarModalDetalle();
 }
 
 
 /* =========================================================
-   LOGIN
+   18. LOGIN
 ========================================================= */
 
 if (formLogin) {
 
     formLogin.addEventListener(
         "submit",
-        async function (event) {
+        async function (e) {
 
-            event.preventDefault();
+            e.preventDefault();
 
             const correo =
-                loginCorreo?.value.trim() || "";
+                loginCorreo?.value
+                    ?.trim()
+                    .toLowerCase() || "";
 
             const password =
                 loginPassword?.value || "";
 
-            if (!correo || !password) {
+            if (
+                !correo ||
+                !password
+            ) {
 
                 mostrarMensajeLogin(
                     "Ingresa tu correo y contraseña.",
@@ -859,124 +721,111 @@ if (formLogin) {
                 );
 
                 return;
-
-            }
-
-            if (password.length < 6) {
-
-                mostrarMensajeLogin(
-                    "La contraseña debe tener al menos 6 caracteres.",
-                    "error"
-                );
-
-                return;
-
             }
 
             if (btnLogin) {
 
-                btnLogin.disabled =
-                    true;
+                btnLogin.disabled = true;
 
-                btnLogin.textContent =
-                    "Ingresando...";
-
+                btnLogin.innerHTML = `
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Iniciando sesión...
+                `;
             }
 
-            mostrarMensajeLogin(
-                "",
-                ""
-            );
+            mostrarMensajeLogin("", "");
 
             try {
 
-                let resultado =
+                const {
+                    data,
+                    error
+                } =
                     await supabaseClient.auth
                         .signInWithPassword({
-
                             email: correo,
-
                             password: password
-
                         });
 
-                if (resultado.error) {
+                if (error) {
+
+                    console.error(
+                        "Error de login:",
+                        error
+                    );
 
                     const mensajeError =
-                        resultado.error.message || "";
-
-                    const esCredenciales =
-                        /invalid login credentials/i.test(
-                            mensajeError
+                        normalizarTexto(
+                            error.message
                         );
 
-                    if (esCredenciales) {
+                    if (
+                        mensajeError.includes(
+                            "invalid login credentials"
+                        )
+                    ) {
 
-                        const registro =
-                            await supabaseClient.auth
-                                .signUp({
+                        mostrarMensajeLogin(
+                            "Correo o contraseña incorrectos.",
+                            "error"
+                        );
 
-                                    email: correo,
+                    } else if (
+                        mensajeError.includes(
+                            "email not confirmed"
+                        )
+                    ) {
 
-                                    password: password
-
-                                });
-
-                        if (registro.error) {
-
-                            throw registro.error;
-
-                        }
-
-                        if (registro.data?.session) {
-
-                            await cargarPerfil(
-                                registro.data.user
-                            );
-
-                            mostrarMensajeLogin(
-                                "Cuenta creada correctamente.",
-                                "exito"
-                            );
-
-                        } else {
-
-                            mostrarMensajeLogin(
-                                "Cuenta creada. Revisa tu correo para confirmar tu cuenta.",
-                                "exito"
-                            );
-
-                        }
+                        mostrarMensajeLogin(
+                            "Tu correo todavía no ha sido confirmado.",
+                            "error"
+                        );
 
                     } else {
 
-                        throw resultado.error;
-
+                        mostrarMensajeLogin(
+                            error.message ||
+                            "No se pudo iniciar sesión.",
+                            "error"
+                        );
                     }
 
-                } else {
+                    return;
+                }
 
-                    await cargarPerfil(
-                        resultado.data.user
-                    );
+                if (!data?.user) {
 
                     mostrarMensajeLogin(
-                        "Inicio de sesión exitoso.",
-                        "exito"
+                        "No se pudo obtener el usuario.",
+                        "error"
                     );
 
+                    return;
                 }
+
+                console.log(
+                    "LOGIN CORRECTO:",
+                    data.user.email
+                );
+
+                mostrarMensajeLogin(
+                    "Inicio de sesión correcto.",
+                    "success"
+                );
+
+                await cargarPerfil(
+                    data.user
+                );
 
             } catch (error) {
 
                 console.error(
-                    "Error de login:",
+                    "Error inesperado de login:",
                     error
                 );
 
                 mostrarMensajeLogin(
-                    error.message ||
-                    "No se pudo iniciar sesión.",
+                    "Ocurrió un error al iniciar sesión.",
                     "error"
                 );
 
@@ -984,1910 +833,768 @@ if (formLogin) {
 
                 if (btnLogin) {
 
-                    btnLogin.disabled =
-                        false;
+                    btnLogin.disabled = false;
 
-                    btnLogin.textContent =
-                        "Iniciar sesión";
-
+                    btnLogin.innerHTML = `
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Iniciar sesión
+                    `;
                 }
-
             }
-
         }
     );
-
 }
 
 
 /* =========================================================
-   MOSTRAR / OCULTAR CONTRASEÑA
+   19. MOSTRAR / OCULTAR PASSWORD
 ========================================================= */
 
-if (
-    mostrarPassword &&
-    loginPassword
-) {
+if (mostrarPassword) {
 
     mostrarPassword.addEventListener(
-        "change",
+        "click",
         function () {
 
+            if (!loginPassword) {
+                return;
+            }
+
+            const mostrar =
+                loginPassword.type === "password";
+
             loginPassword.type =
-                mostrarPassword.checked
+                mostrar
                     ? "text"
                     : "password";
 
-        }
-    );
-
-}
-
-
-/* =========================================================
-   BOTONES DE CANJE
-========================================================= */
-
-function prepararBotonesCanje() {
-
-    const botones =
-        document.querySelectorAll(
-            ".btn-canjear"
-        );
-
-    botones.forEach(
-        function (boton) {
-
-            if (
-                boton.dataset.eventoCanjePreparado ===
-                "true"
-            ) {
-
-                return;
-
-            }
-
-            boton.dataset.eventoCanjePreparado =
-                "true";
-
-            boton.addEventListener(
-                "click",
-                async function (event) {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-                    if (!usuarioActual) {
-
-                        alert(
-                            "Debes iniciar sesión para realizar un canje."
-                        );
-
-                        return;
-
-                    }
-
-                    const recompensa =
-                        boton.dataset.recompensa ||
-                        "Canje";
-
-                    const categoria =
-                        boton.dataset.categoria ||
-                        boton.closest(
-                            "[data-categoria]"
-                        )?.dataset.categoria ||
-                        recompensa;
-
-                    const puntosMaximos =
-                        Number(
-                            boton.dataset.puntos ||
-                            0
-                        );
-
-                    if (
-                        !Number.isFinite(
-                            puntosMaximos
-                        ) ||
-                        puntosMaximos <= 0
-                    ) {
-
-                        alert(
-                            "El nivel de puntos no es válido."
-                        );
-
-                        return;
-
-                    }
-
-                    try {
-
-                        const {
-                            data,
-                            error
-                        } =
-                            await supabaseClient
-                                .from("perfiles")
-                                .select('"Puntos"')
-                                .eq(
-                                    "id",
-                                    usuarioActual.id
-                                )
-                                .single();
-
-                        if (error) {
-
-                            throw error;
-
-                        }
-
-                        const puntosActuales =
-                            Number(
-                                data?.["Puntos"] ??
-                                0
-                            );
-
-                        if (
-                            puntosActuales <
-                            puntosMaximos
-                        ) {
-
-                            alert(
-                                `Necesitas ${puntosMaximos.toLocaleString("es-GT")} puntos para acceder a este nivel. Actualmente tienes ${puntosActuales.toLocaleString("es-GT")}.`
-                            );
-
-                            return;
-
-                        }
-
-                        await abrirSelectorProductosCanje(
-                            recompensa,
-                            categoria,
-                            puntosMaximos
-                        );
-
-                    } catch (error) {
-
-                        console.error(
-                            "Error preparando canje:",
-                            error
-                        );
-
-                        alert(
-                            "No se pudo iniciar el canje."
-                        );
-
-                    }
-
-                }
+            mostrarPassword.setAttribute(
+                "aria-label",
+                mostrar
+                    ? "Ocultar contraseña"
+                    : "Mostrar contraseña"
             );
 
-        }
-    );
+            mostrarPassword.setAttribute(
+                "aria-pressed",
+                String(mostrar)
+            );
 
-}
+            const icono =
+                mostrarPassword.querySelector("i");
 
+            if (icono) {
 
-/* =========================================================
-   ACTUALIZAR ESTADO DE LOS BOTONES
-========================================================= */
-
-function actualizarBotonesCanje() {
-
-    const botones =
-        document.querySelectorAll(
-            ".btn-canjear"
-        );
-
-    const puntosActuales =
-        Number(
-            perfilActual?.["Puntos"] ?? 0
-        );
-
-    botones.forEach(
-        function (boton) {
-
-            const puntosMaximos =
-                Number(
-                    boton.dataset.puntos ||
-                    0
+                icono.classList.toggle(
+                    "fa-eye",
+                    !mostrar
                 );
 
-            if (!usuarioActual) {
-
-                boton.disabled =
-                    false;
-
-                boton.textContent =
-                    "Canjear";
-
-                return;
-
+                icono.classList.toggle(
+                    "fa-eye-slash",
+                    mostrar
+                );
             }
-
-            if (
-                puntosActuales <
-                puntosMaximos
-            ) {
-
-                boton.disabled =
-                    true;
-
-                boton.textContent =
-                    "Puntos insuficientes";
-
-            } else {
-
-                boton.disabled =
-                    false;
-
-                boton.textContent =
-                    "Canjear";
-
-            }
-
         }
     );
-
 }
 
 
 /* =========================================================
-   ABRIR MODAL DE PRODUCTOS PARA CANJE
+   20. CARGAR CATÁLOGO
 ========================================================= */
 
-async function abrirSelectorProductosCanje(
-    recompensa,
-    categoriaSeleccionada,
-    puntosMaximos
-) {
+async function cargarCatalogoCanje() {
 
-    const modal =
-        document.getElementById(
-            "modalCanjeProducto"
-        );
-
-    const contenedor =
-        document.getElementById(
-            "productosCanje"
-        );
-
-    const texto =
-        document.getElementById(
-            "textoPuntosCanje"
-        );
-
-    const mensaje =
-        document.getElementById(
-            "mensajeCanjeProducto"
-        );
-
-    const cerrar =
-        document.getElementById(
-            "cerrarModalCanje"
-        );
-
-    if (
-        !modal ||
-        !contenedor
-    ) {
-
-        console.error(
-            "No se encontró el modal de canje."
-        );
-
+    if (!catalogoCanje) {
         return;
-
     }
 
-    if (texto) {
-
-        texto.textContent =
-            `${categoriaSeleccionada} · Hasta Q${puntosMaximos.toLocaleString("es-GT")}. Elige el producto que deseas canjear.`;
-
-    }
-
-    if (mensaje) {
-
-        mensaje.textContent =
-            "";
-
-    }
-
-    contenedor.innerHTML = `
-        <div class="cargando-canjes">
+    catalogoCanje.innerHTML = `
+        <div class="productos-canje-cargando">
             <i class="fa-solid fa-spinner fa-spin"></i>
             <span>Cargando productos...</span>
         </div>
     `;
 
-    modal.style.display =
-        "flex";
-
-    document.body.style.overflow =
-        "hidden";
-
-    if (cerrar) {
-
-        cerrar.onclick =
-            function () {
-
-                cerrarModalCanje();
-
-            };
-
-    }
-
     try {
-
-        await cargarCategorias();
 
         const {
             data,
             error
-        } =
-            await supabaseClient
-                .from("productos")
-                .select("*")
-                .eq("activo", true)
-                .order(
-                    "id",
-                    {
-                        ascending: false
-                    }
-                );
+        } = await supabaseClient
+            .from("productos")
+            .select("*")
+            .eq("activo", true)
+            .order("id", {
+                ascending: false
+            });
 
         if (error) {
-
             throw error;
-
         }
 
-        const todosLosProductos =
+        productosCanje =
             data || [];
 
-        const categoriaNormalizada =
-            normalizarTexto(
-                categoriaSeleccionada
-            );
+        console.log(
+            "PRODUCTOS PARA CANJE:",
+            productosCanje
+        );
 
-        const productos =
-            todosLosProductos.filter(
-                function (producto) {
+        if (!productosCanje.length) {
 
-                    const precio =
-                        obtenerPrecioProducto(
-                            producto
-                        );
-
-                    if (
-                        precio <= 0 ||
-                        precio > puntosMaximos
-                    ) {
-
-                        return false;
-
-                    }
-
-                    const categoriaProducto =
-                        normalizarTexto(
-                            obtenerCategoriaProducto(
-                                producto
-                            )
-                        );
-
-                    return (
-                        categoriaProducto ===
-                        categoriaNormalizada
-                    );
-
-                }
-            );
-
-        if (!productos.length) {
-
-            contenedor.innerHTML = `
-                <div class="sin-productos-canje">
+            catalogoCanje.innerHTML = `
+                <div class="sin-tickets">
                     <i class="fa-solid fa-box-open"></i>
-                    <h3>No hay productos disponibles</h3>
+
+                    <h3>
+                        No hay productos disponibles
+                    </h3>
+
                     <p>
-                        No encontramos productos de
-                        ${escapeHTML(categoriaSeleccionada)}
-                        de hasta
-                        Q${puntosMaximos.toLocaleString("es-GT")}.
+                        Actualmente no hay productos activos
+                        para canjear.
                     </p>
                 </div>
             `;
 
             return;
-
         }
 
-        contenedor.innerHTML =
-            productos
-                .map(
-                    function (producto) {
-
-                        const nombre =
-                            producto.nombre ||
-                            producto.nombre_producto ||
-                            "Producto";
-
-                        const precio =
-                            obtenerPrecioProducto(
-                                producto
-                            );
-
-                        const imagen =
-                            obtenerImagenProducto(
-                                producto
-                            );
-
-                        const categoria =
-                            obtenerCategoriaProducto(
-                                producto
-                            ) ||
-                            categoriaSeleccionada;
-
-                        const idProducto =
-                            producto.id;
-
-                        return `
-                            <article
-                                class="producto-canje-card"
-                                data-producto-id="${escapeHTML(idProducto)}"
-                            >
-
-                                <div class="producto-canje-foto">
-
-                                    ${imagen
-                                ? `
-                                        <img
-                                            src="${escapeHTML(imagen)}"
-                                            alt="${escapeHTML(nombre)}"
-                                            class="producto-canje-imagen"
-                                            loading="lazy"
-                                            onerror="
-                                                this.style.display='none';
-                                                this.parentElement
-                                                    .querySelector('.producto-canje-sin-imagen')
-                                                    .style.display='flex';
-                                            "
-                                        >
-
-                                        <div
-                                            class="producto-canje-sin-imagen"
-                                            style="display:none;"
-                                        >
-                                            <i class="fa-solid fa-image"></i>
-                                        </div>
-                                    `
-                                : `
-                                        <div
-                                            class="producto-canje-sin-imagen"
-                                            style="display:flex;"
-                                        >
-                                            <i class="fa-solid fa-image"></i>
-                                        </div>
-                                    `
-                            }
-
-                                </div>
-
-                                <div class="producto-canje-info">
-
-                                    <div class="producto-canje-categoria">
-                                        ${escapeHTML(categoria)}
-                                    </div>
-
-                                    <h3>
-                                        ${escapeHTML(nombre)}
-                                    </h3>
-
-                                    <div class="producto-canje-precio">
-                                        Q${precio.toLocaleString(
-                                "es-GT",
-                                {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                }
-                            )}
-                                    </div>
-
-                                    <button
-                                        type="button"
-                                        class="btn-seleccionar-producto-canje"
-                                        data-producto-id="${escapeHTML(idProducto)}"
-                                    >
-                                        <i class="fa-solid fa-gift"></i>
-                                        Seleccionar
-                                    </button>
-
-                                </div>
-
-                            </article>
-                        `;
-
-                    }
-                )
-                .join("");
-
-        contenedor
-            .querySelectorAll(
-                ".btn-seleccionar-producto-canje"
-            )
-            .forEach(
-                function (boton) {
-
-                    boton.addEventListener(
-                        "click",
-                        function (event) {
-
-                            event.preventDefault();
-
-                            event.stopPropagation();
-
-                            const id =
-                                boton.dataset.productoId;
-
-                            const producto =
-                                productos.find(
-                                    function (item) {
-
-                                        return (
-                                            String(
-                                                item.id
-                                            ) ===
-                                            String(id)
-                                        );
-
-                                    }
-                                );
-
-                            if (!producto) {
-
-                                return;
-
-                            }
-
-                            confirmarProductoCanje(
-                                producto,
-                                recompensa,
-                                categoriaSeleccionada,
-                                puntosMaximos
-                            );
-
-                        }
-                    );
-
-                }
-            );
+        renderizarCatalogoCanje();
 
     } catch (error) {
 
         console.error(
-            "Error cargando productos para canje:",
+            "Error cargando catálogo:",
             error
         );
 
-        contenedor.innerHTML = `
-            <div class="sin-productos-canje">
-
+        catalogoCanje.innerHTML = `
+            <div class="sin-tickets">
                 <i class="fa-solid fa-triangle-exclamation"></i>
 
                 <h3>
-                    Error al cargar productos
+                    No se pudo cargar el catálogo
                 </h3>
 
                 <p>
-                    No se pudieron cargar los productos.
-                    Intenta nuevamente.
+                    Intenta actualizar la página.
                 </p>
-
             </div>
         `;
-
     }
-
 }
 
 
 /* =========================================================
-   CERRAR MODAL DE PRODUCTOS
+   21. RENDERIZAR CATÁLOGO
 ========================================================= */
 
-function cerrarModalCanje() {
+function renderizarCatalogoCanje() {
 
-    const modal =
-        document.getElementById(
-            "modalCanjeProducto"
-        );
-
-    if (modal) {
-
-        modal.style.display =
-            "none";
-
-    }
-
-    document.body.style.overflow =
-        "";
-
-}
-
-
-/* =========================================================
-   CERRAR MODAL DE PRODUCTOS AL HACER CLICK FUERA
-========================================================= */
-
-const modalCanjeProducto =
-    document.getElementById(
-        "modalCanjeProducto"
-    );
-
-if (modalCanjeProducto) {
-
-    modalCanjeProducto.addEventListener(
-        "click",
-        function (event) {
-
-            if (
-                event.target ===
-                modalCanjeProducto
-            ) {
-
-                cerrarModalCanje();
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   MODAL DETALLE DEL PRODUCTO
-========================================================= */
-
-function abrirModalDetalleProducto(producto) {
-
-    const modal =
-        document.getElementById(
-            "modalDetalleProducto"
-        );
-
-    if (!modal || !producto) {
-
-        console.error(
-            "No existe el modal de detalle o no se recibió producto."
-        );
-
+    if (!catalogoCanje) {
         return;
-
     }
 
-    productoDetalleActual =
-        producto;
+    catalogoCanje.innerHTML =
+        productosCanje
+            .map(
+                producto =>
+                    crearCardProductoCanje(producto)
+            )
+            .join("");
+
+    agregarEventosCatalogo();
+}
 
 
-    const imagen =
-        document.getElementById(
-            "detalleImagenProducto"
-        );
+/* =========================================================
+   22. CREAR CARD
+========================================================= */
 
-    const sinImagen =
-        document.getElementById(
-            "detalleSinImagenProducto"
-        );
+function crearCardProductoCanje(producto) {
+
+    const id =
+        producto.id;
 
     const nombre =
         producto.nombre ||
-        producto.nombre_producto ||
+        "Producto sin nombre";
+
+    const descripcion =
+        producto.descripcion ||
+        "Sin descripción disponible.";
+
+    const categoria =
+        obtenerCategoriaProducto(producto) ||
+        "Producto";
+
+    const precio =
+        obtenerPrecioProducto(producto);
+
+    const puntos =
+        obtenerPuntosProducto(producto);
+
+    const imagen =
+        obtenerImagenProducto(producto);
+
+    const stock =
+        Number(producto.stock ?? 0);
+
+    const agotado =
+        !Number.isFinite(stock) ||
+        stock <= 0;
+
+    const puntosUsuarioActual =
+        Number(
+            perfilActual?.["Puntos"] ??
+            perfilActual?.puntos ??
+            0
+        );
+
+    const sinPuntos =
+        puntosUsuarioActual < puntos;
+
+    let estadoClase = "";
+    let estadoTexto = "";
+
+    if (agotado) {
+
+        estadoClase = "agotado";
+        estadoTexto = "Agotado";
+
+    } else if (sinPuntos) {
+
+        estadoClase = "sin-puntos";
+        estadoTexto = "Puntos insuficientes";
+
+    } else {
+
+        estadoTexto = "Canjear producto";
+    }
+
+    const imagenHTML = imagen
+        ? `
+            <img
+                src="${escapeHTML(imagen)}"
+                alt="${escapeHTML(nombre)}"
+                loading="lazy"
+                onerror="
+                    this.style.display='none';
+                    this.nextElementSibling.style.display='flex';
+                "
+            >
+
+            <div
+                class="producto-canje-sin-imagen"
+                style="display:none;"
+            >
+                <i class="fa-solid fa-image"></i>
+                <span>Sin imagen</span>
+            </div>
+        `
+        : `
+            <div class="producto-canje-sin-imagen">
+                <i class="fa-solid fa-image"></i>
+                <span>Sin imagen</span>
+            </div>
+        `;
+
+    return `
+        <article
+            class="producto-canje-card ${estadoClase}"
+            data-producto-id="${escapeHTML(id)}"
+        >
+
+            <div class="producto-canje-foto">
+
+                ${imagenHTML}
+
+                <span class="producto-canje-etiqueta">
+                    ${escapeHTML(categoria)}
+                </span>
+
+            </div>
+
+            <div class="producto-canje-info">
+
+                <span class="producto-canje-categoria">
+                    ${escapeHTML(categoria)}
+                </span>
+
+                <h3 class="producto-canje-nombre">
+                    ${escapeHTML(nombre)}
+                </h3>
+
+                <p class="producto-canje-descripcion">
+                    ${escapeHTML(descripcion)}
+                </p>
+
+                <div class="producto-canje-precio">
+
+                    <span>Precio</span>
+
+                    <strong>
+                        Q${precio.toFixed(2)}
+                    </strong>
+
+                </div>
+
+                <div class="producto-canje-puntos">
+
+                    <i class="fa-solid fa-star"></i>
+
+                    <span>
+                        ${puntos}
+                        ${puntos === 1
+            ? "punto"
+            : "puntos"}
+                    </span>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-seleccionar-producto-canje"
+                    data-producto-id="${escapeHTML(id)}"
+                    ${agotado || sinPuntos ? "disabled" : ""}
+                >
+
+                    <i class="fa-solid ${agotado
+            ? "fa-box-open"
+            : sinPuntos
+                ? "fa-star"
+                : "fa-gift"
+        }"></i>
+
+                    ${estadoTexto}
+
+                </button>
+
+            </div>
+
+        </article>
+    `;
+}
+
+
+/* =========================================================
+   23. EVENTOS CATÁLOGO
+========================================================= */
+
+function agregarEventosCatalogo() {
+
+    if (!catalogoCanje) {
+        return;
+    }
+
+    const tarjetas =
+        catalogoCanje.querySelectorAll(
+            ".producto-canje-card"
+        );
+
+    tarjetas.forEach(
+        tarjeta => {
+
+            tarjeta.addEventListener(
+                "click",
+                function () {
+
+                    const id =
+                        tarjeta.dataset.productoId;
+
+                    abrirDetalleProducto(id);
+                }
+            );
+        }
+    );
+
+    const botones =
+        catalogoCanje.querySelectorAll(
+            ".btn-seleccionar-producto-canje"
+        );
+
+    botones.forEach(
+        boton => {
+
+            boton.addEventListener(
+                "click",
+                async function (e) {
+
+                    e.stopPropagation();
+
+                    if (boton.disabled) {
+                        return;
+                    }
+
+                    const id =
+                        boton.dataset.productoId;
+
+                    const producto =
+                        encontrarProductoPorId(id);
+
+                    if (!producto) {
+                        return;
+                    }
+
+                    await confirmarProductoCanje(
+                        producto
+                    );
+                }
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   24. BUSCAR PRODUCTO
+========================================================= */
+
+function encontrarProductoPorId(id) {
+
+    return productosCanje.find(
+        producto =>
+            String(producto.id) ===
+            String(id)
+    );
+}
+
+
+/* =========================================================
+   25. ABRIR DETALLE
+========================================================= */
+
+function abrirDetalleProducto(id) {
+
+    const producto =
+        encontrarProductoPorId(id);
+
+    if (!producto) {
+
+        console.warn(
+            "Producto no encontrado:",
+            id
+        );
+
+        return;
+    }
+
+    productoSeleccionadoCanje =
+        producto;
+
+    const nombre =
+        producto.nombre ||
         "Producto";
 
     const categoria =
-        obtenerCategoriaProducto(
-            producto
-        ) ||
-        "DL Luxury";
-
-    const precio =
-        Number(
-            obtenerPrecioProducto(
-                producto
-            )
-        ) || 0;
-
-    const puntos =
-        Math.ceil(precio);
+        obtenerCategoriaProducto(producto) ||
+        "Producto";
 
     const descripcion =
-        obtenerDescripcionProducto(
-            producto
+        producto.descripcion ||
+        "Sin descripción disponible.";
+
+    const precio =
+        obtenerPrecioProducto(producto);
+
+    const puntos =
+        obtenerPuntosProducto(producto);
+
+    const imagen =
+        obtenerImagenProducto(producto);
+
+    const stock =
+        Number(producto.stock ?? 0);
+
+    const puntosActuales =
+        Number(
+            perfilActual?.["Puntos"] ??
+            perfilActual?.puntos ??
+            0
         );
 
+    const agotado =
+        !Number.isFinite(stock) ||
+        stock <= 0;
 
-    /* =====================================================
-       IMAGEN
-    ===================================================== */
+    const sinPuntos =
+        puntosActuales < puntos;
 
-    if (imagen) {
+    if (detalleNombreProducto) {
+        detalleNombreProducto.textContent =
+            nombre;
+    }
 
-        const url =
-            obtenerImagenProducto(
-                producto
-            );
+    if (detalleCategoriaProducto) {
+        detalleCategoriaProducto.textContent =
+            categoria;
+    }
 
-        if (url) {
+    if (detalleDescripcionProducto) {
+        detalleDescripcionProducto.textContent =
+            descripcion;
+    }
 
-            imagen.src =
-                url;
+    if (detallePrecioProducto) {
+        detallePrecioProducto.textContent =
+            `Q${precio.toFixed(2)}`;
+    }
 
-            imagen.alt =
+    if (detallePuntosProducto) {
+        detallePuntosProducto.textContent =
+            puntos.toLocaleString("es-GT");
+    }
+
+    if (detalleStockProducto) {
+
+        if (
+            Number.isFinite(stock) &&
+            stock > 0
+        ) {
+
+            detalleStockProducto.textContent =
+                `Disponible: ${stock} unidad${stock === 1 ? "" : "es"
+                }`;
+
+        } else {
+
+            detalleStockProducto.textContent =
+                "Producto agotado";
+        }
+    }
+
+    if (detalleImagenProducto) {
+
+        if (imagen) {
+
+            detalleImagenProducto.src =
+                imagen;
+
+            detalleImagenProducto.alt =
                 nombre;
 
-            imagen.style.display =
+            detalleImagenProducto.style.display =
                 "block";
 
-            if (sinImagen) {
-
-                sinImagen.style.display =
+            if (detalleSinImagenProducto) {
+                detalleSinImagenProducto.style.display =
                     "none";
-
             }
 
-            imagen.onerror =
+            detalleImagenProducto.onerror =
                 function () {
 
-                    imagen.style.display =
+                    this.style.display =
                         "none";
 
-                    if (sinImagen) {
+                    if (detalleSinImagenProducto) {
 
-                        sinImagen.style.display =
+                        detalleSinImagenProducto.style.display =
                             "flex";
-
                     }
-
                 };
 
         } else {
 
-            imagen.removeAttribute(
-                "src"
-            );
+            detalleImagenProducto.src = "";
 
-            imagen.style.display =
+            detalleImagenProducto.style.display =
                 "none";
 
-            if (sinImagen) {
+            if (detalleSinImagenProducto) {
 
-                sinImagen.style.display =
+                detalleSinImagenProducto.style.display =
                     "flex";
-
             }
-
         }
-
     }
 
+    if (btnCanjearDesdeDetalle) {
 
-    /* =====================================================
-       TEXTO
-    ===================================================== */
+        btnCanjearDesdeDetalle.disabled =
+            agotado ||
+            sinPuntos;
 
-    const detalleNombre =
-        document.getElementById(
-            "detalleNombreProducto"
-        );
+        if (agotado) {
 
-    const detalleCategoria =
-        document.getElementById(
-            "detalleCategoriaProducto"
-        );
+            btnCanjearDesdeDetalle.innerHTML = `
+                <i class="fa-solid fa-box-open"></i>
+                Producto agotado
+            `;
 
-    const detalleDescripcion =
-        document.getElementById(
-            "detalleDescripcionProducto"
-        );
+        } else if (sinPuntos) {
 
-    const detallePrecio =
-        document.getElementById(
-            "detallePrecioProducto"
-        );
-
-    const detallePuntos =
-        document.getElementById(
-            "detallePuntosProducto"
-        );
-
-
-    if (detalleNombre) {
-
-        detalleNombre.textContent =
-            nombre;
-
-    }
-
-    if (detalleCategoria) {
-
-        detalleCategoria.textContent =
-            categoria;
-
-    }
-
-    if (detalleDescripcion) {
-
-        detalleDescripcion.textContent =
-            descripcion ||
-            "Sin descripción disponible.";
-
-    }
-
-    if (detallePrecio) {
-
-        detallePrecio.textContent =
-            `Q${precio.toLocaleString(
-                "es-GT",
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            )}`;
-
-    }
-
-    if (detallePuntos) {
-
-        detallePuntos.textContent =
-            puntos.toLocaleString(
-                "es-GT"
-            );
-
-    }
-
-
-    /* =====================================================
-       BOTÓN DE CANJE
-    ===================================================== */
-
-    const boton =
-        document.getElementById(
-            "btnCanjearDesdeDetalle"
-        );
-
-    if (boton) {
-
-        if (!usuarioActual) {
-
-            boton.disabled =
-                false;
-
-            boton.innerHTML =
-                '<i class="fa-solid fa-lock"></i> Inicia sesión para canjear';
-
-        } else if (precio <= 0) {
-
-            boton.disabled =
-                true;
-
-            boton.innerHTML =
-                '<i class="fa-solid fa-ban"></i> Producto no disponible';
+            btnCanjearDesdeDetalle.innerHTML = `
+                <i class="fa-solid fa-star"></i>
+                Puntos insuficientes
+            `;
 
         } else {
 
-            boton.disabled =
-                false;
-
-            boton.innerHTML =
-                '<i class="fa-solid fa-gift"></i> Canjear producto';
-
+            btnCanjearDesdeDetalle.innerHTML = `
+                <i class="fa-solid fa-gift"></i>
+                Canjear producto
+            `;
         }
-
     }
 
+    if (modalDetalleProducto) {
 
-    /* =====================================================
-       MOSTRAR
-    ===================================================== */
+        modalDetalleProducto.classList.add(
+            "modal-abierto"
+        );
 
-    modal.style.display =
-        "flex";
+        modalDetalleProducto.classList.add(
+            "mostrar"
+        );
 
-    modal.classList.add(
+        modalDetalleProducto.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        document.body.classList.add(
+            "modal-abierto"
+        );
+    }
+}
+
+
+/* =========================================================
+   26. CERRAR MODAL
+========================================================= */
+
+function cerrarModalDetalle() {
+
+    if (!modalDetalleProducto) {
+        return;
+    }
+
+    modalDetalleProducto.classList.remove(
+        "modal-abierto"
+    );
+
+    modalDetalleProducto.classList.remove(
         "mostrar"
     );
 
-    modal.setAttribute(
+    modalDetalleProducto.setAttribute(
         "aria-hidden",
-        "false"
+        "true"
     );
 
-    document.body.style.overflow =
-        "hidden";
+    document.body.classList.remove(
+        "modal-abierto"
+    );
 
-}
-
-
-function cerrarModalDetalleProducto() {
-
-    const modal =
-        document.getElementById(
-            "modalDetalleProducto"
-        );
-
-    if (modal) {
-
-        modal.style.display =
-            "none";
-
-        modal.classList.remove(
-            "mostrar"
-        );
-
-        modal.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-    }
-
-    productoDetalleActual =
+    productoSeleccionadoCanje =
         null;
-
-    document.body.style.overflow =
-        "";
-
 }
 
 
 /* =========================================================
-   EVENTOS DEL MODAL DETALLE
+   27. BOTÓN CERRAR
 ========================================================= */
 
-function prepararModalDetalleProducto() {
+if (cerrarModalDetalleProducto) {
 
-    const modal =
-        document.getElementById(
-            "modalDetalleProducto"
-        );
-
-    const cerrar =
-        document.getElementById(
-            "cerrarModalDetalleProducto"
-        );
-
-    const botonCanjear =
-        document.getElementById(
-            "btnCanjearDesdeDetalle"
-        );
-
-
-    /* =====================================================
-       X
-    ===================================================== */
-
-    if (cerrar) {
-
-        cerrar.addEventListener(
-            "click",
-            function (event) {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-                cerrarModalDetalleProducto();
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       CLICK FUERA
-    ===================================================== */
-
-    if (modal) {
-
-        modal.addEventListener(
-            "click",
-            function (event) {
-
-                if (
-                    event.target ===
-                    modal
-                ) {
-
-                    cerrarModalDetalleProducto();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       BOTÓN CANJEAR
-    ===================================================== */
-
-    if (botonCanjear) {
-
-        botonCanjear.addEventListener(
-            "click",
-            async function (event) {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-
-                const producto =
-                    productoDetalleActual;
-
-
-                if (!producto) {
-
-                    return;
-
-                }
-
-
-                if (!usuarioActual) {
-
-                    alert(
-                        "Debes iniciar sesión para realizar un canje."
-                    );
-
-                    return;
-
-                }
-
-
-                const precio =
-                    Number(
-                        obtenerPrecioProducto(
-                            producto
-                        )
-                    ) || 0;
-
-
-                if (precio <= 0) {
-
-                    alert(
-                        "El precio de este producto no es válido."
-                    );
-
-                    return;
-
-                }
-
-
-                const puntosNecesarios =
-                    Math.ceil(
-                        precio
-                    );
-
-
-                try {
-
-                    const saldo =
-                        await consultarPuntosCliente(
-                            usuarioActual.id
-                        );
-
-
-                    if (
-                        saldo.puntos <
-                        puntosNecesarios
-                    ) {
-
-                        alert(
-
-                            `No tienes suficientes puntos.\n\n` +
-
-                            `Tienes: ${saldo.puntos.toLocaleString("es-GT")} puntos.\n\n` +
-
-                            `Necesitas: ${puntosNecesarios.toLocaleString("es-GT")} puntos.`
-
-                        );
-
-                        return;
-
-                    }
-
-
-                    const categoria =
-                        obtenerCategoriaProducto(
-                            producto
-                        ) ||
-                        "DL Luxury";
-
-
-                    cerrarModalDetalleProducto();
-
-
-                    await confirmarProductoCanje(
-
-                        producto,
-
-                        "Catálogo",
-
-                        categoria,
-
-                        saldo.puntos
-
-                    );
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Error preparando canje desde detalle:",
-                        error
-                    );
-
-                    alert(
-                        error.message ||
-                        "No se pudo preparar el canje."
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   CLICK EN PRODUCTO / IMAGEN DEL CATÁLOGO
-========================================================= */
-
-function prepararClickProductosCatalogo() {
-
-    const catalogo =
-        document.getElementById(
-            "catalogoCanje"
-        );
-
-    if (!catalogo) {
-
-        return;
-
-    }
-
-
-    if (
-        catalogo.dataset.detallePreparado ===
-        "true"
-    ) {
-
-        return;
-
-    }
-
-
-    catalogo.dataset.detallePreparado =
-        "true";
-
-
-    catalogo.addEventListener(
+    cerrarModalDetalleProducto.addEventListener(
         "click",
-        function (event) {
+        cerrarModalDetalle
+    );
+}
 
-            /*
-             * Si hicieron click en el botón
-             * "Canjear producto", NO abrimos
-             * el detalle.
-             */
+
+/* =========================================================
+   28. CLICK FUERA DEL MODAL
+========================================================= */
+
+if (modalDetalleProducto) {
+
+    modalDetalleProducto.addEventListener(
+        "click",
+        function (e) {
 
             if (
-                event.target.closest(
-                    ".btn-seleccionar-producto-canje"
-                )
+                e.target ===
+                modalDetalleProducto
             ) {
 
-                return;
-
+                cerrarModalDetalle();
             }
-
-
-            const tarjeta =
-                event.target.closest(
-                    ".producto-canje-card"
-                );
-
-
-            if (!tarjeta) {
-
-                return;
-
-            }
-
-
-            const productoId =
-                tarjeta.dataset.productoId;
-
-
-            const producto =
-                productosCatalogoCanje.find(
-                    function (item) {
-
-                        return (
-                            String(item.id) ===
-                            String(productoId)
-                        );
-
-                    }
-                );
-
-
-            if (!producto) {
-
-                console.warn(
-                    "No se encontró el producto:",
-                    productoId
-                );
-
-                return;
-
-            }
-
-
-            abrirModalDetalleProducto(
-                producto
-            );
-
         }
     );
-
 }
 
 
 /* =========================================================
-   MODAL DE CONFIRMACIÓN DE CANJE
-========================================================= */
-
-function cerrarModalConfirmarCanje(
-    resultado = false
-) {
-
-    const modal =
-        document.getElementById(
-            "modalConfirmarCanje"
-        );
-
-    if (modal) {
-
-        modal.style.display =
-            "none";
-
-        modal.classList.remove(
-            "activo",
-            "mostrar"
-        );
-
-        modal.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-    }
-
-
-    const modalProductos =
-        document.getElementById(
-            "modalCanjeProducto"
-        );
-
-
-    if (
-        modalProductos &&
-        modalProductos.style.display === "flex"
-    ) {
-
-        document.body.style.overflow =
-            "hidden";
-
-    } else {
-
-        document.body.style.overflow =
-            "";
-
-    }
-
-
-    if (
-        resolverConfirmacionCanje
-    ) {
-
-        const resolver =
-            resolverConfirmacionCanje;
-
-        resolverConfirmacionCanje =
-            null;
-
-        resolver(resultado);
-
-    }
-
-}
-
-
-/* =========================================================
-   ABRIR MODAL DE CONFIRMACIÓN
-========================================================= */
-
-function abrirModalConfirmarCanje(
-    producto,
-    puntosDisponibles,
-    puntosUtilizar
-) {
-
-    return new Promise(
-        function (resolve) {
-
-            const modal =
-                document.getElementById(
-                    "modalConfirmarCanje"
-                );
-
-            const imagen =
-                document.getElementById(
-                    "confirmarImagenProducto"
-                );
-
-            const nombre =
-                document.getElementById(
-                    "confirmarNombreProducto"
-                );
-
-            const categoria =
-                document.getElementById(
-                    "confirmarCategoriaProducto"
-                );
-
-            const precio =
-                document.getElementById(
-                    "confirmarPrecioProducto"
-                );
-
-            const disponibles =
-                document.getElementById(
-                    "confirmarPuntosDisponibles"
-                );
-
-            const utilizar =
-                document.getElementById(
-                    "confirmarPuntosUtilizar"
-                );
-
-            const restantes =
-                document.getElementById(
-                    "confirmarPuntosRestantes"
-                );
-
-            const btnCancelar =
-                document.getElementById(
-                    "btnCancelarCanje"
-                );
-
-            const btnConfirmar =
-                document.getElementById(
-                    "btnConfirmarCanje"
-                );
-
-            const btnCerrar =
-                document.getElementById(
-                    "cerrarModalConfirmarCanje"
-                );
-
-
-            if (!modal) {
-
-                console.error(
-                    "ERROR: No existe #modalConfirmarCanje en el HTML."
-                );
-
-                resolve(false);
-
-                return;
-
-            }
-
-
-            if (resolverConfirmacionCanje) {
-
-                const resolverAnterior =
-                    resolverConfirmacionCanje;
-
-                resolverConfirmacionCanje =
-                    null;
-
-                resolverAnterior(false);
-
-            }
-
-
-            resolverConfirmacionCanje =
-                resolve;
-
-
-            const nombreProducto =
-                producto?.nombre ||
-                producto?.nombre_producto ||
-                "Producto";
-
-            const categoriaProducto =
-                obtenerCategoriaProducto(
-                    producto
-                ) ||
-                "Sin categoría";
-
-            const precioProducto =
-                obtenerPrecioProducto(
-                    producto
-                );
-
-            const imagenProducto =
-                obtenerImagenProducto(
-                    producto
-                );
-
-            const puntosRestantes =
-                Math.max(
-                    0,
-                    Number(puntosDisponibles) -
-                    Number(puntosUtilizar)
-                );
-
-
-            if (imagen) {
-
-                if (imagenProducto) {
-
-                    imagen.src =
-                        imagenProducto;
-
-                    imagen.alt =
-                        nombreProducto;
-
-                    imagen.style.display =
-                        "block";
-
-                } else {
-
-                    imagen.removeAttribute(
-                        "src"
-                    );
-
-                    imagen.alt =
-                        "Sin imagen";
-
-                }
-
-            }
-
-
-            if (nombre) {
-
-                nombre.textContent =
-                    nombreProducto;
-
-            }
-
-
-            if (categoria) {
-
-                categoria.textContent =
-                    categoriaProducto;
-
-            }
-
-
-            if (precio) {
-
-                precio.textContent =
-                    `Q${precioProducto.toLocaleString(
-                        "es-GT",
-                        {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        }
-                    )}`;
-
-            }
-
-
-            if (disponibles) {
-
-                disponibles.textContent =
-                    Number(
-                        puntosDisponibles
-                    ).toLocaleString(
-                        "es-GT"
-                    );
-
-            }
-
-
-            if (utilizar) {
-
-                utilizar.textContent =
-                    Number(
-                        puntosUtilizar
-                    ).toLocaleString(
-                        "es-GT"
-                    );
-
-            }
-
-
-            if (restantes) {
-
-                restantes.textContent =
-                    puntosRestantes.toLocaleString(
-                        "es-GT"
-                    );
-
-            }
-
-
-            function cancelarDesdeModal(
-                event
-            ) {
-
-                if (event) {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-                }
-
-                cerrarModalConfirmarCanje(
-                    false
-                );
-
-            }
-
-
-            function confirmarDesdeModal(
-                event
-            ) {
-
-                if (event) {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-                }
-
-                cerrarModalConfirmarCanje(
-                    true
-                );
-
-            }
-
-
-            if (btnCerrar) {
-
-                btnCerrar.onclick = null;
-
-                btnCerrar.onclick =
-                    cancelarDesdeModal;
-
-                btnCerrar.setAttribute(
-                    "type",
-                    "button"
-                );
-
-                btnCerrar.style.pointerEvents =
-                    "auto";
-
-                btnCerrar.style.cursor =
-                    "pointer";
-
-            }
-
-
-            if (btnCancelar) {
-
-                btnCancelar.onclick = null;
-
-                btnCancelar.onclick =
-                    cancelarDesdeModal;
-
-                btnCancelar.setAttribute(
-                    "type",
-                    "button"
-                );
-
-            }
-
-
-            if (btnConfirmar) {
-
-                btnConfirmar.onclick = null;
-
-                btnConfirmar.onclick =
-                    confirmarDesdeModal;
-
-                btnConfirmar.setAttribute(
-                    "type",
-                    "button"
-                );
-
-            }
-
-
-            modal.style.display =
-                "flex";
-
-            modal.classList.add(
-                "activo"
-            );
-
-            modal.classList.add(
-                "mostrar"
-            );
-
-            modal.setAttribute(
-                "aria-hidden",
-                "false"
-            );
-
-            modal.style.zIndex =
-                "100001";
-
-            document.body.style.overflow =
-                "hidden";
-
-
-            const contenido =
-                modal.querySelector(
-                    ".modal-confirmar-contenido, .modal-confirmar-canje-contenido"
-                );
-
-            if (contenido) {
-
-                contenido.addEventListener(
-                    "click",
-                    function (event) {
-
-                        event.stopPropagation();
-
-                    },
-                    {
-                        once: true
-                    }
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   EVENTO GLOBAL PARA BOTONES DEL MODAL
-========================================================= */
-
-document.addEventListener(
-    "click",
-    function (event) {
-
-        const botonCerrar =
-            event.target.closest(
-                "#cerrarModalConfirmarCanje"
-            );
-
-        if (botonCerrar) {
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-            cerrarModalConfirmarCanje(
-                false
-            );
-
-            return;
-
-        }
-
-
-        const botonCancelar =
-            event.target.closest(
-                "#btnCancelarCanje"
-            );
-
-        if (botonCancelar) {
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-            cerrarModalConfirmarCanje(
-                false
-            );
-
-            return;
-
-        }
-
-
-        const botonConfirmar =
-            event.target.closest(
-                "#btnConfirmarCanje"
-            );
-
-        if (botonConfirmar) {
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-            cerrarModalConfirmarCanje(
-                true
-            );
-
-            return;
-
-        }
-
-    },
-    true
-);
-
-
-/* =========================================================
-   CERRAR MODAL CONFIRMACIÓN AL HACER CLICK FUERA
-========================================================= */
-
-document.addEventListener(
-    "click",
-    function (event) {
-
-        const modal =
-            document.getElementById(
-                "modalConfirmarCanje"
-            );
-
-        if (!modal) {
-
-            return;
-
-        }
-
-        if (
-            modal.style.display !== "flex"
-        ) {
-
-            return;
-
-        }
-
-        if (
-            event.target === modal
-        ) {
-
-            cerrarModalConfirmarCanje(
-                false
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   ESC PARA CERRAR MODALES
+   29. ESC
 ========================================================= */
 
 document.addEventListener(
     "keydown",
-    function (event) {
+    function (e) {
 
         if (
-            event.key !== "Escape"
+            e.key === "Escape" &&
+            modalDetalleProducto?.classList.contains(
+                "modal-abierto"
+            )
         ) {
 
-            return;
-
+            cerrarModalDetalle();
         }
-
-
-        const modalDetalle =
-            document.getElementById(
-                "modalDetalleProducto"
-            );
-
-        if (
-            modalDetalle &&
-            modalDetalle.style.display === "flex"
-        ) {
-
-            event.preventDefault();
-
-            cerrarModalDetalleProducto();
-
-            return;
-
-        }
-
-
-        const modalConfirmar =
-            document.getElementById(
-                "modalConfirmarCanje"
-            );
-
-        if (
-            modalConfirmar &&
-            modalConfirmar.style.display === "flex"
-        ) {
-
-            event.preventDefault();
-
-            cerrarModalConfirmarCanje(
-                false
-            );
-
-            return;
-
-        }
-
-
-        const modal =
-            document.getElementById(
-                "modalCanjeProducto"
-            );
-
-        if (
-            modal &&
-            modal.style.display === "flex"
-        ) {
-
-            event.preventDefault();
-
-            cerrarModalCanje();
-
-        }
-
     }
 );
 
 
 /* =========================================================
-   CONFIRMAR PRODUCTO DE CANJE
+   30. CANJEAR DESDE MODAL
 ========================================================= */
 
-async function confirmarProductoCanje(
-    producto,
-    recompensa,
-    categoria,
-    puntosMaximos
-) {
+if (btnCanjearDesdeDetalle) {
+
+    btnCanjearDesdeDetalle.addEventListener(
+        "click",
+        async function () {
+
+            if (!productoSeleccionadoCanje) {
+                return;
+            }
+
+            if (btnCanjearDesdeDetalle.disabled) {
+                return;
+            }
+
+            const producto =
+                productoSeleccionadoCanje;
+
+            cerrarModalDetalle();
+
+            await confirmarProductoCanje(
+                producto
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   31. CONFIRMAR CANJE
+========================================================= */
+
+async function confirmarProductoCanje(producto) {
 
     if (!usuarioActual) {
 
         alert(
-            "Debes iniciar sesión para realizar un canje."
+            "Debes iniciar sesión para canjear productos."
         );
 
         return;
-
     }
 
     if (!producto) {
@@ -2897,134 +1604,176 @@ async function confirmarProductoCanje(
         );
 
         return;
-
     }
-
-    const nombreProducto =
-        producto.nombre ||
-        producto.nombre_producto ||
-        "Producto";
-
-    const precio =
-        obtenerPrecioProducto(
-            producto
-        );
-
-    const imagen =
-        obtenerImagenProducto(
-            producto
-        );
-
-    if (
-        !Number.isFinite(precio) ||
-        precio <= 0
-    ) {
-
-        alert(
-            "El precio del producto no es válido."
-        );
-
-        return;
-
-    }
-
-    if (
-        precio > puntosMaximos
-    ) {
-
-        alert(
-            `Este producto cuesta Q${precio.toLocaleString("es-GT")} y supera el límite de Q${puntosMaximos.toLocaleString("es-GT")}.`
-        );
-
-        return;
-
-    }
-
-
-    const puntosUtilizados =
-        Math.ceil(precio);
-
-
-    let puntosDisponiblesModal =
-        Number(
-            perfilActual?.["Puntos"] ??
-            0
-        );
-
-
-    if (
-        !Number.isFinite(
-            puntosDisponiblesModal
-        ) ||
-        puntosDisponiblesModal < 0
-    ) {
-
-        try {
-
-            const saldo =
-                await consultarPuntosCliente(
-                    usuarioActual.id
-                );
-
-            puntosDisponiblesModal =
-                saldo.puntos;
-
-        } catch (error) {
-
-            console.error(
-                "Error consultando puntos para el modal:",
-                error
-            );
-
-            puntosDisponiblesModal =
-                0;
-
-        }
-
-    }
-
-
-    const confirmacion =
-        await abrirModalConfirmarCanje(
-            producto,
-            puntosDisponiblesModal,
-            puntosUtilizados
-        );
-
-
-    if (!confirmacion) {
-
-        return;
-
-    }
-
 
     try {
 
+        /* =================================================
+           OBTENER PRODUCTO ACTUAL
+        ================================================= */
+
         const {
-            data: perfil,
+            data: productoActual,
+            error: errorProducto
+        } = await supabaseClient
+            .from("productos")
+            .select("*")
+            .eq("id", producto.id)
+            .maybeSingle();
+
+        console.log(
+            "PRODUCTO ENVIADO AL CANJE:",
+            producto
+        );
+
+        console.log(
+            "PRODUCTO ACTUAL EN SUPABASE:",
+            productoActual
+        );
+
+        console.log(
+            "ERROR CONSULTANDO PRODUCTO:",
+            errorProducto
+        );
+
+        if (errorProducto) {
+            throw errorProducto;
+        }
+
+        if (!productoActual) {
+
+            alert(
+                "El producto ya no existe."
+            );
+
+            await cargarCatalogoCanje();
+
+            return;
+        }
+
+
+        /* =================================================
+           VERIFICAR PRODUCTO ACTIVO
+        ================================================= */
+
+        if (productoActual.activo !== true) {
+
+            alert(
+                "Este producto ya no está disponible."
+            );
+
+            await cargarCatalogoCanje();
+
+            return;
+        }
+
+
+        /* =================================================
+           VERIFICAR STOCK
+        ================================================= */
+
+        const stockActual =
+            Number(
+                productoActual.stock ?? 0
+            );
+
+        console.log(
+            "STOCK ACTUAL:",
+            stockActual
+        );
+
+        if (
+            !Number.isFinite(stockActual) ||
+            stockActual <= 0
+        ) {
+
+            alert(
+                "Este producto está agotado."
+            );
+
+            await cargarCatalogoCanje();
+
+            return;
+        }
+
+
+        /* =================================================
+           OBTENER PRECIO
+        ================================================= */
+
+        const precio =
+            obtenerPrecioProducto(
+                productoActual
+            );
+
+        if (
+            !Number.isFinite(precio) ||
+            precio <= 0
+        ) {
+
+            alert(
+                "El producto no tiene un precio válido."
+            );
+
+            return;
+        }
+
+
+        /* =================================================
+           PUNTOS NECESARIOS
+        ================================================= */
+
+        const puntosUtilizados =
+            Math.ceil(precio);
+
+
+        /* =================================================
+           OBTENER PERFIL REAL
+        ================================================= */
+
+        const {
+            data: perfilReal,
             error: errorPerfil
-        } =
-            await supabaseClient
-                .from("perfiles")
-                .select('"Puntos"')
-                .eq(
-                    "id",
-                    usuarioActual.id
-                )
-                .single();
+        } = await supabaseClient
+            .from("perfiles")
+            .select("*")
+            .eq(
+                "id",
+                usuarioActual.id
+            )
+            .single();
 
         if (errorPerfil) {
-
             throw errorPerfil;
-
         }
 
         const puntosActuales =
             Number(
-                perfil?.["Puntos"] ??
+                perfilReal?.["Puntos"] ??
+                perfilReal?.puntos ??
                 0
             );
+
+        console.log(
+            "PUNTOS ACTUALES:",
+            puntosActuales
+        );
+
+        if (
+            !Number.isFinite(puntosActuales)
+        ) {
+
+            alert(
+                "No se pudieron consultar tus puntos."
+            );
+
+            return;
+        }
+
+
+        /* =================================================
+           VERIFICAR PUNTOS
+        ================================================= */
 
         if (
             puntosActuales <
@@ -3032,103 +1781,66 @@ async function confirmarProductoCanje(
         ) {
 
             alert(
-                `No tienes suficientes puntos. Tienes ${puntosActuales.toLocaleString("es-GT")} y necesitas ${puntosUtilizados.toLocaleString("es-GT")}.`
+                `No tienes suficientes puntos.\n\n` +
+                `Necesitas: ${puntosUtilizados}\n` +
+                `Tienes: ${puntosActuales}`
             );
 
             return;
-
         }
 
-        const puntosRestantes =
+
+        /* =================================================
+           INFORMACIÓN DEL PRODUCTO
+        ================================================= */
+
+        const nuevoSaldo =
             puntosActuales -
             puntosUtilizados;
 
+        const nombreProducto =
+            productoActual.nombre ||
+            "Producto";
 
-        const {
-            error: errorActualizacion
-        } =
-            await supabaseClient
-                .from("perfiles")
-                .update({
+        const categoria =
+            obtenerCategoriaProducto(
+                productoActual
+            ) ||
+            "Producto";
 
-                    "Puntos":
-                        puntosRestantes,
+        const descripcion =
+            productoActual.descripcion ||
+            "Sin descripción disponible.";
 
-                    actualizado_en:
-                        new Date().toISOString()
+        const imagenProducto =
+            obtenerImagenProducto(
+                productoActual
+            );
 
-                })
-                .eq(
-                    "id",
-                    usuarioActual.id
-                );
 
-        if (errorActualizacion) {
+        /* =================================================
+           CONFIRMAR CANJE
+        ================================================= */
 
-            throw errorActualizacion;
+        const confirmar =
+            window.confirm(
+                `¿Deseas canjear este producto?\n\n` +
+                `${nombreProducto}\n` +
+                `Categoría: ${categoria}\n` +
+                `Precio: Q${precio.toFixed(2)}\n` +
+                `Puntos necesarios: ${puntosUtilizados}\n` +
+                `Puntos actuales: ${puntosActuales}\n\n` +
+                `Después del canje tendrás: ${nuevoSaldo} puntos.`
+            );
 
+        if (!confirmar) {
+            return;
         }
 
 
-        const registroCanje = {
-
-            usuario_id:
-                usuarioActual.id,
-
-            recompensa:
-                nombreProducto,
-
-            puntos:
-                puntosUtilizados
-
-        };
-
-
-        const {
-            data: canjeInsertado,
-            error: errorCanje
-        } =
-            await supabaseClient
-                .from("canjes")
-                .insert(registroCanje)
-                .select()
-                .single();
-
-
-        if (errorCanje) {
-
-            const {
-                error: errorReversion
-            } =
-                await supabaseClient
-                    .from("perfiles")
-                    .update({
-
-                        "Puntos":
-                            puntosActuales,
-
-                        actualizado_en:
-                            new Date().toISOString()
-
-                    })
-                    .eq(
-                        "id",
-                        usuarioActual.id
-                    );
-
-            if (errorReversion) {
-
-                console.error(
-                    "No se pudieron restaurar los puntos:",
-                    errorReversion
-                );
-
-            }
-
-            throw errorCanje;
-
-        }
-
+        /* =================================================
+           PREPARAR TEXTO WHATSAPP
+        ================================================= */
 
         const codigo =
             "DL-" +
@@ -3137,27 +1849,354 @@ async function confirmarProductoCanje(
                 .substring(2, 8)
                 .toUpperCase();
 
+        const textoWhatsApp =
+            `🎁 CANJE DE PRODUCTO - DL LUXURY\n\n` +
 
-        const canjeLocal = {
+            `Hola, quiero realizar un canje utilizando mis puntos DL Luxury.\n\n` +
 
-            activo:
-                true,
+            `🛍️ PRODUCTO\n` +
+            `Nombre: ${nombreProducto}\n` +
+            `📂 Categoría: ${categoria}\n` +
+            `📝 Descripción: ${descripcion}\n\n` +
+
+            `💰 Precio normal: Q${precio.toFixed(2)}\n` +
+            `⭐ Puntos utilizados: ${puntosUtilizados}\n` +
+            `⭐ Puntos restantes: ${nuevoSaldo}\n\n` +
+
+            `🔑 Código de canje: ${codigo}\n\n` +
+
+            `📦 Este producto fue canjeado utilizando puntos DL Luxury.\n\n` +
+
+            (
+                imagenProducto
+                    ? `📸 Foto del producto:\n${imagenProducto}\n\n`
+                    : `📸 El producto no tiene una imagen disponible.\n\n`
+            ) +
+
+            `✅ Canje realizado correctamente.`;
+
+        const urlWhatsApp =
+            `https://wa.me/${NUMERO_WHATSAPP_CANJE}?text=${encodeURIComponent(
+                textoWhatsApp
+            )}`;
+
+        console.log(
+            "NÚMERO WHATSAPP:",
+            NUMERO_WHATSAPP_CANJE
+        );
+
+        console.log(
+            "URL WHATSAPP:",
+            urlWhatsApp
+        );
+
+
+        /* =================================================
+           DESCONTAR PUNTOS
+        ================================================= */
+
+        console.log(
+            "INTENTANDO DESCONTAR PUNTOS..."
+        );
+
+        const {
+            data: puntosActualizados,
+            error: errorPuntos
+        } = await supabaseClient
+            .from("perfiles")
+            .update({
+                "Puntos":
+                    nuevoSaldo
+            })
+            .eq(
+                "id",
+                usuarioActual.id
+            )
+            .eq(
+                "Puntos",
+                puntosActuales
+            )
+            .select("*")
+            .maybeSingle();
+
+        console.log(
+            "RESULTADO PUNTOS:",
+            puntosActualizados
+        );
+
+        console.log(
+            "ERROR PUNTOS:",
+            errorPuntos
+        );
+
+        if (errorPuntos) {
+            throw errorPuntos;
+        }
+
+        if (!puntosActualizados) {
+
+            alert(
+                "Tus puntos cambiaron o no se pudieron actualizar. " +
+                "Actualiza la página e inténtalo nuevamente."
+            );
+
+            return;
+        }
+
+
+        /* =================================================
+           DESCONTAR STOCK
+        ================================================= */
+
+        const nuevoStock =
+            Math.max(
+                0,
+                stockActual - 1
+            );
+
+        console.log(
+            "================================="
+        );
+
+        console.log(
+            "INTENTANDO ACTUALIZAR STOCK"
+        );
+
+        console.log(
+            "ID PRODUCTO:",
+            productoActual.id
+        );
+
+        console.log(
+            "STOCK ANTERIOR:",
+            stockActual
+        );
+
+        console.log(
+            "STOCK NUEVO:",
+            nuevoStock
+        );
+
+        console.log(
+            "================================="
+        );
+
+        const {
+            error: errorStock
+        } = await supabaseClient
+            .from("productos")
+            .update({
+                stock:
+                    nuevoStock
+            })
+            .eq(
+                "id",
+                productoActual.id
+            );
+
+        console.log(
+            "ERROR ACTUALIZANDO STOCK:",
+            errorStock
+        );
+
+
+        /* =================================================
+           SI FALLA EL STOCK
+        ================================================= */
+
+        if (errorStock) {
+
+            console.error(
+                "ERROR REAL DEL STOCK:",
+                errorStock
+            );
+
+            console.error(
+                "DETALLES ERROR STOCK:",
+                {
+                    message:
+                        errorStock.message,
+
+                    details:
+                        errorStock.details,
+
+                    hint:
+                        errorStock.hint,
+
+                    code:
+                        errorStock.code
+                }
+            );
+
+            const {
+                error:
+                errorRestaurarPuntos
+            } = await supabaseClient
+                .from("perfiles")
+                .update({
+                    "Puntos":
+                        puntosActuales
+                })
+                .eq(
+                    "id",
+                    usuarioActual.id
+                );
+
+            if (
+                errorRestaurarPuntos
+            ) {
+
+                console.error(
+                    "ERROR RESTAURANDO PUNTOS:",
+                    errorRestaurarPuntos
+                );
+            }
+
+            await cargarPerfil(
+                usuarioActual
+            );
+
+            alert(
+                "No se pudo actualizar el stock.\n\n" +
+                "Tus puntos fueron restaurados.\n\n" +
+                "Revisa la consola para conocer el error."
+            );
+
+            return;
+        }
+
+        console.log(
+            "STOCK ACTUALIZADO CORRECTAMENTE"
+        );
+
+
+        /* =================================================
+           REGISTRAR CANJE EN SUPABASE
+        ================================================= */
+
+        const {
+            data: canjeRegistrado,
+            error: errorCanje
+        } = await supabaseClient
+            .from("canjes")
+            .insert({
+                usuario_id:
+                    usuarioActual.id,
+
+                recompensa:
+                    nombreProducto,
+
+                puntos:
+                    puntosUtilizados
+            })
+            .select("*")
+            .maybeSingle();
+
+
+        /* =================================================
+           SI FALLA REGISTRO DEL CANJE
+        ================================================= */
+
+        if (
+            errorCanje ||
+            !canjeRegistrado
+        ) {
+
+            console.error(
+                "ERROR REGISTRANDO CANJE:",
+                errorCanje
+            );
+
+            const {
+                error:
+                errorRestaurarPuntos
+            } = await supabaseClient
+                .from("perfiles")
+                .update({
+                    "Puntos":
+                        puntosActuales
+                })
+                .eq(
+                    "id",
+                    usuarioActual.id
+                );
+
+            if (
+                errorRestaurarPuntos
+            ) {
+
+                console.error(
+                    "ERROR RESTAURANDO PUNTOS:",
+                    errorRestaurarPuntos
+                );
+            }
+
+            const {
+                error:
+                errorRestaurarStock
+            } = await supabaseClient
+                .from("productos")
+                .update({
+                    stock:
+                        stockActual
+                })
+                .eq(
+                    "id",
+                    productoActual.id
+                );
+
+            if (
+                errorRestaurarStock
+            ) {
+
+                console.error(
+                    "ERROR RESTAURANDO STOCK:",
+                    errorRestaurarStock
+                );
+            }
+
+            await cargarPerfil(
+                usuarioActual
+            );
+
+            alert(
+                "No se pudo registrar el canje. " +
+                "Se intentó restaurar tus puntos y el stock."
+            );
+
+            return;
+        }
+
+
+        /* =================================================
+           ACTUALIZAR PERFIL LOCAL
+        ================================================= */
+
+        perfilActual = {
+            ...perfilReal,
+            "Puntos":
+                nuevoSaldo
+        };
+
+
+        /* =================================================
+           GUARDAR CANJE LOCAL
+        ================================================= */
+
+        const datosCanje = {
 
             id:
-                canjeInsertado?.id ||
+                canjeRegistrado?.id ||
                 null,
 
             usuario_id:
                 usuarioActual.id,
 
+            producto_id:
+                productoActual.id,
+
             recompensa:
                 nombreProducto,
-
-            nombre:
-                nombreProducto,
-
-            producto_id:
-                producto.id,
 
             producto_nombre:
                 nombreProducto,
@@ -3166,13 +2205,13 @@ async function confirmarProductoCanje(
                 categoria,
 
             producto_categoria:
-                obtenerCategoriaProducto(
-                    producto
-                ) ||
                 categoria,
 
-            producto_imagen:
-                imagen,
+            descripcion:
+                descripcion,
+
+            precio:
+                precio,
 
             producto_precio:
                 precio,
@@ -3180,220 +2219,286 @@ async function confirmarProductoCanje(
             puntos:
                 puntosUtilizados,
 
-            puntos_maximos:
-                puntosMaximos,
-
             puntos_restantes:
-                puntosRestantes,
-
-            descuento:
-                0,
+                nuevoSaldo,
 
             codigo:
                 codigo,
 
+            imagen:
+                imagenProducto,
+
+            producto_imagen:
+                imagenProducto,
+
+            activo:
+                true,
+
             creado_en:
                 new Date().toISOString()
-
         };
 
-
-        let canjesGuardados = [];
-
-        try {
-
-            const existentes =
-                JSON.parse(
-                    localStorage.getItem(
-                        "dlLuxuryCanje"
-                    ) ||
-                    "[]"
-                );
-
-            if (
-                Array.isArray(
-                    existentes
-                )
-            ) {
-
-                canjesGuardados =
-                    existentes;
-
-            }
-
-        } catch (error) {
-
-            canjesGuardados =
-                [];
-
-        }
-
-
-        canjesGuardados.unshift(
-            canjeLocal
-        );
-
-
         localStorage.setItem(
-            "dlLuxuryCanje",
+            CLAVE_CANJE,
             JSON.stringify(
-                canjesGuardados
+                datosCanje
             )
         );
 
+        console.log(
+            "CANJE GUARDADO EN LOCALSTORAGE:",
+            datosCanje
+        );
 
-        if (perfilActual) {
 
-            perfilActual["Puntos"] =
-                puntosRestantes;
+        /* =================================================
+           ACTUALIZAR INTERFAZ
+        ================================================= */
 
-            perfilActual.actualizado_en =
-                new Date().toISOString();
+        actualizarInterfazUsuario();
 
+
+        /* =================================================
+           ACTUALIZAR PRODUCTO EN MEMORIA
+        ================================================= */
+
+        const indice =
+            productosCanje.findIndex(
+                item =>
+                    String(item.id) ===
+                    String(productoActual.id)
+            );
+
+        if (indice !== -1) {
+
+            productosCanje[indice] = {
+
+                ...productosCanje[indice],
+
+                stock:
+                    nuevoStock
+            };
         }
 
-        if (puntosUsuario) {
-
-            puntosUsuario.textContent =
-                puntosRestantes.toLocaleString(
-                    "es-GT"
-                );
-
-        }
-
-        actualizarBotonesCanje();
+        renderizarCatalogoCanje();
 
 
-        cerrarModalCanje();
-
+        /* =================================================
+           RECARGAR HISTORIAL
+        ================================================= */
 
         await cargarHistorialCanjes();
 
 
-        const mensajeWhatsApp =
-
-            `Hola, quiero utilizar mi canje de DL Luxury.\n\n` +
-
-            `🎁 CANJE DE PRODUCTO\n` +
-            `━━━━━━━━━━━━━━━━━━\n\n` +
-
-            `📦 Producto: ${nombreProducto}\n` +
-
-            `🏷️ Categoría: ${categoria}\n` +
-
-            `💰 Precio: Q${precio.toLocaleString(
-                "es-GT",
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            )}\n` +
-
-            `⭐ Puntos utilizados: ${puntosUtilizados.toLocaleString(
-                "es-GT"
-            )}\n` +
-
-            `⭐ Nivel máximo: ${puntosMaximos.toLocaleString(
-                "es-GT"
-            )}\n` +
-
-            `⭐ Puntos restantes: ${puntosRestantes.toLocaleString(
-                "es-GT"
-            )}\n` +
-
-            `🎟️ Código de canje: ${codigo}\n\n` +
-
-            `💳 FORMA DE PAGO: CANJE CON PUNTOS\n` +
-
-            `El producto será pagado/canjeado utilizando mis puntos de DL Luxury.\n` +
-
-            `No realizaré un pago en efectivo por este producto.\n\n` +
-
-            `📷 Foto del producto:\n` +
-
-            `${imagen || "Sin imagen disponible"}\n\n` +
-
-            `Quedo pendiente de la confirmación del canje.`;
-
-
-        const numeroWhatsApp =
-            "50257255468";
-
-
-        const urlWhatsApp =
-            "https://wa.me/" +
-            numeroWhatsApp +
-            "?text=" +
-            encodeURIComponent(
-                mensajeWhatsApp
-            );
-
+        /* =================================================
+           MENSAJE DE ÉXITO
+        ================================================= */
 
         alert(
-
             `¡Canje realizado correctamente!\n\n` +
 
             `Producto: ${nombreProducto}\n` +
 
             `Puntos utilizados: ${puntosUtilizados}\n` +
 
-            `Puntos restantes: ${puntosRestantes}\n\n` +
+            `Puntos restantes: ${nuevoSaldo}\n\n` +
 
-            `Código: ${codigo}`
+            `Código: ${codigo}\n\n` +
 
+            `Ahora se abrirá WhatsApp.`
         );
 
 
-        window.open(
-            urlWhatsApp,
-            "_blank"
+        /* =================================================
+           ABRIR WHATSAPP
+        ================================================= */
+
+        console.log(
+            "ABRIENDO WHATSAPP..."
         );
 
+        console.log(
+            "URL:",
+            urlWhatsApp
+        );
+
+        const ventanaWhatsApp =
+            window.open(
+                urlWhatsApp,
+                "_blank"
+            );
+
+        /*
+           Si el navegador bloquea la nueva pestaña,
+           usamos la misma ventana como respaldo.
+        */
+
+        if (!ventanaWhatsApp) {
+
+            console.warn(
+                "El navegador bloqueó la ventana de WhatsApp."
+            );
+
+            window.location.href =
+                urlWhatsApp;
+        }
+
+
+        console.log(
+            "CANJE REALIZADO:",
+            datosCanje
+        );
 
     } catch (error) {
 
         console.error(
-            "Error realizando canje:",
+            "ERROR REALIZANDO CANJE:",
             error
         );
 
-        alert(
-            error.message ||
-            "No se pudo completar el canje."
+        console.error(
+            "DETALLES:",
+            {
+                message:
+                    error?.message,
+
+                details:
+                    error?.details,
+
+                hint:
+                    error?.hint,
+
+                code:
+                    error?.code
+            }
         );
 
+        alert(
+            "Ocurrió un error al realizar el canje. " +
+            "Revisa la consola."
+        );
     }
-
 }
 
 
 /* =========================================================
-   HISTORIAL DE CANJES
+   32. ACTUALIZAR BOTONES SEGÚN PUNTOS
+========================================================= */
+
+function actualizarCatalogoSegunPuntos() {
+
+    if (!catalogoCanje) {
+        return;
+    }
+
+    if (!productosCanje.length) {
+        return;
+    }
+
+    const puntos =
+        Number(
+            perfilActual?.["Puntos"] ??
+            perfilActual?.puntos ??
+            0
+        );
+
+    const tarjetas =
+        catalogoCanje.querySelectorAll(
+            ".producto-canje-card"
+        );
+
+    tarjetas.forEach(
+        tarjeta => {
+
+            const producto =
+                encontrarProductoPorId(
+                    tarjeta.dataset.productoId
+                );
+
+            if (!producto) {
+                return;
+            }
+
+            const boton =
+                tarjeta.querySelector(
+                    ".btn-seleccionar-producto-canje"
+                );
+
+            if (!boton) {
+                return;
+            }
+
+            const stock =
+                Number(
+                    producto.stock ?? 0
+                );
+
+            const puntosProducto =
+                obtenerPuntosProducto(
+                    producto
+                );
+
+            const agotado =
+                !Number.isFinite(stock) ||
+                stock <= 0;
+
+            const sinPuntos =
+                puntos <
+                puntosProducto;
+
+            boton.disabled =
+                agotado ||
+                sinPuntos;
+
+            if (agotado) {
+
+                boton.innerHTML = `
+                    <i class="fa-solid fa-box-open"></i>
+                    Agotado
+                `;
+
+            } else if (sinPuntos) {
+
+                boton.innerHTML = `
+                    <i class="fa-solid fa-star"></i>
+                    Puntos insuficientes
+                `;
+
+            } else {
+
+                boton.innerHTML = `
+                    <i class="fa-solid fa-gift"></i>
+                    Canjear producto
+                `;
+            }
+        }
+    );
+}
+
+
+/* =========================================================
+   33. HISTORIAL
 ========================================================= */
 
 async function cargarHistorialCanjes() {
 
-    if (
-        !usuarioActual ||
-        !historialCanjes
-    ) {
+    if (!historialCanjes) {
+        return;
+    }
+
+    if (!usuarioActual) {
+
+        historialCanjes.innerHTML =
+            "";
 
         return;
-
     }
 
     historialCanjes.innerHTML = `
-
-        <div class="cargando-canjes">
-
+        <div class="historial-cargando">
             <i class="fa-solid fa-spinner fa-spin"></i>
-
-            <span>
-                Cargando historial...
-            </span>
-
+            <span>Cargando historial...</span>
         </div>
-
     `;
 
     try {
@@ -3401,126 +2506,55 @@ async function cargarHistorialCanjes() {
         const {
             data,
             error
-        } =
-            await supabaseClient
-                .from("canjes")
-                .select(`
-                    id,
-                    recompensa,
-                    puntos,
-                    creado_en
-                `)
-                .eq(
-                    "usuario_id",
-                    usuarioActual.id
-                )
-                .order(
-                    "creado_en",
-                    {
-                        ascending: false
-                    }
-                );
+        } = await supabaseClient
+            .from("canjes")
+            .select(
+                "id, recompensa, puntos, creado_en"
+            )
+            .eq(
+                "usuario_id",
+                usuarioActual.id
+            )
+            .order(
+                "creado_en",
+                {
+                    ascending: false
+                }
+            );
 
         if (error) {
-
             throw error;
-
         }
 
-        const canjes =
-            data || [];
-
-        if (!canjes.length) {
+        if (!data?.length) {
 
             historialCanjes.innerHTML = `
-
                 <div class="sin-historial">
 
                     <i class="fa-solid fa-gift"></i>
 
+                    <h3>
+                        Aún no tienes canjes
+                    </h3>
+
                     <p>
-                        Aún no tienes canjes realizados.
+                        Cuando realices tu primer
+                        canje aparecerá aquí.
                     </p>
 
                 </div>
-
             `;
 
             return;
-
         }
 
         historialCanjes.innerHTML =
-            canjes
+            data
                 .map(
-                    function (canje) {
-
-                        const fecha =
-                            canje.creado_en
-                                ? new Date(
-                                    canje.creado_en
-                                ).toLocaleString(
-                                    "es-GT",
-                                    {
-                                        dateStyle:
-                                            "medium",
-
-                                        timeStyle:
-                                            "short"
-                                    }
-                                )
-                                : "";
-
-                        const puntos =
-                            Number(
-                                canje.puntos ||
-                                0
-                            );
-
-                        return `
-
-                            <div class="historial-item">
-
-                                <div class="historial-icono">
-
-                                    <i class="fa-solid fa-gift"></i>
-
-                                </div>
-
-                                <div class="historial-info">
-
-                                    <h4>
-
-                                        ${escapeHTML(
-                            canje.recompensa ||
-                            "Canje"
-                        )}
-
-                                    </h4>
-
-                                    <span>
-
-                                        ${escapeHTML(
-                            fecha
-                        )}
-
-                                    </span>
-
-                                </div>
-
-                                <div class="historial-puntos">
-
-                                    -${puntos.toLocaleString(
-                            "es-GT"
-                        )} pts
-
-                                </div>
-
-                            </div>
-
-                        `;
-
-                    }
+                    canje =>
+                        crearItemHistorial(
+                            canje
+                        )
                 )
                 .join("");
 
@@ -3532,26 +2566,126 @@ async function cargarHistorialCanjes() {
         );
 
         historialCanjes.innerHTML = `
-
             <div class="sin-historial">
 
                 <i class="fa-solid fa-triangle-exclamation"></i>
 
+                <h3>
+                    No se pudo cargar el historial
+                </h3>
+
                 <p>
-                    No se pudo cargar el historial.
+                    Intenta actualizar la página.
                 </p>
 
             </div>
-
         `;
-
     }
-
 }
 
 
 /* =========================================================
-   CERRAR SESIÓN
+   34. ITEM HISTORIAL
+========================================================= */
+
+function crearItemHistorial(canje) {
+
+    const nombre =
+        canje.recompensa ||
+        "Producto";
+
+    const puntos =
+        Number(
+            canje.puntos ?? 0
+        );
+
+    const fecha =
+        formatearFecha(
+            canje.creado_en
+        );
+
+    return `
+        <div class="historial-canje">
+
+            <div class="historial-canje-icono">
+
+                <i class="fa-solid fa-gift"></i>
+
+            </div>
+
+            <div class="historial-canje-info">
+
+                <h3>
+                    ${escapeHTML(nombre)}
+                </h3>
+
+                <span>
+                    ${escapeHTML(fecha)}
+                </span>
+
+            </div>
+
+            <div class="historial-canje-puntos">
+
+                <strong>
+                    -${puntos}
+                </strong>
+
+                <span>
+                    puntos
+                </span>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   35. FORMATEAR FECHA
+========================================================= */
+
+function formatearFecha(fecha) {
+
+    if (!fecha) {
+        return "Fecha no disponible";
+    }
+
+    try {
+
+        const fechaObj =
+            new Date(fecha);
+
+        if (
+            Number.isNaN(
+                fechaObj.getTime()
+            )
+        ) {
+
+            return "Fecha no disponible";
+        }
+
+        return fechaObj.toLocaleString(
+            "es-GT",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+
+    } catch {
+
+        return "Fecha no disponible";
+    }
+}
+
+
+/* =========================================================
+   36. CERRAR SESIÓN
 ========================================================= */
 
 if (btnCerrarSesion) {
@@ -3566,46 +2700,34 @@ if (btnCerrarSesion) {
                 );
 
             if (!confirmar) {
-
                 return;
-
             }
 
             try {
 
                 const { error } =
-                    await supabaseClient.auth
+                    await supabaseClient
+                        .auth
                         .signOut();
 
                 if (error) {
-
                     throw error;
-
                 }
-
-                usuarioActual = null;
-
-                perfilActual = null;
 
                 mostrarFormularioLogin();
 
                 if (loginCorreo) {
-
                     loginCorreo.value = "";
-
                 }
 
                 if (loginPassword) {
-
                     loginPassword.value = "";
-
                 }
 
-                if (mensajeLogin) {
-
-                    mensajeLogin.textContent = "";
-
-                }
+                mostrarMensajeLogin(
+                    "Sesión cerrada correctamente.",
+                    "success"
+                );
 
             } catch (error) {
 
@@ -3617,723 +2739,139 @@ if (btnCerrarSesion) {
                 alert(
                     "No se pudo cerrar la sesión."
                 );
-
             }
-
         }
     );
-
 }
 
 
 /* =========================================================
-   CONTADOR DEL CARRITO
+   37. CONTADOR DEL CARRITO
 ========================================================= */
 
 function actualizarContadorCarrito() {
 
     if (!contadorCarrito) {
-
         return;
-
     }
 
     try {
 
-        const carrito =
-            JSON.parse(
-                localStorage.getItem(
-                    "dlLuxuryCarrito"
-                ) ||
-                "[]"
+        const carritoGuardado =
+            localStorage.getItem(
+                CLAVE_CARRITO
             );
 
-        if (
-            !Array.isArray(carrito)
-        ) {
+        if (!carritoGuardado) {
 
             contadorCarrito.textContent =
                 "0";
 
-            return;
+            contadorCarrito.style.display =
+                "none";
 
+            return;
         }
 
-        const cantidad =
-            carrito.reduce(
-                function (
-                    total,
-                    producto
-                ) {
-
-                    const cantidadProducto =
-                        Number(
-                            producto.cantidad ??
-                            producto.qty ??
-                            1
-                        );
-
-                    return (
-                        total +
-                        (
-                            Number.isFinite(
-                                cantidadProducto
-                            )
-                                ? cantidadProducto
-                                : 1
-                        )
-                    );
-
-                },
-                0
+        const carrito =
+            JSON.parse(
+                carritoGuardado
             );
 
+        if (!Array.isArray(carrito)) {
+
+            contadorCarrito.textContent =
+                "0";
+
+            contadorCarrito.style.display =
+                "none";
+
+            return;
+        }
+
+        let cantidadTotal = 0;
+
+        carrito.forEach(
+            item => {
+
+                const cantidad =
+                    Number(
+                        item?.cantidad ??
+                        item?.qty ??
+                        1
+                    );
+
+                if (
+                    Number.isFinite(cantidad) &&
+                    cantidad > 0
+                ) {
+
+                    cantidadTotal +=
+                        cantidad;
+                }
+            }
+        );
+
         contadorCarrito.textContent =
-            cantidad.toString();
+            cantidadTotal > 99
+                ? "99+"
+                : String(cantidadTotal);
+
+        contadorCarrito.style.display =
+            cantidadTotal > 0
+                ? ""
+                : "none";
 
     } catch (error) {
 
-        console.error(
-            "Error actualizando carrito:",
+        console.warn(
+            "Error leyendo carrito:",
             error
         );
 
         contadorCarrito.textContent =
             "0";
 
+        contadorCarrito.style.display =
+            "none";
     }
-
 }
 
 
 /* =========================================================
-   CATÁLOGO PRINCIPAL DE PRODUCTOS PARA CANJE
+   38. CAMBIOS DEL CARRITO
 ========================================================= */
 
-async function cargarCatalogoCanje() {
-
-    const catalogo =
-        document.getElementById(
-            "catalogoCanje"
-        );
-
-    if (!catalogo) {
-
-        console.warn(
-            "No existe #catalogoCanje"
-        );
-
-        return;
-
-    }
-
-    catalogo.innerHTML = `
-
-        <div class="productos-canje-cargando">
-
-            <i class="fa-solid fa-spinner fa-spin"></i>
-
-            <p>
-                Cargando productos...
-            </p>
-
-        </div>
-
-    `;
-
-    try {
-
-        await cargarCategorias();
-
-        const {
-            data: productos,
-            error
-        } =
-            await supabaseClient
-                .from("productos")
-                .select("*")
-                .eq("activo", true)
-                .order(
-                    "id",
-                    {
-                        ascending: false
-                    }
-                );
-
-        if (error) {
-
-            console.error(
-                "Error Supabase productos:",
-                error
-            );
-
-            throw error;
-
-        }
-
-        console.log(
-            "PRODUCTOS RECIBIDOS:",
-            productos
-        );
-
-
-        productosCatalogoCanje =
-            productos || [];
-
+window.addEventListener(
+    "storage",
+    function (e) {
 
         if (
-            !productos ||
-            productos.length === 0
+            e.key ===
+            CLAVE_CARRITO
         ) {
 
-            catalogo.innerHTML = `
-
-                <div class="productos-canje-vacio">
-
-                    <i class="fa-solid fa-box-open"></i>
-
-                    <p>
-                        No hay productos disponibles.
-                    </p>
-
-                </div>
-
-            `;
-
-            return;
-
+            actualizarContadorCarrito();
         }
-
-
-        catalogo.innerHTML =
-            productos
-                .map(
-                    function (producto) {
-
-                        const nombre =
-                            producto.nombre ||
-                            producto.nombre_producto ||
-                            "Producto";
-
-                        const precio =
-                            obtenerPrecioProducto(
-                                producto
-                            );
-
-                        const categoria =
-                            obtenerCategoriaProducto(
-                                producto
-                            ) ||
-                            "DL Luxury";
-
-                        const imagen =
-                            obtenerImagenProducto(
-                                producto
-                            );
-
-                        const puntosNecesarios =
-                            Math.ceil(
-                                precio
-                            );
-
-
-                        return `
-
-                            <article
-                                class="producto-canje-card"
-                                data-producto-id="${escapeHTML(
-                            producto.id
-                        )}"
-                                data-nombre="${escapeHTML(
-                            nombre
-                        )}"
-                                data-categoria="${escapeHTML(
-                            categoria
-                        )}"
-                                tabindex="0"
-                                role="button"
-                                aria-label="Ver detalles de ${escapeHTML(
-                            nombre
-                        )}"
-                            >
-
-                                <div class="producto-canje-foto">
-
-                                    ${imagen
-                                ? `
-                                        <img
-                                            src="${escapeHTML(imagen)}"
-                                            alt="${escapeHTML(nombre)}"
-                                            class="producto-canje-imagen"
-                                            loading="lazy"
-                                            onerror="
-                                                this.style.display='none';
-                                                this.parentElement
-                                                    .querySelector('.producto-canje-sin-imagen')
-                                                    .style.display='flex';
-                                            "
-                                        >
-
-                                        <div
-                                            class="producto-canje-sin-imagen"
-                                            style="display:none;"
-                                        >
-
-                                            <i class="fa-solid fa-image"></i>
-
-                                        </div>
-                                    `
-                                : `
-                                        <div
-                                            class="producto-canje-sin-imagen"
-                                            style="display:flex;"
-                                        >
-
-                                            <i class="fa-solid fa-image"></i>
-
-                                        </div>
-                                    `
-                            }
-
-                                </div>
-
-
-                                <div class="producto-canje-info">
-
-                                    <span class="producto-canje-categoria">
-
-                                        ${escapeHTML(
-                                categoria
-                            )}
-
-                                    </span>
-
-
-                                    <h3>
-
-                                        ${escapeHTML(
-                                nombre
-                            )}
-
-                                    </h3>
-
-
-                                    <p class="producto-canje-precio">
-
-                                        Q${precio.toLocaleString(
-                                "es-GT",
-                                {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                }
-                            )}
-
-                                    </p>
-
-
-                                    <small class="producto-canje-puntos">
-
-                                        Necesitas
-                                        ${puntosNecesarios.toLocaleString(
-                                "es-GT"
-                            )}
-                                        puntos
-
-                                    </small>
-
-
-                                    <button
-                                        type="button"
-                                        class="btn-seleccionar-producto-canje"
-                                        data-producto-id="${escapeHTML(
-                                producto.id
-                            )}"
-                                    >
-
-                                        <i class="fa-solid fa-gift"></i>
-
-                                        Canjear producto
-
-                                    </button>
-
-                                </div>
-
-                            </article>
-
-                        `;
-
-                    }
-                )
-                .join("");
-
-
-        prepararBotonesCatalogoCanje(
-            productos
-        );
-
-        aplicarFiltrosCatalogoCanje();
-
-    } catch (error) {
-
-        console.error(
-            "ERROR CARGANDO CATÁLOGO DE CANJE:",
-            error
-        );
-
-        productosCatalogoCanje =
-            [];
-
-        catalogo.innerHTML = `
-
-            <div class="productos-canje-vacio">
-
-                <i class="fa-solid fa-triangle-exclamation"></i>
-
-                <p>
-                    No se pudieron cargar los productos.
-                </p>
-
-                <small>
-
-                    ${escapeHTML(
-            error?.message ||
-            "Error desconocido al consultar productos."
-        )}
-
-                </small>
-
-            </div>
-
-        `;
-
     }
-
-}
+);
 
 
 /* =========================================================
-   BOTONES DEL CATÁLOGO PRINCIPAL
-========================================================= */
-
-function prepararBotonesCatalogoCanje(
-    productos
-) {
-
-    const botones =
-        document.querySelectorAll(
-            "#catalogoCanje .btn-seleccionar-producto-canje"
-        );
-
-
-    botones.forEach(
-        function (boton) {
-
-            if (
-                boton.dataset.eventoPreparado ===
-                "true"
-            ) {
-
-                return;
-
-            }
-
-
-            boton.dataset.eventoPreparado =
-                "true";
-
-
-            boton.addEventListener(
-                "click",
-                async function (event) {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-
-                    if (!usuarioActual) {
-
-                        alert(
-                            "Debes iniciar sesión para realizar un canje."
-                        );
-
-                        return;
-
-                    }
-
-
-                    const productoId =
-                        boton.dataset.productoId;
-
-
-                    const producto =
-                        productos.find(
-                            function (item) {
-
-                                return (
-                                    String(
-                                        item.id
-                                    ) ===
-                                    String(
-                                        productoId
-                                    )
-                                );
-
-                            }
-                        );
-
-
-                    if (!producto) {
-
-                        alert(
-                            "No se encontró el producto seleccionado."
-                        );
-
-                        return;
-
-                    }
-
-
-                    const precio =
-                        obtenerPrecioProducto(
-                            producto
-                        );
-
-
-                    if (
-                        !Number.isFinite(
-                            precio
-                        ) ||
-                        precio <= 0
-                    ) {
-
-                        alert(
-                            "El precio de este producto no es válido."
-                        );
-
-                        return;
-
-                    }
-
-
-                    const puntosNecesarios =
-                        Math.ceil(
-                            precio
-                        );
-
-
-                    try {
-
-                        const saldo =
-                            await consultarPuntosCliente(
-                                usuarioActual.id
-                            );
-
-
-                        if (
-                            saldo.puntos <
-                            puntosNecesarios
-                        ) {
-
-                            alert(
-
-                                `No tienes suficientes puntos.\n\n` +
-
-                                `Tienes: ${saldo.puntos.toLocaleString("es-GT")} puntos.\n\n` +
-
-                                `Necesitas: ${puntosNecesarios.toLocaleString("es-GT")} puntos.`
-
-                            );
-
-                            return;
-
-                        }
-
-
-                        const categoria =
-                            obtenerCategoriaProducto(
-                                producto
-                            ) ||
-                            "DL Luxury";
-
-
-                        await confirmarProductoCanje(
-
-                            producto,
-
-                            "Catálogo",
-
-                            categoria,
-
-                            saldo.puntos
-
-                        );
-
-                    } catch (error) {
-
-                        console.error(
-                            "Error preparando producto para canje:",
-                            error
-                        );
-
-                        alert(
-                            error.message ||
-                            "No se pudo preparar el canje."
-                        );
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   BUSCAR Y FILTRAR CATÁLOGO
-========================================================= */
-
-function aplicarFiltrosCatalogoCanje() {
-
-    const catalogo =
-        document.getElementById(
-            "catalogoCanje"
-        );
-
-    const buscador =
-        document.getElementById(
-            "buscarProductoCanje"
-        );
-
-    const filtro =
-        document.getElementById(
-            "filtroCategoriaCanje"
-        );
-
-
-    if (!catalogo) {
-
-        return;
-
-    }
-
-
-    const busqueda =
-        normalizarTexto(
-            buscador?.value || ""
-        );
-
-
-    const categoriaSeleccionada =
-        normalizarTexto(
-            filtro?.value || ""
-        );
-
-
-    const tarjetas =
-        catalogo.querySelectorAll(
-            ".producto-canje-card"
-        );
-
-
-    tarjetas.forEach(
-        function (tarjeta) {
-
-            const nombre =
-                normalizarTexto(
-                    tarjeta.dataset.nombre ||
-                    tarjeta.querySelector(
-                        "h3"
-                    )?.textContent ||
-                    ""
-                );
-
-
-            const categoria =
-                normalizarTexto(
-                    tarjeta.dataset.categoria ||
-                    tarjeta.querySelector(
-                        ".producto-canje-categoria"
-                    )?.textContent ||
-                    ""
-                );
-
-
-            const coincideBusqueda =
-                !busqueda ||
-                nombre.includes(
-                    busqueda
-                );
-
-
-            const coincideCategoria =
-                !categoriaSeleccionada ||
-                categoria ===
-                categoriaSeleccionada ||
-                categoria.includes(
-                    categoriaSeleccionada
-                );
-
-
-            tarjeta.style.display =
-                coincideBusqueda &&
-                    coincideCategoria
-                    ? ""
-                    : "none";
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   EVENTOS DEL BUSCADOR Y FILTRO
-========================================================= */
-
-const buscadorCatalogo =
-    document.getElementById(
-        "buscarProductoCanje"
-    );
-
-if (buscadorCatalogo) {
-
-    buscadorCatalogo.addEventListener(
-        "input",
-        aplicarFiltrosCatalogoCanje
-    );
-
-}
-
-
-const filtroCatalogo =
-    document.getElementById(
-        "filtroCategoriaCanje"
-    );
-
-if (filtroCatalogo) {
-
-    filtroCatalogo.addEventListener(
-        "change",
-        aplicarFiltrosCatalogoCanje
-    );
-
-}
-
-
-/* =========================================================
-   INICIAR TODO
+   39. INICIAR PERFIL
 ========================================================= */
 
 async function iniciarPerfil() {
 
+    console.log(
+        "INICIANDO PERFIL DL LUXURY..."
+    );
+
+    await cargarCategorias();
+
+    actualizarContadorCarrito();
+
     try {
-
-        await cargarCategorias();
-
 
         const {
             data,
@@ -4342,28 +2880,39 @@ async function iniciarPerfil() {
             await supabaseClient.auth
                 .getSession();
 
-
         if (error) {
 
-            throw error;
+            console.error(
+                "Error obteniendo sesión:",
+                error
+            );
 
+            mostrarFormularioLogin();
+
+            return;
         }
 
-
-        const sesion =
+        const session =
             data?.session;
 
+        if (session?.user) {
 
-        if (sesion?.user) {
+            console.log(
+                "SESIÓN ENCONTRADA:",
+                session.user.email
+            );
 
             await cargarPerfil(
-                sesion.user
+                session.user
             );
 
         } else {
 
-            mostrarFormularioLogin();
+            console.log(
+                "NO HAY SESIÓN ACTIVA"
+            );
 
+            mostrarFormularioLogin();
         }
 
     } catch (error) {
@@ -4374,30 +2923,24 @@ async function iniciarPerfil() {
         );
 
         mostrarFormularioLogin();
-
     }
-
-
-    actualizarContadorCarrito();
-
-    prepararBotonesCanje();
-
-    prepararModalDetalleProducto();
-
-    prepararClickProductosCatalogo();
-
 }
 
 
 /* =========================================================
-   CAMBIOS DE AUTENTICACIÓN
+   40. CAMBIOS DE AUTH
 ========================================================= */
 
 supabaseClient.auth.onAuthStateChange(
-    function (
+    async function (
         event,
         session
     ) {
+
+        console.log(
+            "CAMBIO AUTH:",
+            event
+        );
 
         if (
             session?.user &&
@@ -4408,62 +2951,58 @@ supabaseClient.auth.onAuthStateChange(
             )
         ) {
 
-            Promise
-                .resolve()
-                .then(
-                    function () {
-
-                        return cargarPerfil(
-                            session.user
-                        );
-
-                    }
-                );
+            await cargarPerfil(
+                session.user
+            );
 
         } else if (
             event === "SIGNED_OUT"
         ) {
 
             mostrarFormularioLogin();
-
         }
-
     }
 );
 
 
 /* =========================================================
-   CAMBIOS DEL CARRITO EN OTRAS PESTAÑAS
+   41. INICIAR
 ========================================================= */
 
-window.addEventListener(
-    "storage",
-    function (event) {
+if (
+    document.readyState ===
+    "loading"
+) {
 
-        if (
-            event.key ===
-            "dlLuxuryCarrito"
-        ) {
+    document.addEventListener(
+        "DOMContentLoaded",
+        iniciarPerfil
+    );
 
-            actualizarContadorCarrito();
+} else {
 
-        }
-
-    }
-);
+    iniciarPerfil();
+}
 
 
 /* =========================================================
-   CARGAR CATÁLOGO DESPUÉS DE INICIAR
+   42. FUNCIONES GLOBALES
 ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    async function () {
+window.abrirDetalleProducto =
+    abrirDetalleProducto;
 
-        await iniciarPerfil();
+window.cerrarModalDetalle =
+    cerrarModalDetalle;
 
-        await cargarCatalogoCanje();
+window.cargarCatalogoCanje =
+    cargarCatalogoCanje;
 
-    }
-);
+window.cargarHistorialCanjes =
+    cargarHistorialCanjes;
+
+window.confirmarProductoCanje =
+    confirmarProductoCanje;
+
+window.actualizarContadorCarrito =
+    actualizarContadorCarrito;
