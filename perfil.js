@@ -1,10 +1,11 @@
 /* =========================================================
    DL LUXURY
-   PERFIL + LOGIN + REGISTRO AUTOMÁTICO + PUNTOS + CANJE DE PRODUCTOS
+   PERFIL + LOGIN + REGISTRO AUTOMÁTICO + PUNTOS + CANJE
 
    FUNCIONES:
+
    - Inicio de sesión con Supabase
-   - Registro automático si el usuario no existe
+   - Registro automático
    - Perfil del usuario
    - Puntos
    - Catálogo completo de productos para canje
@@ -17,8 +18,31 @@
    - Imágenes desde Supabase Storage
    - Envío del canje por WhatsApp
 
-   REGLA:
-   1 punto = Q1
+   =========================================================
+   SISTEMA DE PUNTOS
+   =========================================================
+
+   LOS PUNTOS GANADOS SE OBTIENEN DESDE:
+
+       pedidos.puntos_generados
+
+   SOLAMENTE CUENTAN:
+
+       pedidos.puntos_validados = true
+
+   LOS PUNTOS UTILIZADOS SE OBTIENEN DESDE:
+
+       canjes.puntos
+
+   SALDO:
+
+       puntos ganados - puntos utilizados
+
+   IMPORTANTE:
+
+   - NO se utiliza perfiles.Puntos
+   - NO se modifica perfiles.Puntos
+   - perfiles solamente contiene los datos del usuario
 ========================================================= */
 
 
@@ -43,10 +67,14 @@ const supabaseClient =
    2. CONFIGURACIÓN
 ========================================================= */
 
-const CLAVE_CARRITO = "dlLuxuryCarrito";
-const CLAVE_CANJE = "dlLuxuryCanje";
+const CLAVE_CARRITO =
+    "dlLuxuryCarrito";
 
-const NUMERO_WHATSAPP_CANJE = "50257255468";
+const CLAVE_CANJE =
+    "dlLuxuryCanje";
+
+const NUMERO_WHATSAPP_CANJE =
+    "50257255468";
 
 
 /* =========================================================
@@ -54,10 +82,27 @@ const NUMERO_WHATSAPP_CANJE = "50257255468";
 ========================================================= */
 
 let usuarioActual = null;
+
 let perfilActual = null;
+
 let productosCanje = [];
+
 let productoSeleccionadoCanje = null;
+
 let mapaCategorias = new Map();
+
+/*
+   IMPORTANTE:
+
+   Este es el saldo REAL mostrado al usuario.
+
+   Ya NO sale de perfiles.Puntos.
+
+   Se calcula desde:
+
+   pedidos - canjes
+*/
+let puntosDisponiblesActuales = 0;
 
 
 /* =========================================================
@@ -230,7 +275,8 @@ function obtenerPrecioProducto(producto) {
         producto?.precioFinal ??
         0;
 
-    const numero = Number(precio);
+    const numero =
+        Number(precio);
 
     if (
         !Number.isFinite(numero) ||
@@ -244,13 +290,15 @@ function obtenerPrecioProducto(producto) {
 
 
 /* =========================================================
-   9. OBTENER PUNTOS
+   9. OBTENER PUNTOS DEL PRODUCTO
 ========================================================= */
 
 function obtenerPuntosProducto(producto) {
 
     const precio =
-        obtenerPrecioProducto(producto);
+        obtenerPrecioProducto(
+            producto
+        );
 
     return Math.ceil(precio);
 }
@@ -266,7 +314,8 @@ function obtenerUrlImagen(valor) {
         return "";
     }
 
-    let texto = String(valor).trim();
+    let texto =
+        String(valor).trim();
 
     if (!texto) {
         return "";
@@ -280,7 +329,11 @@ function obtenerUrlImagen(valor) {
         return texto;
     }
 
-    texto = texto.replace(/^\/+/, "");
+    texto =
+        texto.replace(
+            /^\/+/,
+            ""
+        );
 
     if (
         texto.startsWith(
@@ -296,7 +349,9 @@ function obtenerUrlImagen(valor) {
     }
 
     if (
-        texto.startsWith("productos/")
+        texto.startsWith(
+            "productos/"
+        )
     ) {
 
         texto =
@@ -332,7 +387,9 @@ function obtenerImagenProducto(producto) {
         producto.url_imagen ||
         "";
 
-    return obtenerUrlImagen(imagen);
+    return obtenerUrlImagen(
+        imagen
+    );
 }
 
 
@@ -347,9 +404,10 @@ async function cargarCategorias() {
         const {
             data,
             error
-        } = await supabaseClient
-            .from("categorias")
-            .select("*");
+        } =
+            await supabaseClient
+                .from("categorias")
+                .select("*");
 
         if (error) {
 
@@ -445,7 +503,242 @@ function mostrarMensajeLogin(
 
 
 /* =========================================================
-   15. CARGAR PERFIL
+   15. CARGAR PUNTOS DESDE PEDIDOS
+=========================================================
+
+   AQUÍ ESTÁ EL CAMBIO PRINCIPAL.
+
+   NO SE CONSULTA:
+
+       perfiles.Puntos
+
+   Se consultan:
+
+       pedidos.puntos_generados
+
+   solamente cuando:
+
+       pedidos.puntos_validados = true
+
+   y además:
+
+       pedidos.usuario_id = usuarioActual.id
+========================================================= */
+
+async function cargarPuntosUsuario() {
+
+    if (!usuarioActual) {
+
+        puntosDisponiblesActuales =
+            0;
+
+        return 0;
+    }
+
+    try {
+
+        console.log(
+            "===================================="
+        );
+
+        console.log(
+            "CALCULANDO PUNTOS DEL USUARIO"
+        );
+
+        console.log(
+            "USUARIO:",
+            usuarioActual.id
+        );
+
+
+        /* =====================================================
+           1. OBTENER PUNTOS GANADOS DESDE PEDIDOS
+        ===================================================== */
+
+        const {
+            data: pedidos,
+            error: errorPedidos
+        } =
+            await supabaseClient
+
+                .from("pedidos")
+
+                .select(
+                    "id, usuario_id, puntos_generados, puntos_validados"
+                )
+
+                .eq(
+                    "usuario_id",
+                    usuarioActual.id
+                )
+
+                .eq(
+                    "puntos_validados",
+                    true
+                );
+
+
+        if (errorPedidos) {
+
+            console.error(
+                "ERROR CONSULTANDO PUNTOS DE PEDIDOS:",
+                errorPedidos
+            );
+
+            throw errorPedidos;
+        }
+
+
+        let puntosGanados = 0;
+
+
+        (pedidos || []).forEach(
+            pedido => {
+
+                const puntos =
+                    Number(
+                        pedido?.puntos_generados
+                    ) || 0;
+
+                if (
+                    Number.isFinite(
+                        puntos
+                    ) &&
+                    puntos > 0
+                ) {
+
+                    puntosGanados +=
+                        puntos;
+                }
+            }
+        );
+
+
+        console.log(
+            "PEDIDOS CON PUNTOS:",
+            pedidos
+        );
+
+        console.log(
+            "PUNTOS GANADOS:",
+            puntosGanados
+        );
+
+
+        /* =====================================================
+           2. OBTENER PUNTOS UTILIZADOS EN CANJES
+        ===================================================== */
+
+        const {
+            data: canjes,
+            error: errorCanjes
+        } =
+            await supabaseClient
+
+                .from("canjes")
+
+                .select(
+                    "id, usuario_id, puntos"
+                )
+
+                .eq(
+                    "usuario_id",
+                    usuarioActual.id
+                );
+
+
+        if (errorCanjes) {
+
+            console.error(
+                "ERROR CONSULTANDO CANJES:",
+                errorCanjes
+            );
+
+            throw errorCanjes;
+        }
+
+
+        let puntosUtilizados = 0;
+
+
+        (canjes || []).forEach(
+            canje => {
+
+                const puntos =
+                    Number(
+                        canje?.puntos
+                    ) || 0;
+
+                if (
+                    Number.isFinite(
+                        puntos
+                    ) &&
+                    puntos > 0
+                ) {
+
+                    puntosUtilizados +=
+                        puntos;
+                }
+            }
+        );
+
+
+        console.log(
+            "CANJES DEL USUARIO:",
+            canjes
+        );
+
+        console.log(
+            "PUNTOS UTILIZADOS:",
+            puntosUtilizados
+        );
+
+
+        /* =====================================================
+           3. CALCULAR SALDO
+        ===================================================== */
+
+        const saldo =
+            Math.max(
+                0,
+                puntosGanados -
+                puntosUtilizados
+            );
+
+
+        puntosDisponiblesActuales =
+            saldo;
+
+
+        console.log(
+            "PUNTOS DISPONIBLES:",
+            puntosDisponiblesActuales
+        );
+
+        console.log(
+            "===================================="
+        );
+
+
+        return puntosDisponiblesActuales;
+
+    } catch (error) {
+
+        console.error(
+            "ERROR CALCULANDO PUNTOS:",
+            error
+        );
+
+        puntosDisponiblesActuales =
+            0;
+
+        return 0;
+    }
+}
+
+
+/* =========================================================
+   16. CARGAR PERFIL
 ========================================================= */
 
 async function cargarPerfil(user) {
@@ -454,66 +747,106 @@ async function cargarPerfil(user) {
         return;
     }
 
-    usuarioActual = user;
+    usuarioActual =
+        user;
 
     try {
 
         let {
             data: perfil,
             error
-        } = await supabaseClient
-            .from("perfiles")
-            .select("*")
-            .eq("id", user.id)
-            .maybeSingle();
+        } =
+            await supabaseClient
+                .from("perfiles")
+                .select("*")
+                .eq(
+                    "id",
+                    user.id
+                )
+                .maybeSingle();
+
 
         if (error) {
             throw error;
         }
 
+
+        /* =====================================================
+           CREAR PERFIL SI NO EXISTE
+        ===================================================== */
+
         if (!perfil) {
 
             const nuevoPerfil = {
 
-                id: user.id,
+                id:
+                    user.id,
 
-                nombre: "",
+                nombre:
+                    "",
 
-                apellido: "",
+                apellido:
+                    "",
 
-                rol: "cliente",
-
-                "Puntos": 0
+                rol:
+                    "cliente"
             };
+
 
             const {
                 data: perfilCreado,
                 error: errorCrear
-            } = await supabaseClient
-                .from("perfiles")
-                .insert(nuevoPerfil)
-                .select("*")
-                .single();
+            } =
+                await supabaseClient
+
+                    .from("perfiles")
+
+                    .insert(
+                        nuevoPerfil
+                    )
+
+                    .select("*")
+
+                    .single();
+
 
             if (errorCrear) {
                 throw errorCrear;
             }
 
+
             perfil =
                 perfilCreado;
         }
 
+
         perfilActual =
             perfil;
+
+
+        /* =====================================================
+           CARGAR PUNTOS DESDE PEDIDOS
+        ===================================================== */
+
+        await cargarPuntosUsuario();
+
 
         console.log(
             "PERFIL CARGADO:",
             perfilActual
         );
 
+        console.log(
+            "PUNTOS DISPONIBLES:",
+            puntosDisponiblesActuales
+        );
+
+
         actualizarInterfazUsuario();
 
+
         await cargarCatalogoCanje();
+
 
         await cargarHistorialCanjes();
 
@@ -533,7 +866,7 @@ async function cargarPerfil(user) {
 
 
 /* =========================================================
-   16. ACTUALIZAR INTERFAZ
+   17. ACTUALIZAR INTERFAZ
 ========================================================= */
 
 function actualizarInterfazUsuario() {
@@ -541,6 +874,7 @@ function actualizarInterfazUsuario() {
     if (!usuarioActual) {
         return;
     }
+
 
     const nombre = [
 
@@ -553,6 +887,7 @@ function actualizarInterfazUsuario() {
         .join(" ")
         .trim();
 
+
     if (usuarioNombre) {
 
         usuarioNombre.textContent =
@@ -561,56 +896,72 @@ function actualizarInterfazUsuario() {
             "Usuario";
     }
 
+
     if (usuarioCorreo) {
 
         usuarioCorreo.textContent =
             usuarioActual.email || "";
     }
 
+
+    /* =====================================================
+       PUNTOS
+
+       YA NO SE USA perfilActual.Puntos
+    ===================================================== */
+
     const puntos =
         Number(
-            perfilActual?.["Puntos"] ??
-            perfilActual?.puntos ??
-            0
-        );
+            puntosDisponiblesActuales
+        ) || 0;
+
 
     if (puntosUsuario) {
 
         puntosUsuario.textContent =
             Math.max(
                 0,
-                Number.isFinite(puntos)
-                    ? puntos
-                    : 0
+                puntos
             ).toLocaleString(
                 "es-GT"
             );
     }
 
+
     if (seccionLogin) {
+
         seccionLogin.style.display =
             "none";
     }
 
+
     if (seccionUsuario) {
+
         seccionUsuario.style.display =
             "";
     }
 
+
     if (seccionPuntos) {
+
         seccionPuntos.style.display =
             "";
     }
 
+
     if (seccionCanje) {
+
         seccionCanje.style.display =
             "";
     }
 
+
     if (seccionHistorial) {
+
         seccionHistorial.style.display =
             "";
     }
+
 
     if (estadoSesion) {
 
@@ -618,63 +969,102 @@ function actualizarInterfazUsuario() {
             "Sesión iniciada";
     }
 
+
     actualizarCatalogoSegunPuntos();
 }
 
 
 /* =========================================================
-   17. MOSTRAR LOGIN
+   18. MOSTRAR LOGIN
 ========================================================= */
 
 function mostrarFormularioLogin() {
 
-    usuarioActual = null;
+    usuarioActual =
+        null;
 
-    perfilActual = null;
+    perfilActual =
+        null;
 
-    productosCanje = [];
+    productosCanje =
+        [];
 
-    productoSeleccionadoCanje = null;
+    productoSeleccionadoCanje =
+        null;
+
+    puntosDisponiblesActuales =
+        0;
+
 
     if (seccionLogin) {
-        seccionLogin.style.display = "";
+
+        seccionLogin.style.display =
+            "";
     }
+
 
     if (seccionUsuario) {
-        seccionUsuario.style.display = "none";
+
+        seccionUsuario.style.display =
+            "none";
     }
+
 
     if (seccionPuntos) {
-        seccionPuntos.style.display = "none";
+
+        seccionPuntos.style.display =
+            "none";
     }
+
 
     if (seccionCanje) {
-        seccionCanje.style.display = "none";
+
+        seccionCanje.style.display =
+            "none";
     }
+
 
     if (seccionHistorial) {
-        seccionHistorial.style.display = "none";
+
+        seccionHistorial.style.display =
+            "none";
     }
+
 
     if (historialCanjes) {
-        historialCanjes.innerHTML = "";
+
+        historialCanjes.innerHTML =
+            "";
     }
+
 
     if (catalogoCanje) {
-        catalogoCanje.innerHTML = "";
+
+        catalogoCanje.innerHTML =
+            "";
     }
 
+
+    if (puntosUsuario) {
+
+        puntosUsuario.textContent =
+            "0";
+    }
+
+
     if (estadoSesion) {
+
         estadoSesion.textContent =
             "Inicia sesión";
     }
+
 
     cerrarModalDetalle();
 }
 
 
 /* =========================================================
-   18. LOGIN + REGISTRO AUTOMÁTICO
+   19. LOGIN + REGISTRO AUTOMÁTICO
 ========================================================= */
 
 if (formLogin) {
@@ -685,13 +1075,16 @@ if (formLogin) {
 
             e.preventDefault();
 
+
             const correo =
                 loginCorreo?.value
                     ?.trim()
                     .toLowerCase() || "";
 
+
             const password =
                 loginPassword?.value || "";
+
 
             if (
                 !correo ||
@@ -706,7 +1099,10 @@ if (formLogin) {
                 return;
             }
 
-            if (password.length < 6) {
+
+            if (
+                password.length < 6
+            ) {
 
                 mostrarMensajeLogin(
                     "La contraseña debe tener al menos 6 caracteres.",
@@ -716,9 +1112,11 @@ if (formLogin) {
                 return;
             }
 
+
             if (btnLogin) {
 
-                btnLogin.disabled = true;
+                btnLogin.disabled =
+                    true;
 
                 btnLogin.innerHTML = `
                     <i class="fa-solid fa-spinner fa-spin"></i>
@@ -726,12 +1124,17 @@ if (formLogin) {
                 `;
             }
 
-            mostrarMensajeLogin("", "");
+
+            mostrarMensajeLogin(
+                "",
+                ""
+            );
+
 
             try {
 
                 /* =================================================
-                   PRIMERO INTENTAR INICIAR SESIÓN
+                   INTENTAR LOGIN
                 ================================================= */
 
                 const {
@@ -740,43 +1143,55 @@ if (formLogin) {
                 } =
                     await supabaseClient.auth
                         .signInWithPassword({
-                            email: correo,
-                            password: password
+
+                            email:
+                                correo,
+
+                            password:
+                                password
+
                         });
 
+
                 /* =================================================
-                   SI EL LOGIN FUNCIONA
+                   LOGIN CORRECTO
                 ================================================= */
 
-                if (!loginError && loginData?.user) {
+                if (
+                    !loginError &&
+                    loginData?.user
+                ) {
 
                     console.log(
                         "LOGIN CORRECTO:",
                         loginData.user.email
                     );
 
+
                     mostrarMensajeLogin(
                         "Inicio de sesión correcto.",
                         "success"
                     );
 
+
                     await cargarPerfil(
                         loginData.user
                     );
+
 
                     return;
                 }
 
 
                 /* =================================================
-                   SI NO EXISTE / CREDENCIALES INVÁLIDAS
-                   INTENTAR CREAR CUENTA
+                   SI FALLÓ, INTENTAR REGISTRO
                 ================================================= */
 
                 console.log(
                     "La cuenta no pudo iniciar sesión.",
                     loginError
                 );
+
 
                 if (
                     loginError &&
@@ -796,10 +1211,6 @@ if (formLogin) {
                 }
 
 
-                /* =================================================
-                   REGISTRO AUTOMÁTICO
-                ================================================= */
-
                 if (btnLogin) {
 
                     btnLogin.innerHTML = `
@@ -808,20 +1219,22 @@ if (formLogin) {
                     `;
                 }
 
+
                 const {
                     data: registroData,
                     error: registroError
                 } =
                     await supabaseClient.auth
                         .signUp({
-                            email: correo,
-                            password: password
+
+                            email:
+                                correo,
+
+                            password:
+                                password
+
                         });
 
-
-                /* =================================================
-                   ERROR AL CREAR CUENTA
-                ================================================= */
 
                 if (registroError) {
 
@@ -830,10 +1243,12 @@ if (formLogin) {
                         registroError
                     );
 
+
                     const mensajeRegistro =
                         normalizarTexto(
                             registroError.message
                         );
+
 
                     if (
                         mensajeRegistro.includes(
@@ -862,12 +1277,9 @@ if (formLogin) {
                 }
 
 
-                /* =================================================
-                   USUARIO CREADO
-                ================================================= */
-
                 const nuevoUsuario =
                     registroData?.user;
+
 
                 if (!nuevoUsuario) {
 
@@ -879,15 +1291,12 @@ if (formLogin) {
                     return;
                 }
 
+
                 console.log(
                     "CUENTA CREADA:",
                     nuevoUsuario
                 );
 
-
-                /* =================================================
-                   SUPABASE PUEDE REQUERIR CONFIRMACIÓN
-                ================================================= */
 
                 if (
                     !registroData.session
@@ -902,18 +1311,16 @@ if (formLogin) {
                 }
 
 
-                /* =================================================
-                   CREAR / CARGAR PERFIL
-                ================================================= */
-
                 mostrarMensajeLogin(
                     "Cuenta creada correctamente. Bienvenido a DL Luxury.",
                     "success"
                 );
 
+
                 await cargarPerfil(
                     nuevoUsuario
                 );
+
 
             } catch (error) {
 
@@ -922,16 +1329,19 @@ if (formLogin) {
                     error
                 );
 
+
                 mostrarMensajeLogin(
                     "Ocurrió un error al iniciar sesión o crear la cuenta.",
                     "error"
                 );
 
+
             } finally {
 
                 if (btnLogin) {
 
-                    btnLogin.disabled = false;
+                    btnLogin.disabled =
+                        false;
 
                     btnLogin.innerHTML = `
                         <i class="fa-solid fa-right-to-bracket"></i>
@@ -945,7 +1355,7 @@ if (formLogin) {
 
 
 /* =========================================================
-   19. MOSTRAR / OCULTAR PASSWORD
+   20. MOSTRAR / OCULTAR PASSWORD
 ========================================================= */
 
 if (mostrarPassword) {
@@ -958,13 +1368,17 @@ if (mostrarPassword) {
                 return;
             }
 
+
             const mostrar =
-                loginPassword.type === "password";
+                loginPassword.type ===
+                "password";
+
 
             loginPassword.type =
                 mostrar
                     ? "text"
                     : "password";
+
 
             mostrarPassword.setAttribute(
                 "aria-label",
@@ -973,13 +1387,18 @@ if (mostrarPassword) {
                     : "Mostrar contraseña"
             );
 
+
             mostrarPassword.setAttribute(
                 "aria-pressed",
                 String(mostrar)
             );
 
+
             const icono =
-                mostrarPassword.querySelector("i");
+                mostrarPassword.querySelector(
+                    "i"
+                );
+
 
             if (icono) {
 
@@ -999,7 +1418,7 @@ if (mostrarPassword) {
 
 
 /* =========================================================
-   20. CARGAR CATÁLOGO
+   21. CARGAR CATÁLOGO
 ========================================================= */
 
 async function cargarCatalogoCanje() {
@@ -1008,6 +1427,7 @@ async function cargarCatalogoCanje() {
         return;
     }
 
+
     catalogoCanje.innerHTML = `
         <div class="productos-canje-cargando">
             <i class="fa-solid fa-spinner fa-spin"></i>
@@ -1015,35 +1435,52 @@ async function cargarCatalogoCanje() {
         </div>
     `;
 
+
     try {
 
         const {
             data,
             error
-        } = await supabaseClient
-            .from("productos")
-            .select("*")
-            .eq("activo", true)
-            .order("id", {
-                ascending: false
-            });
+        } =
+            await supabaseClient
+
+                .from("productos")
+
+                .select("*")
+
+                .eq(
+                    "activo",
+                    true
+                )
+
+                .order(
+                    "id",
+                    {
+                        ascending: false
+                    }
+                );
+
 
         if (error) {
             throw error;
         }
 
+
         productosCanje =
             data || [];
+
 
         console.log(
             "PRODUCTOS PARA CANJE:",
             productosCanje
         );
 
+
         if (!productosCanje.length) {
 
             catalogoCanje.innerHTML = `
                 <div class="sin-tickets">
+
                     <i class="fa-solid fa-box-open"></i>
 
                     <h3>
@@ -1054,13 +1491,16 @@ async function cargarCatalogoCanje() {
                         Actualmente no hay productos activos
                         para canjear.
                     </p>
+
                 </div>
             `;
 
             return;
         }
 
+
         renderizarCatalogoCanje();
+
 
     } catch (error) {
 
@@ -1069,8 +1509,10 @@ async function cargarCatalogoCanje() {
             error
         );
 
+
         catalogoCanje.innerHTML = `
             <div class="sin-tickets">
+
                 <i class="fa-solid fa-triangle-exclamation"></i>
 
                 <h3>
@@ -1080,6 +1522,7 @@ async function cargarCatalogoCanje() {
                 <p>
                     Intenta actualizar la página.
                 </p>
+
             </div>
         `;
     }
@@ -1087,7 +1530,7 @@ async function cargarCatalogoCanje() {
 
 
 /* =========================================================
-   21. RENDERIZAR CATÁLOGO
+   22. RENDERIZAR CATÁLOGO
 ========================================================= */
 
 function renderizarCatalogoCanje() {
@@ -1096,20 +1539,24 @@ function renderizarCatalogoCanje() {
         return;
     }
 
+
     catalogoCanje.innerHTML =
         productosCanje
             .map(
                 producto =>
-                    crearCardProductoCanje(producto)
+                    crearCardProductoCanje(
+                        producto
+                    )
             )
             .join("");
+
 
     agregarEventosCatalogo();
 }
 
 
 /* =========================================================
-   22. CREAR CARD
+   23. CREAR CARD
 ========================================================= */
 
 function crearCardProductoCanje(producto) {
@@ -1117,88 +1564,122 @@ function crearCardProductoCanje(producto) {
     const id =
         producto.id;
 
+
     const nombre =
         producto.nombre ||
         "Producto sin nombre";
+
 
     const descripcion =
         producto.descripcion ||
         "Sin descripción disponible.";
 
+
     const categoria =
-        obtenerCategoriaProducto(producto) ||
+        obtenerCategoriaProducto(
+            producto
+        ) ||
         "Producto";
 
+
     const precio =
-        obtenerPrecioProducto(producto);
+        obtenerPrecioProducto(
+            producto
+        );
+
 
     const puntos =
-        obtenerPuntosProducto(producto);
+        obtenerPuntosProducto(
+            producto
+        );
+
 
     const imagen =
-        obtenerImagenProducto(producto);
+        obtenerImagenProducto(
+            producto
+        );
+
 
     const stock =
-        Number(producto.stock ?? 0);
+        Number(
+            producto.stock ?? 0
+        );
+
 
     const agotado =
         !Number.isFinite(stock) ||
         stock <= 0;
 
+
     const puntosUsuarioActual =
         Number(
-            perfilActual?.["Puntos"] ??
-            perfilActual?.puntos ??
-            0
-        );
+            puntosDisponiblesActuales
+        ) || 0;
+
 
     const sinPuntos =
-        puntosUsuarioActual < puntos;
+        puntosUsuarioActual <
+        puntos;
 
-    let estadoClase = "";
-    let estadoTexto = "";
+
+    let estadoClase =
+        "";
+
+    let estadoTexto =
+        "";
+
 
     if (agotado) {
 
-        estadoClase = "agotado";
-        estadoTexto = "Agotado";
+        estadoClase =
+            "agotado";
+
+        estadoTexto =
+            "Agotado";
 
     } else if (sinPuntos) {
 
-        estadoClase = "sin-puntos";
-        estadoTexto = "Puntos insuficientes";
+        estadoClase =
+            "sin-puntos";
+
+        estadoTexto =
+            "Puntos insuficientes";
 
     } else {
 
-        estadoTexto = "Canjear producto";
+        estadoTexto =
+            "Canjear producto";
     }
 
-    const imagenHTML = imagen
-        ? `
-            <img
-                src="${escapeHTML(imagen)}"
-                alt="${escapeHTML(nombre)}"
-                loading="lazy"
-                onerror="
-                    this.style.display='none';
-                    this.nextElementSibling.style.display='flex';
-                "
-            >
 
-            <div
-                class="producto-canje-sin-imagen"
-                style="display:none;"
-            >
-                <i class="fa-solid fa-image"></i>
-                <span>Sin imagen</span>
-            </div>
-        `
-        : `
-            <div class="producto-canje-sin-imagen">
-                <i class="fa-solid fa-image"></i>
-                <span>Sin imagen</span>
-            </div>
-        `;
+    const imagenHTML =
+        imagen
+            ? `
+                <img
+                    src="${escapeHTML(imagen)}"
+                    alt="${escapeHTML(nombre)}"
+                    loading="lazy"
+                    onerror="
+                        this.style.display='none';
+                        this.nextElementSibling.style.display='flex';
+                    "
+                >
+
+                <div
+                    class="producto-canje-sin-imagen"
+                    style="display:none;"
+                >
+                    <i class="fa-solid fa-image"></i>
+                    <span>Sin imagen</span>
+                </div>
+            `
+            : `
+                <div class="producto-canje-sin-imagen">
+                    <i class="fa-solid fa-image"></i>
+                    <span>Sin imagen</span>
+                </div>
+            `;
+
 
     return `
         <article
@@ -1216,23 +1697,29 @@ function crearCardProductoCanje(producto) {
 
             </div>
 
+
             <div class="producto-canje-info">
 
                 <span class="producto-canje-categoria">
                     ${escapeHTML(categoria)}
                 </span>
 
+
                 <h3 class="producto-canje-nombre">
                     ${escapeHTML(nombre)}
                 </h3>
+
 
                 <p class="producto-canje-descripcion">
                     ${escapeHTML(descripcion)}
                 </p>
 
+
                 <div class="producto-canje-precio">
 
-                    <span>Precio</span>
+                    <span>
+                        Precio
+                    </span>
 
                     <strong>
                         Q${precio.toFixed(2)}
@@ -1240,24 +1727,31 @@ function crearCardProductoCanje(producto) {
 
                 </div>
 
+
                 <div class="producto-canje-puntos">
 
                     <i class="fa-solid fa-star"></i>
 
                     <span>
+
                         ${puntos}
+
                         ${puntos === 1
             ? "punto"
             : "puntos"}
+
                     </span>
 
                 </div>
+
 
                 <button
                     type="button"
                     class="btn-seleccionar-producto-canje"
                     data-producto-id="${escapeHTML(id)}"
-                    ${agotado || sinPuntos ? "disabled" : ""}
+                    ${agotado || sinPuntos
+            ? "disabled"
+            : ""}
                 >
 
                     <i class="fa-solid ${agotado
@@ -1279,7 +1773,7 @@ function crearCardProductoCanje(producto) {
 
 
 /* =========================================================
-   23. EVENTOS CATÁLOGO
+   24. EVENTOS CATÁLOGO
 ========================================================= */
 
 function agregarEventosCatalogo() {
@@ -1288,10 +1782,12 @@ function agregarEventosCatalogo() {
         return;
     }
 
+
     const tarjetas =
         catalogoCanje.querySelectorAll(
             ".producto-canje-card"
         );
+
 
     tarjetas.forEach(
         tarjeta => {
@@ -1303,16 +1799,20 @@ function agregarEventosCatalogo() {
                     const id =
                         tarjeta.dataset.productoId;
 
-                    abrirDetalleProducto(id);
+                    abrirDetalleProducto(
+                        id
+                    );
                 }
             );
         }
     );
 
+
     const botones =
         catalogoCanje.querySelectorAll(
             ".btn-seleccionar-producto-canje"
         );
+
 
     botones.forEach(
         boton => {
@@ -1323,19 +1823,26 @@ function agregarEventosCatalogo() {
 
                     e.stopPropagation();
 
+
                     if (boton.disabled) {
                         return;
                     }
 
+
                     const id =
                         boton.dataset.productoId;
 
+
                     const producto =
-                        encontrarProductoPorId(id);
+                        encontrarProductoPorId(
+                            id
+                        );
+
 
                     if (!producto) {
                         return;
                     }
+
 
                     await confirmarProductoCanje(
                         producto
@@ -1348,7 +1855,7 @@ function agregarEventosCatalogo() {
 
 
 /* =========================================================
-   24. BUSCAR PRODUCTO
+   25. BUSCAR PRODUCTO
 ========================================================= */
 
 function encontrarProductoPorId(id) {
@@ -1362,13 +1869,16 @@ function encontrarProductoPorId(id) {
 
 
 /* =========================================================
-   25. ABRIR DETALLE
+   26. ABRIR DETALLE
 ========================================================= */
 
 function abrirDetalleProducto(id) {
 
     const producto =
-        encontrarProductoPorId(id);
+        encontrarProductoPorId(
+            id
+        );
+
 
     if (!producto) {
 
@@ -1380,71 +1890,104 @@ function abrirDetalleProducto(id) {
         return;
     }
 
+
     productoSeleccionadoCanje =
         producto;
+
 
     const nombre =
         producto.nombre ||
         "Producto";
 
+
     const categoria =
-        obtenerCategoriaProducto(producto) ||
+        obtenerCategoriaProducto(
+            producto
+        ) ||
         "Producto";
+
 
     const descripcion =
         producto.descripcion ||
         "Sin descripción disponible.";
 
+
     const precio =
-        obtenerPrecioProducto(producto);
+        obtenerPrecioProducto(
+            producto
+        );
+
 
     const puntos =
-        obtenerPuntosProducto(producto);
+        obtenerPuntosProducto(
+            producto
+        );
+
 
     const imagen =
-        obtenerImagenProducto(producto);
+        obtenerImagenProducto(
+            producto
+        );
+
 
     const stock =
-        Number(producto.stock ?? 0);
+        Number(
+            producto.stock ?? 0
+        );
+
 
     const puntosActuales =
         Number(
-            perfilActual?.["Puntos"] ??
-            perfilActual?.puntos ??
-            0
-        );
+            puntosDisponiblesActuales
+        ) || 0;
+
 
     const agotado =
         !Number.isFinite(stock) ||
         stock <= 0;
 
+
     const sinPuntos =
-        puntosActuales < puntos;
+        puntosActuales <
+        puntos;
+
 
     if (detalleNombreProducto) {
+
         detalleNombreProducto.textContent =
             nombre;
     }
 
+
     if (detalleCategoriaProducto) {
+
         detalleCategoriaProducto.textContent =
             categoria;
     }
 
+
     if (detalleDescripcionProducto) {
+
         detalleDescripcionProducto.textContent =
             descripcion;
     }
 
+
     if (detallePrecioProducto) {
+
         detallePrecioProducto.textContent =
             `Q${precio.toFixed(2)}`;
     }
 
+
     if (detallePuntosProducto) {
+
         detallePuntosProducto.textContent =
-            puntos.toLocaleString("es-GT");
+            puntos.toLocaleString(
+                "es-GT"
+            );
     }
+
 
     if (detalleStockProducto) {
 
@@ -1463,6 +2006,7 @@ function abrirDetalleProducto(id) {
         }
     }
 
+
     if (detalleImagenProducto) {
 
         if (imagen) {
@@ -1476,16 +2020,20 @@ function abrirDetalleProducto(id) {
             detalleImagenProducto.style.display =
                 "block";
 
+
             if (detalleSinImagenProducto) {
+
                 detalleSinImagenProducto.style.display =
                     "none";
             }
+
 
             detalleImagenProducto.onerror =
                 function () {
 
                     this.style.display =
                         "none";
+
 
                     if (detalleSinImagenProducto) {
 
@@ -1496,10 +2044,12 @@ function abrirDetalleProducto(id) {
 
         } else {
 
-            detalleImagenProducto.src = "";
+            detalleImagenProducto.src =
+                "";
 
             detalleImagenProducto.style.display =
                 "none";
+
 
             if (detalleSinImagenProducto) {
 
@@ -1509,11 +2059,13 @@ function abrirDetalleProducto(id) {
         }
     }
 
+
     if (btnCanjearDesdeDetalle) {
 
         btnCanjearDesdeDetalle.disabled =
             agotado ||
             sinPuntos;
+
 
         if (agotado) {
 
@@ -1538,6 +2090,7 @@ function abrirDetalleProducto(id) {
         }
     }
 
+
     if (modalDetalleProducto) {
 
         modalDetalleProducto.classList.add(
@@ -1561,7 +2114,7 @@ function abrirDetalleProducto(id) {
 
 
 /* =========================================================
-   26. CERRAR MODAL
+   27. CERRAR MODAL
 ========================================================= */
 
 function cerrarModalDetalle() {
@@ -1569,6 +2122,7 @@ function cerrarModalDetalle() {
     if (!modalDetalleProducto) {
         return;
     }
+
 
     modalDetalleProducto.classList.remove(
         "modal-abierto"
@@ -1587,13 +2141,14 @@ function cerrarModalDetalle() {
         "modal-abierto"
     );
 
+
     productoSeleccionadoCanje =
         null;
 }
 
 
 /* =========================================================
-   27. BOTÓN CERRAR
+   28. BOTÓN CERRAR
 ========================================================= */
 
 if (cerrarModalDetalleProducto) {
@@ -1606,7 +2161,7 @@ if (cerrarModalDetalleProducto) {
 
 
 /* =========================================================
-   28. CLICK FUERA DEL MODAL
+   29. CLICK FUERA DEL MODAL
 ========================================================= */
 
 if (modalDetalleProducto) {
@@ -1628,7 +2183,7 @@ if (modalDetalleProducto) {
 
 
 /* =========================================================
-   29. ESC
+   30. ESC
 ========================================================= */
 
 document.addEventListener(
@@ -1649,7 +2204,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   30. CANJEAR DESDE MODAL
+   31. CANJEAR DESDE MODAL
 ========================================================= */
 
 if (btnCanjearDesdeDetalle) {
@@ -1662,14 +2217,20 @@ if (btnCanjearDesdeDetalle) {
                 return;
             }
 
-            if (btnCanjearDesdeDetalle.disabled) {
+
+            if (
+                btnCanjearDesdeDetalle.disabled
+            ) {
                 return;
             }
+
 
             const producto =
                 productoSeleccionadoCanje;
 
+
             cerrarModalDetalle();
+
 
             await confirmarProductoCanje(
                 producto
@@ -1680,10 +2241,12 @@ if (btnCanjearDesdeDetalle) {
 
 
 /* =========================================================
-   31. CONFIRMAR CANJE
+   32. CONFIRMAR CANJE
 ========================================================= */
 
-async function confirmarProductoCanje(producto) {
+async function confirmarProductoCanje(
+    producto
+) {
 
     if (!usuarioActual) {
 
@@ -1694,6 +2257,7 @@ async function confirmarProductoCanje(producto) {
         return;
     }
 
+
     if (!producto) {
 
         alert(
@@ -1703,16 +2267,40 @@ async function confirmarProductoCanje(producto) {
         return;
     }
 
+
     try {
+
+        /* =================================================
+           1. ACTUALIZAR PUNTOS ANTES DEL CANJE
+        ================================================= */
+
+        await cargarPuntosUsuario();
+
+
+        actualizarInterfazUsuario();
+
+
+        /* =================================================
+           2. CONSULTAR PRODUCTO ACTUAL
+        ================================================= */
 
         const {
             data: productoActual,
             error: errorProducto
-        } = await supabaseClient
-            .from("productos")
-            .select("*")
-            .eq("id", producto.id)
-            .maybeSingle();
+        } =
+            await supabaseClient
+
+                .from("productos")
+
+                .select("*")
+
+                .eq(
+                    "id",
+                    producto.id
+                )
+
+                .maybeSingle();
+
 
         console.log(
             "PRODUCTO ENVIADO AL CANJE:",
@@ -1729,9 +2317,11 @@ async function confirmarProductoCanje(producto) {
             errorProducto
         );
 
+
         if (errorProducto) {
             throw errorProducto;
         }
+
 
         if (!productoActual) {
 
@@ -1744,7 +2334,11 @@ async function confirmarProductoCanje(producto) {
             return;
         }
 
-        if (productoActual.activo !== true) {
+
+        if (
+            productoActual.activo !==
+            true
+        ) {
 
             alert(
                 "Este producto ya no está disponible."
@@ -1755,15 +2349,22 @@ async function confirmarProductoCanje(producto) {
             return;
         }
 
+
+        /* =================================================
+           3. STOCK
+        ================================================= */
+
         const stockActual =
             Number(
                 productoActual.stock ?? 0
             );
 
+
         console.log(
             "STOCK ACTUAL:",
             stockActual
         );
+
 
         if (
             !Number.isFinite(stockActual) ||
@@ -1779,10 +2380,16 @@ async function confirmarProductoCanje(producto) {
             return;
         }
 
+
+        /* =================================================
+           4. PRECIO
+        ================================================= */
+
         const precio =
             obtenerPrecioProducto(
                 productoActual
             );
+
 
         if (
             !Number.isFinite(precio) ||
@@ -1796,39 +2403,37 @@ async function confirmarProductoCanje(producto) {
             return;
         }
 
+
+        /* =================================================
+           5. PUNTOS NECESARIOS
+        ================================================= */
+
         const puntosUtilizados =
             Math.ceil(precio);
 
-        const {
-            data: perfilReal,
-            error: errorPerfil
-        } = await supabaseClient
-            .from("perfiles")
-            .select("*")
-            .eq(
-                "id",
-                usuarioActual.id
-            )
-            .single();
 
-        if (errorPerfil) {
-            throw errorPerfil;
-        }
+        /* =================================================
+           6. PUNTOS DISPONIBLES
+
+           SE OBTIENEN DE PEDIDOS - CANJES
+        ================================================= */
 
         const puntosActuales =
             Number(
-                perfilReal?.["Puntos"] ??
-                perfilReal?.puntos ??
-                0
-            );
+                puntosDisponiblesActuales
+            ) || 0;
+
 
         console.log(
-            "PUNTOS ACTUALES:",
+            "PUNTOS DISPONIBLES:",
             puntosActuales
         );
 
+
         if (
-            !Number.isFinite(puntosActuales)
+            !Number.isFinite(
+                puntosActuales
+            )
         ) {
 
             alert(
@@ -1837,6 +2442,7 @@ async function confirmarProductoCanje(producto) {
 
             return;
         }
+
 
         if (
             puntosActuales <
@@ -1852,13 +2458,20 @@ async function confirmarProductoCanje(producto) {
             return;
         }
 
+
         const nuevoSaldo =
             puntosActuales -
             puntosUtilizados;
 
+
+        /* =================================================
+           7. DATOS DEL PRODUCTO
+        ================================================= */
+
         const nombreProducto =
             productoActual.nombre ||
             "Producto";
+
 
         const categoria =
             obtenerCategoriaProducto(
@@ -1866,29 +2479,49 @@ async function confirmarProductoCanje(producto) {
             ) ||
             "Producto";
 
+
         const descripcion =
             productoActual.descripcion ||
             "Sin descripción disponible.";
+
 
         const imagenProducto =
             obtenerImagenProducto(
                 productoActual
             );
 
+
+        /* =================================================
+           8. CONFIRMAR CANJE
+        ================================================= */
+
         const confirmar =
             window.confirm(
+
                 `¿Deseas canjear este producto?\n\n` +
+
                 `${nombreProducto}\n` +
+
                 `Categoría: ${categoria}\n` +
+
                 `Precio: Q${precio.toFixed(2)}\n` +
+
                 `Puntos necesarios: ${puntosUtilizados}\n` +
+
                 `Puntos actuales: ${puntosActuales}\n\n` +
+
                 `Después del canje tendrás: ${nuevoSaldo} puntos.`
             );
+
 
         if (!confirmar) {
             return;
         }
+
+
+        /* =================================================
+           9. CÓDIGO
+        ================================================= */
 
         const codigo =
             "DL-" +
@@ -1897,18 +2530,29 @@ async function confirmarProductoCanje(producto) {
                 .substring(2, 8)
                 .toUpperCase();
 
+
+        /* =================================================
+           10. WHATSAPP
+        ================================================= */
+
         const textoWhatsApp =
+
             `🎁 CANJE DE PRODUCTO - DL LUXURY\n\n` +
 
             `Hola, quiero realizar un canje utilizando mis puntos DL Luxury.\n\n` +
 
             `🛍️ PRODUCTO\n` +
+
             `Nombre: ${nombreProducto}\n` +
+
             `📂 Categoría: ${categoria}\n` +
+
             `📝 Descripción: ${descripcion}\n\n` +
 
             `💰 Precio normal: Q${precio.toFixed(2)}\n` +
+
             `⭐ Puntos utilizados: ${puntosUtilizados}\n` +
+
             `⭐ Puntos restantes: ${nuevoSaldo}\n\n` +
 
             `🔑 Código de canje: ${codigo}\n\n` +
@@ -1923,10 +2567,12 @@ async function confirmarProductoCanje(producto) {
 
             `✅ Canje realizado correctamente.`;
 
+
         const urlWhatsApp =
             `https://wa.me/${NUMERO_WHATSAPP_CANJE}?text=${encodeURIComponent(
                 textoWhatsApp
             )}`;
+
 
         console.log(
             "NÚMERO WHATSAPP:",
@@ -1938,59 +2584,23 @@ async function confirmarProductoCanje(producto) {
             urlWhatsApp
         );
 
-        console.log(
-            "INTENTANDO DESCONTAR PUNTOS..."
-        );
 
-        const {
-            data: puntosActualizados,
-            error: errorPuntos
-        } = await supabaseClient
-            .from("perfiles")
-            .update({
-                "Puntos":
-                    nuevoSaldo
-            })
-            .eq(
-                "id",
-                usuarioActual.id
-            )
-            .eq(
-                "Puntos",
-                puntosActuales
-            )
-            .select("*")
-            .maybeSingle();
+        /* =================================================
+           11. ACTUALIZAR STOCK
+           
+           IMPORTANTE:
 
-        console.log(
-            "RESULTADO PUNTOS:",
-            puntosActualizados
-        );
+           Ya NO se descuentan puntos de perfiles.
 
-        console.log(
-            "ERROR PUNTOS:",
-            errorPuntos
-        );
-
-        if (errorPuntos) {
-            throw errorPuntos;
-        }
-
-        if (!puntosActualizados) {
-
-            alert(
-                "Tus puntos cambiaron o no se pudieron actualizar. " +
-                "Actualiza la página e inténtalo nuevamente."
-            );
-
-            return;
-        }
+           El gasto se registra en canjes.
+        ================================================= */
 
         const nuevoStock =
             Math.max(
                 0,
                 stockActual - 1
             );
+
 
         console.log(
             "================================="
@@ -2019,23 +2629,32 @@ async function confirmarProductoCanje(producto) {
             "================================="
         );
 
+
         const {
             error: errorStock
-        } = await supabaseClient
-            .from("productos")
-            .update({
-                stock:
-                    nuevoStock
-            })
-            .eq(
-                "id",
-                productoActual.id
-            );
+        } =
+            await supabaseClient
+
+                .from("productos")
+
+                .update({
+
+                    stock:
+                        nuevoStock
+
+                })
+
+                .eq(
+                    "id",
+                    productoActual.id
+                );
+
 
         console.log(
             "ERROR ACTUALIZANDO STOCK:",
             errorStock
         );
+
 
         if (errorStock) {
 
@@ -2044,9 +2663,11 @@ async function confirmarProductoCanje(producto) {
                 errorStock
             );
 
+
             console.error(
                 "DETALLES ERROR STOCK:",
                 {
+
                     message:
                         errorStock.message,
 
@@ -2058,67 +2679,60 @@ async function confirmarProductoCanje(producto) {
 
                     code:
                         errorStock.code
+
                 }
             );
 
-            const {
-                error:
-                errorRestaurarPuntos
-            } = await supabaseClient
-                .from("perfiles")
-                .update({
-                    "Puntos":
-                        puntosActuales
-                })
-                .eq(
-                    "id",
-                    usuarioActual.id
-                );
-
-            if (
-                errorRestaurarPuntos
-            ) {
-
-                console.error(
-                    "ERROR RESTAURANDO PUNTOS:",
-                    errorRestaurarPuntos
-                );
-            }
-
-            await cargarPerfil(
-                usuarioActual
-            );
 
             alert(
                 "No se pudo actualizar el stock.\n\n" +
-                "Tus puntos fueron restaurados.\n\n" +
-                "Revisa la consola para conocer el error."
+                "No se descontaron puntos."
             );
+
 
             return;
         }
+
 
         console.log(
             "STOCK ACTUALIZADO CORRECTAMENTE"
         );
 
+
+        /* =================================================
+           12. REGISTRAR CANJE
+
+           AQUÍ SE DESCUENTAN LOS PUNTOS
+           DE FORMA LÓGICA.
+
+           No modificamos perfiles.
+        ================================================= */
+
         const {
             data: canjeRegistrado,
             error: errorCanje
-        } = await supabaseClient
-            .from("canjes")
-            .insert({
-                usuario_id:
-                    usuarioActual.id,
+        } =
+            await supabaseClient
 
-                recompensa:
-                    nombreProducto,
+                .from("canjes")
 
-                puntos:
-                    puntosUtilizados
-            })
-            .select("*")
-            .maybeSingle();
+                .insert({
+
+                    usuario_id:
+                        usuarioActual.id,
+
+                    recompensa:
+                        nombreProducto,
+
+                    puntos:
+                        puntosUtilizados
+
+                })
+
+                .select("*")
+
+                .maybeSingle();
+
 
         if (
             errorCanje ||
@@ -2130,43 +2744,31 @@ async function confirmarProductoCanje(producto) {
                 errorCanje
             );
 
-            const {
-                error:
-                errorRestaurarPuntos
-            } = await supabaseClient
-                .from("perfiles")
-                .update({
-                    "Puntos":
-                        puntosActuales
-                })
-                .eq(
-                    "id",
-                    usuarioActual.id
-                );
 
-            if (
-                errorRestaurarPuntos
-            ) {
-
-                console.error(
-                    "ERROR RESTAURANDO PUNTOS:",
-                    errorRestaurarPuntos
-                );
-            }
+            /* =============================================
+               RESTAURAR STOCK
+            ============================================= */
 
             const {
                 error:
                 errorRestaurarStock
-            } = await supabaseClient
-                .from("productos")
-                .update({
-                    stock:
-                        stockActual
-                })
-                .eq(
-                    "id",
-                    productoActual.id
-                );
+            } =
+                await supabaseClient
+
+                    .from("productos")
+
+                    .update({
+
+                        stock:
+                            stockActual
+
+                    })
+
+                    .eq(
+                        "id",
+                        productoActual.id
+                    );
+
 
             if (
                 errorRestaurarStock
@@ -2178,23 +2780,29 @@ async function confirmarProductoCanje(producto) {
                 );
             }
 
-            await cargarPerfil(
-                usuarioActual
-            );
 
             alert(
-                "No se pudo registrar el canje. " +
-                "Se intentó restaurar tus puntos y el stock."
+                "No se pudo registrar el canje.\n\n" +
+                "El stock fue restaurado."
             );
+
 
             return;
         }
 
-        perfilActual = {
-            ...perfilReal,
-            "Puntos":
-                nuevoSaldo
-        };
+
+        /* =================================================
+           13. RECALCULAR PUNTOS
+
+           Ahora canjes ya contiene el gasto.
+        ================================================= */
+
+        await cargarPuntosUsuario();
+
+
+        /* =================================================
+           14. DATOS DEL CANJE
+        ================================================= */
 
         const datosCanje = {
 
@@ -2233,7 +2841,7 @@ async function confirmarProductoCanje(producto) {
                 puntosUtilizados,
 
             puntos_restantes:
-                nuevoSaldo,
+                puntosDisponiblesActuales,
 
             codigo:
                 codigo,
@@ -2249,7 +2857,9 @@ async function confirmarProductoCanje(producto) {
 
             creado_en:
                 new Date().toISOString()
+
         };
+
 
         localStorage.setItem(
             CLAVE_CANJE,
@@ -2258,21 +2868,37 @@ async function confirmarProductoCanje(producto) {
             )
         );
 
+
         console.log(
             "CANJE GUARDADO EN LOCALSTORAGE:",
             datosCanje
         );
 
+
+        /* =================================================
+           15. ACTUALIZAR INTERFAZ
+        ================================================= */
+
         actualizarInterfazUsuario();
+
+
+        /* =================================================
+           16. ACTUALIZAR PRODUCTO LOCAL
+        ================================================= */
 
         const indice =
             productosCanje.findIndex(
                 item =>
                     String(item.id) ===
-                    String(productoActual.id)
+                    String(
+                        productoActual.id
+                    )
             );
 
-        if (indice !== -1) {
+
+        if (
+            indice !== -1
+        ) {
 
             productosCanje[indice] = {
 
@@ -2283,23 +2909,41 @@ async function confirmarProductoCanje(producto) {
             };
         }
 
+
         renderizarCatalogoCanje();
+
+
+        /* =================================================
+           17. HISTORIAL
+        ================================================= */
 
         await cargarHistorialCanjes();
 
+
+        /* =================================================
+           18. MENSAJE FINAL
+        ================================================= */
+
         alert(
+
             `¡Canje realizado correctamente!\n\n` +
 
             `Producto: ${nombreProducto}\n` +
 
             `Puntos utilizados: ${puntosUtilizados}\n` +
 
-            `Puntos restantes: ${nuevoSaldo}\n\n` +
+            `Puntos restantes: ${puntosDisponiblesActuales}\n\n` +
 
             `Código: ${codigo}\n\n` +
 
             `Ahora se abrirá WhatsApp.`
+
         );
+
+
+        /* =================================================
+           19. WHATSAPP
+        ================================================= */
 
         console.log(
             "ABRIENDO WHATSAPP..."
@@ -2310,11 +2954,13 @@ async function confirmarProductoCanje(producto) {
             urlWhatsApp
         );
 
+
         const ventanaWhatsApp =
             window.open(
                 urlWhatsApp,
                 "_blank"
             );
+
 
         if (!ventanaWhatsApp) {
 
@@ -2322,14 +2968,17 @@ async function confirmarProductoCanje(producto) {
                 "El navegador bloqueó la ventana de WhatsApp."
             );
 
+
             window.location.href =
                 urlWhatsApp;
         }
+
 
         console.log(
             "CANJE REALIZADO:",
             datosCanje
         );
+
 
     } catch (error) {
 
@@ -2338,9 +2987,11 @@ async function confirmarProductoCanje(producto) {
             error
         );
 
+
         console.error(
             "DETALLES:",
             {
+
                 message:
                     error?.message,
 
@@ -2352,8 +3003,10 @@ async function confirmarProductoCanje(producto) {
 
                 code:
                     error?.code
+
             }
         );
+
 
         alert(
             "Ocurrió un error al realizar el canje. " +
@@ -2364,7 +3017,7 @@ async function confirmarProductoCanje(producto) {
 
 
 /* =========================================================
-   32. ACTUALIZAR BOTONES SEGÚN PUNTOS
+   33. ACTUALIZAR BOTONES SEGÚN PUNTOS
 ========================================================= */
 
 function actualizarCatalogoSegunPuntos() {
@@ -2373,21 +3026,23 @@ function actualizarCatalogoSegunPuntos() {
         return;
     }
 
+
     if (!productosCanje.length) {
         return;
     }
 
+
     const puntos =
         Number(
-            perfilActual?.["Puntos"] ??
-            perfilActual?.puntos ??
-            0
-        );
+            puntosDisponiblesActuales
+        ) || 0;
+
 
     const tarjetas =
         catalogoCanje.querySelectorAll(
             ".producto-canje-card"
         );
+
 
     tarjetas.forEach(
         tarjeta => {
@@ -2397,40 +3052,49 @@ function actualizarCatalogoSegunPuntos() {
                     tarjeta.dataset.productoId
                 );
 
+
             if (!producto) {
                 return;
             }
+
 
             const boton =
                 tarjeta.querySelector(
                     ".btn-seleccionar-producto-canje"
                 );
 
+
             if (!boton) {
                 return;
             }
+
 
             const stock =
                 Number(
                     producto.stock ?? 0
                 );
 
+
             const puntosProducto =
                 obtenerPuntosProducto(
                     producto
                 );
 
+
             const agotado =
                 !Number.isFinite(stock) ||
                 stock <= 0;
+
 
             const sinPuntos =
                 puntos <
                 puntosProducto;
 
+
             boton.disabled =
                 agotado ||
                 sinPuntos;
+
 
             if (agotado) {
 
@@ -2459,7 +3123,7 @@ function actualizarCatalogoSegunPuntos() {
 
 
 /* =========================================================
-   33. HISTORIAL
+   34. HISTORIAL
 ========================================================= */
 
 async function cargarHistorialCanjes() {
@@ -2467,6 +3131,7 @@ async function cargarHistorialCanjes() {
     if (!historialCanjes) {
         return;
     }
+
 
     if (!usuarioActual) {
 
@@ -2476,6 +3141,7 @@ async function cargarHistorialCanjes() {
         return;
     }
 
+
     historialCanjes.innerHTML = `
         <div class="historial-cargando">
             <i class="fa-solid fa-spinner fa-spin"></i>
@@ -2483,30 +3149,38 @@ async function cargarHistorialCanjes() {
         </div>
     `;
 
+
     try {
 
         const {
             data,
             error
-        } = await supabaseClient
-            .from("canjes")
-            .select(
-                "id, recompensa, puntos, creado_en"
-            )
-            .eq(
-                "usuario_id",
-                usuarioActual.id
-            )
-            .order(
-                "creado_en",
-                {
-                    ascending: false
-                }
-            );
+        } =
+            await supabaseClient
+
+                .from("canjes")
+
+                .select(
+                    "id, recompensa, puntos, creado_en"
+                )
+
+                .eq(
+                    "usuario_id",
+                    usuarioActual.id
+                )
+
+                .order(
+                    "creado_en",
+                    {
+                        ascending: false
+                    }
+                );
+
 
         if (error) {
             throw error;
         }
+
 
         if (!data?.length) {
 
@@ -2530,6 +3204,7 @@ async function cargarHistorialCanjes() {
             return;
         }
 
+
         historialCanjes.innerHTML =
             data
                 .map(
@@ -2540,12 +3215,14 @@ async function cargarHistorialCanjes() {
                 )
                 .join("");
 
+
     } catch (error) {
 
         console.error(
             "Error cargando historial:",
             error
         );
+
 
         historialCanjes.innerHTML = `
             <div class="sin-historial">
@@ -2567,7 +3244,7 @@ async function cargarHistorialCanjes() {
 
 
 /* =========================================================
-   34. ITEM HISTORIAL
+   35. ITEM HISTORIAL
 ========================================================= */
 
 function crearItemHistorial(canje) {
@@ -2576,15 +3253,18 @@ function crearItemHistorial(canje) {
         canje.recompensa ||
         "Producto";
 
+
     const puntos =
         Number(
             canje.puntos ?? 0
         );
 
+
     const fecha =
         formatearFecha(
             canje.creado_en
         );
+
 
     return `
         <div class="historial-canje">
@@ -2594,6 +3274,7 @@ function crearItemHistorial(canje) {
                 <i class="fa-solid fa-gift"></i>
 
             </div>
+
 
             <div class="historial-canje-info">
 
@@ -2606,6 +3287,7 @@ function crearItemHistorial(canje) {
                 </span>
 
             </div>
+
 
             <div class="historial-canje-puntos">
 
@@ -2625,7 +3307,7 @@ function crearItemHistorial(canje) {
 
 
 /* =========================================================
-   35. FORMATEAR FECHA
+   36. FORMATEAR FECHA
 ========================================================= */
 
 function formatearFecha(fecha) {
@@ -2634,10 +3316,12 @@ function formatearFecha(fecha) {
         return "Fecha no disponible";
     }
 
+
     try {
 
         const fechaObj =
             new Date(fecha);
+
 
         if (
             Number.isNaN(
@@ -2648,16 +3332,29 @@ function formatearFecha(fecha) {
             return "Fecha no disponible";
         }
 
+
         return fechaObj.toLocaleString(
             "es-GT",
             {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit"
+
+                day:
+                    "2-digit",
+
+                month:
+                    "2-digit",
+
+                year:
+                    "numeric",
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit"
+
             }
         );
+
 
     } catch {
 
@@ -2667,7 +3364,7 @@ function formatearFecha(fecha) {
 
 
 /* =========================================================
-   36. CERRAR SESIÓN
+   37. CERRAR SESIÓN
 ========================================================= */
 
 if (btnCerrarSesion) {
@@ -2681,35 +3378,49 @@ if (btnCerrarSesion) {
                     "¿Deseas cerrar sesión?"
                 );
 
+
             if (!confirmar) {
                 return;
             }
 
+
             try {
 
-                const { error } =
+                const {
+                    error
+                } =
                     await supabaseClient
                         .auth
                         .signOut();
+
 
                 if (error) {
                     throw error;
                 }
 
+
                 mostrarFormularioLogin();
 
+
                 if (loginCorreo) {
-                    loginCorreo.value = "";
+
+                    loginCorreo.value =
+                        "";
                 }
 
+
                 if (loginPassword) {
-                    loginPassword.value = "";
+
+                    loginPassword.value =
+                        "";
                 }
+
 
                 mostrarMensajeLogin(
                     "Sesión cerrada correctamente.",
                     "success"
                 );
+
 
             } catch (error) {
 
@@ -2717,6 +3428,7 @@ if (btnCerrarSesion) {
                     "Error cerrando sesión:",
                     error
                 );
+
 
                 alert(
                     "No se pudo cerrar la sesión."
@@ -2728,7 +3440,7 @@ if (btnCerrarSesion) {
 
 
 /* =========================================================
-   37. CONTADOR DEL CARRITO
+   38. CONTADOR DEL CARRITO
 ========================================================= */
 
 function actualizarContadorCarrito() {
@@ -2737,12 +3449,14 @@ function actualizarContadorCarrito() {
         return;
     }
 
+
     try {
 
         const carritoGuardado =
             localStorage.getItem(
                 CLAVE_CARRITO
             );
+
 
         if (!carritoGuardado) {
 
@@ -2755,10 +3469,12 @@ function actualizarContadorCarrito() {
             return;
         }
 
+
         const carrito =
             JSON.parse(
                 carritoGuardado
             );
+
 
         if (!Array.isArray(carrito)) {
 
@@ -2771,7 +3487,10 @@ function actualizarContadorCarrito() {
             return;
         }
 
-        let cantidadTotal = 0;
+
+        let cantidadTotal =
+            0;
+
 
         carrito.forEach(
             item => {
@@ -2782,6 +3501,7 @@ function actualizarContadorCarrito() {
                         item?.qty ??
                         1
                     );
+
 
                 if (
                     Number.isFinite(cantidad) &&
@@ -2794,15 +3514,20 @@ function actualizarContadorCarrito() {
             }
         );
 
+
         contadorCarrito.textContent =
             cantidadTotal > 99
                 ? "99+"
-                : String(cantidadTotal);
+                : String(
+                    cantidadTotal
+                );
+
 
         contadorCarrito.style.display =
             cantidadTotal > 0
                 ? ""
                 : "none";
+
 
     } catch (error) {
 
@@ -2811,8 +3536,10 @@ function actualizarContadorCarrito() {
             error
         );
 
+
         contadorCarrito.textContent =
             "0";
+
 
         contadorCarrito.style.display =
             "none";
@@ -2821,7 +3548,7 @@ function actualizarContadorCarrito() {
 
 
 /* =========================================================
-   38. CAMBIOS DEL CARRITO
+   39. CAMBIOS DEL CARRITO
 ========================================================= */
 
 window.addEventListener(
@@ -2840,7 +3567,7 @@ window.addEventListener(
 
 
 /* =========================================================
-   39. INICIAR PERFIL
+   40. INICIAR PERFIL
 ========================================================= */
 
 async function iniciarPerfil() {
@@ -2849,9 +3576,12 @@ async function iniciarPerfil() {
         "INICIANDO PERFIL DL LUXURY..."
     );
 
+
     await cargarCategorias();
 
+
     actualizarContadorCarrito();
+
 
     try {
 
@@ -2862,6 +3592,7 @@ async function iniciarPerfil() {
             await supabaseClient.auth
                 .getSession();
 
+
         if (error) {
 
             console.error(
@@ -2869,24 +3600,31 @@ async function iniciarPerfil() {
                 error
             );
 
+
             mostrarFormularioLogin();
 
             return;
         }
 
+
         const session =
             data?.session;
 
-        if (session?.user) {
+
+        if (
+            session?.user
+        ) {
 
             console.log(
                 "SESIÓN ENCONTRADA:",
                 session.user.email
             );
 
+
             await cargarPerfil(
                 session.user
             );
+
 
         } else {
 
@@ -2894,8 +3632,10 @@ async function iniciarPerfil() {
                 "NO HAY SESIÓN ACTIVA"
             );
 
+
             mostrarFormularioLogin();
         }
+
 
     } catch (error) {
 
@@ -2904,13 +3644,14 @@ async function iniciarPerfil() {
             error
         );
 
+
         mostrarFormularioLogin();
     }
 }
 
 
 /* =========================================================
-   40. CAMBIOS DE AUTH
+   41. CAMBIOS DE AUTH
 ========================================================= */
 
 supabaseClient.auth.onAuthStateChange(
@@ -2923,6 +3664,7 @@ supabaseClient.auth.onAuthStateChange(
             "CAMBIO AUTH:",
             event
         );
+
 
         if (
             session?.user &&
@@ -2937,6 +3679,7 @@ supabaseClient.auth.onAuthStateChange(
                 session.user
             );
 
+
         } else if (
             event === "SIGNED_OUT"
         ) {
@@ -2948,7 +3691,7 @@ supabaseClient.auth.onAuthStateChange(
 
 
 /* =========================================================
-   41. INICIAR
+   42. INICIAR
 ========================================================= */
 
 if (
@@ -2968,23 +3711,77 @@ if (
 
 
 /* =========================================================
-   42. FUNCIONES GLOBALES
+   43. FUNCIONES GLOBALES
 ========================================================= */
 
 window.abrirDetalleProducto =
     abrirDetalleProducto;
 
+
 window.cerrarModalDetalle =
     cerrarModalDetalle;
+
 
 window.cargarCatalogoCanje =
     cargarCatalogoCanje;
 
+
 window.cargarHistorialCanjes =
     cargarHistorialCanjes;
+
 
 window.confirmarProductoCanje =
     confirmarProductoCanje;
 
+
 window.actualizarContadorCarrito =
     actualizarContadorCarrito;
+
+
+window.cargarPuntosUsuario =
+    cargarPuntosUsuario;
+
+
+/* =========================================================
+   44. CONTROL
+========================================================= */
+
+console.log(
+    "===================================="
+);
+
+console.log(
+    "DL LUXURY"
+);
+
+console.log(
+    "perfil.js cargado correctamente"
+);
+
+console.log(
+    "SISTEMA DE PUNTOS:"
+);
+
+console.log(
+    "Puntos ganados = pedidos.puntos_generados"
+);
+
+console.log(
+    "Solo cuentan pedidos.puntos_validados = true"
+);
+
+console.log(
+    "Puntos gastados = canjes.puntos"
+);
+
+console.log(
+    "Saldo = puntos ganados - puntos gastados"
+);
+
+console.log(
+    "NO se utiliza perfiles.Puntos"
+);
+
+console.log(
+    "===================================="
+);
