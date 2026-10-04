@@ -7,31 +7,17 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="theme-color" content="#050505">
+    <title>Mi Perfil - DL Luxury</title>
 
-    <meta name="description" content="Perfil de usuario - DL Luxury">
-
-    <title>Perfil - DL Luxury</title>
-
-    <!-- =====================================================
-         FONT AWESOME
-    ====================================================== -->
-
+    <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- =====================================================
-         CSS
-    ====================================================== -->
-
+    <!-- CSS -->
     <link rel="stylesheet" href="perfil.css">
 
 </head>
 
 <body>
-
-    <!-- =====================================================
-         CONTENEDOR PRINCIPAL
-    ====================================================== -->
 
     <main class="perfil-container">
 
@@ -39,10 +25,10 @@
              ENCABEZADO
         ================================================== -->
 
-        <header class="perfil-header">
+        <section class="perfil-header">
 
             <div class="perfil-avatar">
-                <i class="fa-solid fa-user"></i>
+                <i class="fa-regular fa-user"></i>
             </div>
 
             <div class="perfil-header-info">
@@ -52,16 +38,16 @@
                 </span>
 
                 <h1>
-                    Mi perfil
+                    Mi Perfil
                 </h1>
 
-                <p>
-                    Administra tu cuenta y tus puntos.
+                <p id="estadoSesion">
+                    Inicia sesión para continuar
                 </p>
 
             </div>
 
-        </header>
+        </section>
 
 
         <!-- =================================================
@@ -81,7 +67,7 @@
                     </h2>
 
                     <p>
-                        Ingresa a tu cuenta DL Luxury.
+                        Accede a tu cuenta DL Luxury
                     </p>
 
                 </div>
@@ -91,31 +77,26 @@
 
             <form id="formLogin" class="perfil-form">
 
-                <!-- EMAIL -->
-
                 <div class="input-group">
 
-                    <label for="email">
+                    <label for="loginCorreo">
                         Correo electrónico
                     </label>
 
                     <div class="input-wrapper">
 
-                        <i class="fa-solid fa-envelope"></i>
+                        <i class="fa-regular fa-envelope"></i>
 
-                        <input type="email" id="email" name="email" placeholder="correo@ejemplo.com"
-                            autocomplete="email" required>
+                        <input type="email" id="loginCorreo" placeholder="tu@correo.com" autocomplete="email" required>
 
                     </div>
 
                 </div>
 
 
-                <!-- PASSWORD -->
-
                 <div class="input-group">
 
-                    <label for="password">
+                    <label for="loginPassword">
                         Contraseña
                     </label>
 
@@ -123,12 +104,14 @@
 
                         <i class="fa-solid fa-lock"></i>
 
-                        <input type="password" id="password" name="password" placeholder="••••••••"
+                        <input type="password" id="loginPassword" placeholder="Tu contraseña"
                             autocomplete="current-password" required>
 
-                        <button type="button" id="btnMostrarPassword" class="btn-mostrar-password"
+                        <button type="button" id="mostrarPassword" class="btn-mostrar-password"
                             aria-label="Mostrar contraseña">
-                            <i class="fa-solid fa-eye"></i>
+
+                            <i class="fa-regular fa-eye"></i>
+
                         </button>
 
                     </div>
@@ -136,9 +119,7 @@
                 </div>
 
 
-                <!-- BOTÓN -->
-
-                <button type="submit" id="btnLogin" class="btn-principal">
+                <button type="submit" class="btn-principal" id="btnLogin">
 
                     <i class="fa-solid fa-right-to-bracket"></i>
 
@@ -147,9 +128,7 @@
                 </button>
 
 
-                <!-- MENSAJE -->
-
-                <div id="mensajeLogin" class="mensaje-form" aria-live="polite"></div>
+                <p id="mensajeLogin" class="mensaje-form"></p>
 
             </form>
 
@@ -157,35 +136,16 @@
 
 
         <!-- =================================================
-             USUARIO LOGUEADO
+             USUARIO
         ================================================== -->
 
         <section id="seccionUsuario" class="perfil-section" style="display:none;">
-
-            <div class="section-title">
-
-                <i class="fa-solid fa-user-check"></i>
-
-                <div>
-
-                    <h2>
-                        Mi cuenta
-                    </h2>
-
-                    <p>
-                        Información de tu cuenta.
-                    </p>
-
-                </div>
-
-            </div>
-
 
             <div class="usuario-card">
 
                 <div class="usuario-avatar">
 
-                    <i class="fa-solid fa-user"></i>
+                    <i class="fa-regular fa-user"></i>
 
                 </div>
 
@@ -196,15 +156,17 @@
 
                         <i class="fa-solid fa-circle-check"></i>
 
-                        Cuenta verificada
+                        Cuenta activa
 
                     </span>
 
-                    <h2 id="nombreUsuario">
+
+                    <h2 id="usuarioNombre">
                         Usuario
                     </h2>
 
-                    <p id="correoUsuario">
+
+                    <p id="usuarioCorreo">
                         correo@ejemplo.com
                     </p>
 
@@ -215,7 +177,7 @@
 
             <button type="button" id="btnCerrarSesion" class="btn-cerrar-sesion">
 
-                <i class="fa-solid fa-right-from-bracket"></i>
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
 
                 Cerrar sesión
 
@@ -241,7 +203,8 @@
                     </h2>
 
                     <p>
-                        Utiliza tus puntos para obtener productos.
+                        Acumula puntos con tus compras y canjéalos
+                        por productos DL Luxury
                     </p>
 
                 </div>
@@ -264,12 +227,14 @@
                         PUNTOS DISPONIBLES
                     </span>
 
-                    <strong id="puntosDisponibles">
+
+                    <strong id="puntosUsuario">
                         0
                     </strong>
 
+
                     <small>
-                        Canjea tus puntos por productos.
+                        puntos
                     </small>
 
                 </div>
@@ -277,16 +242,14 @@
             </div>
 
 
-            <!-- BENEFICIOS -->
-
             <div class="puntos-beneficios">
 
                 <div class="beneficio">
 
-                    <i class="fa-solid fa-gift"></i>
+                    <i class="fa-solid fa-cart-shopping"></i>
 
                     <span>
-                        Canjea productos
+                        Compra productos
                     </span>
 
                 </div>
@@ -305,13 +268,26 @@
 
                 <div class="beneficio">
 
-                    <i class="fa-solid fa-crown"></i>
+                    <i class="fa-solid fa-gift"></i>
 
                     <span>
-                        Beneficios exclusivos
+                        Canjea productos
                     </span>
 
                 </div>
+
+            </div>
+
+
+            <div class="aviso-puntos">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <p>
+                    Tus puntos son exclusivos de DL Luxury.
+                    Puedes utilizarlos para obtener productos
+                    disponibles en la tienda.
+                </p>
 
             </div>
 
@@ -322,7 +298,7 @@
              CATÁLOGO DE CANJE
         ================================================== -->
 
-        <section id="seccionCatalogoCanje" class="perfil-section">
+        <section id="seccionCanje" class="perfil-section" style="display:none;">
 
             <div class="section-title">
 
@@ -331,11 +307,11 @@
                 <div>
 
                     <h2>
-                        Catálogo de canje
+                        Canjear puntos
                     </h2>
 
                     <p>
-                        Selecciona un producto para conocer sus detalles.
+                        Escoge directamente cualquier producto de la tienda
                     </p>
 
                 </div>
@@ -343,94 +319,29 @@
             </div>
 
 
-            <!-- =============================================
-                 FILTROS
-            ============================================== -->
+            <div id="catalogoCanje">
 
-            <div id="filtrosCatalogoCanje" style="width:100%; margin-bottom:15px;">
-
-                <div class="input-wrapper" style="margin-bottom:9px;">
-
-                    <i class="fa-solid fa-magnifying-glass"></i>
-
-                    <input type="search" id="buscarProductoCanje" placeholder="Buscar producto..." autocomplete="off">
-
-                </div>
-
-
-                <div style="
-                        width:100%;
-                        display:flex;
-                        gap:8px;
-                        overflow-x:auto;
-                        padding-bottom:3px;
-                    ">
-
-                    <button type="button" class="btn-canjear" data-categoria-filtro="todos" style="min-width:70px;">
-                        Todos
-                    </button>
-
-                    <button type="button" class="btn-canjear" data-categoria-filtro="playeras" style="min-width:80px;">
-                        Playeras
-                    </button>
-
-                    <button type="button" class="btn-canjear" data-categoria-filtro="gorras" style="min-width:70px;">
-                        Gorras
-                    </button>
-
-                    <button type="button" class="btn-canjear" data-categoria-filtro="hoodies" style="min-width:75px;">
-                        Hoodies
-                    </button>
-
-                    <button type="button" class="btn-canjear" data-categoria-filtro="perfumes" style="min-width:75px;">
-                        Perfumes
-                    </button>
-
-                    <button type="button" class="btn-canjear" data-categoria-filtro="accesorios"
-                        style="min-width:85px;">
-                        Accesorios
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- =============================================
-                 CATÁLOGO
-            ============================================== -->
-
-            <div id="catalogoCanje" class="catalogo-canje">
-
-                <!--
-                    LOS PRODUCTOS SE CARGAN DESDE perfil.js
-                -->
-
-                <div class="historial-vacio" id="cargandoCatalogoCanje">
+                <div class="productos-canje-cargando">
 
                     <i class="fa-solid fa-spinner fa-spin"></i>
 
-                    <p>
+                    <span>
                         Cargando productos...
-                    </p>
+                    </span>
 
                 </div>
 
             </div>
 
-
-            <!-- =============================================
-                 AVISO
-            ============================================== -->
 
             <div class="aviso-canje">
 
                 <i class="fa-solid fa-circle-info"></i>
 
                 <p>
-                    Los productos se pueden canjear utilizando
-                    los puntos disponibles en tu cuenta.
-                    El costo en puntos depende del valor del producto.
+                    Puedes escoger cualquier producto disponible.
+                    El costo del canje corresponde al precio del producto
+                    convertido en puntos.
                 </p>
 
             </div>
@@ -439,103 +350,10 @@
 
 
         <!-- =================================================
-             RECOMPENSAS
+             HISTORIAL
         ================================================== -->
 
-        <section id="seccionRecompensas" class="perfil-section">
-
-            <div class="section-title">
-
-                <i class="fa-solid fa-award"></i>
-
-                <div>
-
-                    <h2>
-                        Recompensas
-                    </h2>
-
-                    <p>
-                        Descubre los beneficios de tus puntos.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="recompensas-card">
-
-                <div class="recompensa">
-
-                    <div class="recompensa-icono">
-
-                        <i class="fa-solid fa-gift"></i>
-
-                    </div>
-
-                    <div class="recompensa-info">
-
-                        <h3>
-                            Productos exclusivos
-                        </h3>
-
-                        <p>
-                            Canjea tus puntos por productos.
-                        </p>
-
-                        <span>
-
-                            <i class="fa-solid fa-star"></i>
-
-                            Usa tus puntos
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="recompensa">
-
-                    <div class="recompensa-icono">
-
-                        <i class="fa-solid fa-crown"></i>
-
-                    </div>
-
-                    <div class="recompensa-info">
-
-                        <h3>
-                            Beneficios DL Luxury
-                        </h3>
-
-                        <p>
-                            Disfruta beneficios especiales.
-                        </p>
-
-                        <span>
-
-                            <i class="fa-solid fa-star"></i>
-
-                            Beneficios exclusivos
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             HISTORIAL DE CANJES
-        ================================================== -->
-
-        <section id="seccionHistorial" class="perfil-section">
+        <section id="seccionHistorial" class="perfil-section" style="display:none;">
 
             <div class="section-title">
 
@@ -548,7 +366,7 @@
                     </h2>
 
                     <p>
-                        Consulta tus productos canjeados.
+                        Consulta tus productos canjeados
                     </p>
 
                 </div>
@@ -560,10 +378,10 @@
 
                 <div class="historial-vacio">
 
-                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <i class="fa-solid fa-gift"></i>
 
                     <p>
-                        No tienes canjes registrados.
+                        Aún no has realizado ningún canje.
                     </p>
 
                 </div>
@@ -576,61 +394,25 @@
 
 
     <!-- =====================================================
-         MODAL PARA SELECCIONAR PRODUCTO
-         EXISTENTE EN EL SISTEMA
-    ====================================================== -->
-
-    <div id="modalCanjeProducto" aria-hidden="true" style="display:none;">
-
-        <div class="modal-contenido" role="dialog" aria-modal="true">
-
-            <button type="button" id="cerrarModalCanje" aria-label="Cerrar">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <div id="contenidoModalCanje"></div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =====================================================
          MODAL DETALLE DEL PRODUCTO
-         
-         ESTE ES EL NUEVO MODAL
-         
-         Se abre al hacer click en:
-         - imagen
-         - tarjeta
-         
-         NO se abre al presionar:
-         - botón Canjear producto
     ====================================================== -->
 
-    <div id="modalDetalleProducto" aria-hidden="true">
+    <div id="modalDetalleProducto" class="modal-detalle-producto" aria-hidden="true">
 
         <div class="detalle-producto-contenido" role="dialog" aria-modal="true" aria-labelledby="detalleNombreProducto">
 
-            <!-- =============================================
-                 CERRAR
-            ============================================== -->
-
-            <button type="button" id="cerrarModalDetalleProducto" aria-label="Cerrar detalle del producto">
+            <button type="button" id="cerrarModalDetalleProducto" class="cerrar-modal-detalle" aria-label="Cerrar">
 
                 <i class="fa-solid fa-xmark"></i>
 
             </button>
 
 
-            <!-- =============================================
-                 IMAGEN
-            ============================================== -->
+            <!-- IMAGEN -->
 
             <div class="detalle-producto-imagen">
 
                 <img id="detalleImagenProducto" src="" alt="Producto">
-
 
                 <div id="detalleSinImagenProducto" class="detalle-sin-imagen" style="display:none;">
 
@@ -645,9 +427,7 @@
             </div>
 
 
-            <!-- =============================================
-                 INFORMACIÓN
-            ============================================== -->
+            <!-- INFORMACIÓN -->
 
             <div class="detalle-producto-info">
 
@@ -656,7 +436,7 @@
                 </span>
 
 
-                <span id="detalleCategoriaProducto" class="detalle-producto-categoria">
+                <span id="detalleCategoriaProducto" class="detalle-categoria">
                     Categoría
                 </span>
 
@@ -666,17 +446,15 @@
                 </h2>
 
 
-                <p id="detalleDescripcionProducto" class="detalle-producto-descripcion">
+                <p id="detalleDescripcionProducto">
                     Sin descripción disponible.
                 </p>
 
 
-                <!-- PRECIO -->
-
                 <div class="detalle-producto-precio-wrap">
 
                     <span>
-                        Valor del producto
+                        Precio
                     </span>
 
                     <strong id="detallePrecioProducto">
@@ -685,8 +463,6 @@
 
                 </div>
 
-
-                <!-- PUNTOS -->
 
                 <div class="detalle-producto-puntos">
 
@@ -707,9 +483,12 @@
                 </div>
 
 
-                <!-- BOTÓN -->
+                <div id="detalleStockProducto" class="detalle-stock">
+                    Disponible
+                </div>
 
-                <button type="button" id="btnCanjearDesdeDetalle">
+
+                <button type="button" id="btnCanjearDesdeDetalle" class="btn-canjear-detalle">
 
                     <i class="fa-solid fa-gift"></i>
 
@@ -725,184 +504,10 @@
 
 
     <!-- =====================================================
-         MODAL CONFIRMAR CANJE
-    ====================================================== -->
-
-    <div id="modalConfirmarCanje" aria-hidden="true">
-
-        <div class="modal-confirmar-contenido" role="dialog" aria-modal="true" aria-labelledby="tituloConfirmarCanje">
-
-            <!-- =============================================
-                 BOTÓN CERRAR
-            ============================================== -->
-
-            <button type="button" id="cerrarModalConfirmarCanje" class="confirmar-canje-cerrar" aria-label="Cerrar">
-
-                <i class="fa-solid fa-xmark"></i>
-
-            </button>
-
-
-            <!-- =============================================
-                 ICONO
-            ============================================== -->
-
-            <div class="confirmar-icono">
-
-                <i class="fa-solid fa-gift"></i>
-
-            </div>
-
-
-            <!-- =============================================
-                 ENCABEZADO
-            ============================================== -->
-
-            <span class="confirmar-label">
-                DL LUXURY
-            </span>
-
-
-            <h2 id="tituloConfirmarCanje">
-                Confirmar canje
-            </h2>
-
-
-            <p class="confirmar-subtitulo">
-                Revisa los datos antes de confirmar.
-            </p>
-
-
-            <!-- =============================================
-                 PRODUCTO
-            ============================================== -->
-
-            <div class="confirmar-producto">
-
-                <div class="confirmar-producto-imagen">
-
-                    <img id="confirmarImagenProducto" src="" alt="Producto">
-
-                </div>
-
-
-                <div class="confirmar-producto-info">
-
-                    <h3 id="confirmarNombreProducto">
-                        Producto
-                    </h3>
-
-
-                    <span id="confirmarCategoriaProducto">
-                        Categoría
-                    </span>
-
-
-                    <strong id="confirmarPrecioProducto">
-                        Q0.00
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <!-- =============================================
-                 PUNTOS
-            ============================================== -->
-
-            <div class="confirmar-puntos">
-
-                <div>
-
-                    <span>
-                        Tus puntos
-                    </span>
-
-                    <strong id="confirmarPuntosDisponibles">
-                        0
-                    </strong>
-
-                </div>
-
-
-                <div>
-
-                    <span>
-                        Se utilizarán
-                    </span>
-
-                    <strong id="confirmarPuntosUtilizados">
-                        0
-                    </strong>
-
-                </div>
-
-
-                <div>
-
-                    <span>
-                        Restantes
-                    </span>
-
-                    <strong id="confirmarPuntosRestantes">
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <!-- =============================================
-                 AVISO
-            ============================================== -->
-
-            <div class="confirmar-canje-aviso">
-
-                <i class="fa-solid fa-circle-info"></i>
-
-                Al confirmar el canje, los puntos utilizados
-                serán descontados de tu cuenta.
-
-            </div>
-
-
-            <!-- =============================================
-                 BOTONES
-            ============================================== -->
-
-            <div class="confirmar-botones">
-
-                <button type="button" id="btnCancelarCanje" class="btn-cancelar-canje">
-
-                    <i class="fa-solid fa-xmark"></i>
-
-                    Cancelar
-
-                </button>
-
-
-                <button type="button" id="btnConfirmarCanje" class="btn-confirmar-canje">
-
-                    <i class="fa-solid fa-check"></i>
-
-                    Confirmar canje
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =====================================================
          MENÚ INFERIOR
     ====================================================== -->
 
-    <nav class="bottom-nav" aria-label="Navegación principal">
+    <nav class="bottom-nav">
 
         <a href="index.html" class="nav-item">
 
@@ -917,7 +522,7 @@
 
         <a href="tienda.html" class="nav-item">
 
-            <i class="fa-solid fa-store"></i>
+            <i class="fa-solid fa-bag-shopping"></i>
 
             <span>
                 Tienda
@@ -926,9 +531,9 @@
         </a>
 
 
-        <a href="favoritos.html" class="nav-item">
+        <a href="favorito.html" class="nav-item">
 
-            <i class="fa-solid fa-heart"></i>
+            <i class="fa-regular fa-heart"></i>
 
             <span>
                 Favoritos
@@ -941,20 +546,20 @@
 
             <i class="fa-solid fa-cart-shopping"></i>
 
+            <b id="contadorCarrito">
+                0
+            </b>
+
             <span>
                 Carrito
             </span>
-
-            <b id="contadorCarrito" style="display:none;">
-                0
-            </b>
 
         </a>
 
 
         <a href="perfil.html" class="nav-item active">
 
-            <i class="fa-solid fa-user"></i>
+            <i class="fa-regular fa-user"></i>
 
             <span>
                 Perfil
@@ -970,11 +575,6 @@
     ====================================================== -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
-    <!-- =====================================================
-         JAVASCRIPT
-    ====================================================== -->
 
     <script src="perfil.js"></script>
 
