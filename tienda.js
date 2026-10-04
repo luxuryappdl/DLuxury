@@ -1,7 +1,6 @@
 /* =========================================================
    DL LUXURY
    TIENDA / VENTAS
-
    SUPABASE + STORAGE
    TODOS LOS PRODUCTOS
    FAVORITOS
@@ -209,7 +208,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     modalDescripcion,
                     stock
                 );
-
             }
 
         } else {
@@ -217,9 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
             info.appendChild(
                 modalDescripcion
             );
-
         }
-
     }
 
 
@@ -265,14 +261,11 @@ document.addEventListener("DOMContentLoaded", () => {
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
-
     }
 
 
     function escaparAtributo(texto) {
-
         return escaparHTML(texto);
-
     }
 
 
@@ -284,7 +277,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .replace(/"/g, '\\"')
             .replace(/\r/g, "\\r")
             .replace(/\n/g, "\\n");
-
     }
 
 
@@ -301,7 +293,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 minimumFractionDigits: 2
             }
         );
-
     }
 
 
@@ -321,7 +312,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         return p - (p * d / 100);
-
     }
 
 
@@ -332,7 +322,65 @@ document.addEventListener("DOMContentLoaded", () => {
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")
             .trim();
+    }
 
+
+    /* =====================================================
+       NORMALIZAR GÉNERO
+
+       TODOS:
+       Hombre + Mujer + Unisex
+
+       PARA ÉL:
+       Hombre + Unisex
+
+       PARA ELLA:
+       Mujer + Unisex
+
+       UNISEX:
+       Solo Unisex
+    ===================================================== */
+
+    function normalizarGenero(valor) {
+
+        let texto =
+            String(valor || "todos")
+                .trim()
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+
+        if (
+            texto === "para el" ||
+            texto === "hombre" ||
+            texto === "masculino" ||
+            texto === "men"
+        ) {
+
+            return "hombre";
+        }
+
+
+        if (
+            texto === "para ella" ||
+            texto === "mujer" ||
+            texto === "femenino" ||
+            texto === "women"
+        ) {
+
+            return "mujer";
+        }
+
+
+        if (
+            texto === "unisex"
+        ) {
+
+            return "unisex";
+        }
+
+
+        return "todos";
     }
 
 
@@ -349,7 +397,6 @@ document.addEventListener("DOMContentLoaded", () => {
             valor.charAt(0).toUpperCase() +
             valor.slice(1)
         );
-
     }
 
 
@@ -371,14 +418,12 @@ document.addEventListener("DOMContentLoaded", () => {
             return Number(
                 producto.precio_final
             );
-
         }
 
         return calcularPrecioFinal(
             producto.precio,
             producto.descuento
         );
-
     }
 
 
@@ -393,7 +438,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return String(
                 producto.categoria
             );
-
         }
 
         if (
@@ -415,13 +459,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 return String(
                     categoria.nombre
                 );
-
             }
-
         }
 
         return "Producto";
-
     }
 
 
@@ -437,7 +478,6 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
 
             return "";
-
         }
 
         let valor =
@@ -449,7 +489,6 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
 
             return valor;
-
         }
 
 
@@ -459,7 +498,6 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
 
             return valor;
-
         }
 
 
@@ -477,7 +515,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 valor.substring(
                     SUPABASE_BUCKET.length + 1
                 );
-
         }
 
 
@@ -488,7 +525,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "/" +
             valor
         );
-
     }
 
 
@@ -524,9 +560,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             return [];
-
         }
-
     }
 
 
@@ -545,9 +579,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Error guardando favoritos:",
                 error
             );
-
         }
-
     }
 
 
@@ -558,7 +590,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 String(favorito) ===
                 String(id)
         );
-
     }
 
 
@@ -576,12 +607,13 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
 
             favoritos.push(id);
-
         }
+
 
         guardarFavoritos();
 
         renderizarProductos();
+
 
         if (
             productoModalActual &&
@@ -590,9 +622,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
 
             actualizarBotonFavoritoModal(id);
-
         }
-
     }
 
 
@@ -620,7 +650,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     <i class="fa-regular fa-heart"></i>
                     Favorito
                   `;
-
     }
 
 
@@ -656,9 +685,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             return [];
-
         }
-
     }
 
 
@@ -677,11 +704,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Error guardando carrito:",
                 error
             );
-
         }
 
         actualizarContadorCarrito();
-
     }
 
 
@@ -705,7 +730,6 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             return;
-
         }
 
 
@@ -720,7 +744,6 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             return;
-
         }
 
 
@@ -747,7 +770,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
                 return;
-
             }
 
 
@@ -807,9 +829,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     Number(
                         producto.descuento
                     ) || 0
-
             });
-
         }
 
 
@@ -819,7 +839,6 @@ document.addEventListener("DOMContentLoaded", () => {
         mostrarMensaje(
             "Producto agregado al carrito"
         );
-
     }
 
 
@@ -844,7 +863,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     Number(
                         item.cantidad
                     ) || 0;
-
             }
         );
 
@@ -859,7 +877,6 @@ document.addEventListener("DOMContentLoaded", () => {
             cantidadTotal > 0
                 ? "flex"
                 : "none";
-
     }
 
 
@@ -904,11 +921,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 white-space:nowrap;
             `;
 
-
             document.body.appendChild(
                 toast
             );
-
         }
 
 
@@ -940,7 +955,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
                 2200
             );
-
     }
 
 
@@ -966,7 +980,6 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             return;
-
         }
 
 
@@ -981,7 +994,6 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             return;
-
         }
 
 
@@ -1001,7 +1013,6 @@ document.addEventListener("DOMContentLoaded", () => {
             modalNombre.textContent =
                 producto.nombre ||
                 "Producto";
-
         }
 
 
@@ -1017,7 +1028,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         producto
                     )
                 );
-
         }
 
 
@@ -1032,11 +1042,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     producto.descripcion || ""
                 ).trim();
 
-
             modalDescripcion.textContent =
                 descripcion ||
                 "Sin descripción disponible.";
-
         }
 
 
@@ -1066,7 +1074,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 formatearPrecio(
                     precioFinal
                 );
-
         }
 
 
@@ -1093,9 +1100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 modalPrecioOriginal.style.display =
                     "none";
-
             }
-
         }
 
 
@@ -1120,9 +1125,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 modalDescuento.style.display =
                     "none";
-
             }
-
         }
 
 
@@ -1155,9 +1158,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 modalStock.classList.remove(
                     "agotado"
                 );
-
             }
-
         }
 
 
@@ -1180,7 +1181,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     this.style.display =
                         "none";
-
                 };
 
 
@@ -1204,9 +1204,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 modalImagen.style.display =
                     "none";
-
             }
-
         }
 
 
@@ -1233,7 +1231,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     <i class="fa-solid fa-cart-shopping"></i>
                     Agregar al carrito
                 `;
-
             }
 
 
@@ -1249,9 +1246,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     agregarAlCarrito(
                         producto.id
                     );
-
                 };
-
         }
 
 
@@ -1274,9 +1269,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     cambiarFavorito(
                         producto.id
                     );
-
                 };
-
         }
 
 
@@ -1298,7 +1291,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.body.style.overflow =
             "hidden";
-
     }
 
 
@@ -1333,7 +1325,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         productoModalActual =
             null;
-
     }
 
 
@@ -1347,7 +1338,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "click",
             cerrarModalProducto
         );
-
     }
 
 
@@ -1367,12 +1357,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 ) {
 
                     cerrarModalProducto();
-
                 }
-
             }
         );
-
     }
 
 
@@ -1390,9 +1377,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ) {
 
                 cerrarModalProducto();
-
             }
-
         }
     );
 
@@ -1467,7 +1452,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     filtroCategoria.appendChild(
                         option
                     );
-
                 }
             );
 
@@ -1484,11 +1468,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 filtroCategoria.value =
                     valorActual;
-
             }
-
         }
-
     }
 
 
@@ -1505,7 +1486,6 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             return;
-
         }
 
 
@@ -1518,7 +1498,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     color:#888;
                 "
             >
-
                 <i
                     class="fa-solid fa-spinner fa-spin"
                     style="
@@ -1530,7 +1509,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p>
                     Cargando productos...
                 </p>
-
             </div>
         `;
 
@@ -1546,7 +1524,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             /* =================================================
                TODOS LOS PRODUCTOS ACTIVOS
-               
+
                IMPORTANTE:
                YA NO SE USA:
                .eq("categoria_id", 5)
@@ -1585,9 +1563,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             if (error) {
-
                 throw error;
-
             }
 
 
@@ -1618,7 +1594,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         categoria
                             ? categoria.nombre
                             : "Producto";
-
                 }
             );
 
@@ -1645,6 +1620,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Descripciones:",
                 productos.map(
                     producto => ({
+
                         id:
                             producto.id,
 
@@ -1683,7 +1659,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         padding:60px 20px;
                     "
                 >
-
                     <i
                         class="fa-solid fa-triangle-exclamation"
                         style="
@@ -1722,7 +1697,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     >
                         Reintentar
                     </button>
-
                 </div>
             `;
 
@@ -1737,11 +1711,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 btnReintentar.onclick =
                     cargarProductos;
-
             }
-
         }
-
     }
 
 
@@ -1797,10 +1768,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             descripcion.includes(texto) ||
                             categoria.includes(texto)
                         );
-
                     }
                 );
-
         }
 
 
@@ -1828,12 +1797,23 @@ document.addEventListener("DOMContentLoaded", () => {
                         ) ===
                         categoriaSeleccionada
                 );
-
         }
 
 
         /* =================================================
            GÉNERO
+
+           TODOS:
+           Hombre + Mujer + Unisex
+
+           HOMBRE / PARA ÉL:
+           Hombre + Unisex
+
+           MUJER / PARA ELLA:
+           Mujer + Unisex
+
+           UNISEX:
+           Solo Unisex
         ================================================= */
 
         if (
@@ -1845,27 +1825,57 @@ document.addEventListener("DOMContentLoaded", () => {
                 resultado.filter(
                     producto => {
 
+                        const generoProducto =
+                            normalizarGenero(
+                                producto.genero
+                            );
+
+
                         if (
-                            !producto.genero
+                            generoActual ===
+                            "hombre"
                         ) {
 
-                            return true;
+                            return (
+                                generoProducto ===
+                                "hombre" ||
 
+                                generoProducto ===
+                                "unisex"
+                            );
                         }
 
 
-                        return (
-                            normalizarTexto(
-                                producto.genero
-                            ) ===
-                            normalizarTexto(
-                                generoActual
-                            )
-                        );
+                        if (
+                            generoActual ===
+                            "mujer"
+                        ) {
 
+                            return (
+                                generoProducto ===
+                                "mujer" ||
+
+                                generoProducto ===
+                                "unisex"
+                            );
+                        }
+
+
+                        if (
+                            generoActual ===
+                            "unisex"
+                        ) {
+
+                            return (
+                                generoProducto ===
+                                "unisex"
+                            );
+                        }
+
+
+                        return true;
                     }
                 );
-
         }
 
 
@@ -1934,12 +1944,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
                 break;
-
         }
 
 
         return resultado;
-
     }
 
 
@@ -1968,11 +1976,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 sinResultados.style.display =
                     "block";
-
             }
 
             return;
-
         }
 
 
@@ -1980,7 +1986,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             sinResultados.style.display =
                 "none";
-
         }
 
 
@@ -1990,7 +1995,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     tarjetaProducto
                 )
                 .join("");
-
     }
 
 
@@ -2119,7 +2123,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     <i class="fa-solid fa-image"></i>
                 </div>
             `;
-
         }
 
 
@@ -2216,7 +2219,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 </div>
             `;
-
         }
 
 
@@ -2226,7 +2228,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const botonHTML =
             agotado
-
                 ? `
                     <button
                         type="button"
@@ -2237,7 +2238,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         Agotado
                     </button>
                 `
-
                 : `
                     <button
                         type="button"
@@ -2334,10 +2334,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div
                         class="producto-stock"
                     >
+
                         ${agotado
                 ? "Sin existencias"
                 : `Stock disponible: ${stock}`
             }
+
                     </div>
 
 
@@ -2347,7 +2349,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             </article>
         `;
-
     }
 
 
@@ -2375,16 +2376,27 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
+                    /*
+                       AQUÍ ESTÁ EL CAMBIO IMPORTANTE
+
+                       Convierte:
+                       "Para él"   → hombre
+                       "Para ella" → mujer
+                       "Unisex"    → unisex
+                       "Todos"     → todos
+                    */
+
                     generoActual =
-                        btn.dataset.genero ||
-                        "todos";
+                        normalizarGenero(
+                            btn.dataset.genero ||
+                            btn.textContent ||
+                            "todos"
+                        );
 
 
                     renderizarProductos();
-
                 }
             );
-
         }
     );
 
@@ -2399,7 +2411,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "input",
             renderizarProductos
         );
-
     }
 
 
@@ -2413,7 +2424,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "change",
             renderizarProductos
         );
-
     }
 
 
@@ -2427,7 +2437,6 @@ document.addEventListener("DOMContentLoaded", () => {
             "change",
             renderizarProductos
         );
-
     }
 
 
@@ -2439,7 +2448,6 @@ document.addEventListener("DOMContentLoaded", () => {
         function (id) {
 
             agregarAlCarrito(id);
-
         };
 
 
@@ -2447,7 +2455,6 @@ document.addEventListener("DOMContentLoaded", () => {
         function (id) {
 
             cambiarFavorito(id);
-
         };
 
 
@@ -2455,7 +2462,6 @@ document.addEventListener("DOMContentLoaded", () => {
         function (id) {
 
             abrirModalProducto(id);
-
         };
 
 
@@ -2463,7 +2469,6 @@ document.addEventListener("DOMContentLoaded", () => {
         function () {
 
             cerrarModalProducto();
-
         };
 
 
@@ -2484,7 +2489,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     cargarCarrito();
 
                 actualizarContadorCarrito();
-
             }
 
 
@@ -2497,9 +2501,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     cargarFavoritos();
 
                 renderizarProductos();
-
             }
-
         }
     );
 
