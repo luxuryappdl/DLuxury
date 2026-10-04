@@ -1,10 +1,11 @@
 /* =========================================================
    DL LUXURY - PERFIL / LOGIN / PUNTOS / CANJES
-   ========================================================= */
+========================================================= */
+
 
 /* =========================================================
    SUPABASE
-   ========================================================= */
+========================================================= */
 
 const SUPABASE_URL =
     "https://brnyvkqwkosgtpugxcge.supabase.co";
@@ -12,24 +13,25 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable_Qdae9GUtmuosAPP4kemF3A_Vr4HFo0n";
 
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
 
 /* =========================================================
    VARIABLES GLOBALES
-   ========================================================= */
+========================================================= */
 
 let usuarioActual = null;
 let perfilActual = null;
 
+const mapaCategorias = new Map();
+
 
 /* =========================================================
    DOM
-   ========================================================= */
+========================================================= */
 
 const formLogin =
     document.getElementById("formLogin");
@@ -88,9 +90,10 @@ const contadorCarrito =
 
 /* =========================================================
    FUNCIONES GENERALES
-   ========================================================= */
+========================================================= */
 
 function escapeHTML(texto) {
+
     return String(texto ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -101,6 +104,7 @@ function escapeHTML(texto) {
 
 
 function normalizarTexto(texto) {
+
     return String(texto ?? "")
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -110,21 +114,203 @@ function normalizarTexto(texto) {
 
 
 /* =========================================================
+   SISTEMA DE PUNTOS
+
+   5% DE CADA COMPRA CONFIRMADA
+   1 PUNTO = Q1
+========================================================= */
+
+/*
+    Ejemplos:
+
+    Compra de Q100   = 5 puntos
+    Compra de Q500   = 25 puntos
+    Compra de Q1000  = 50 puntos
+    Compra de Q2000  = 100 puntos
+
+    Esta función calcula los puntos.
+    No los acredita automáticamente.
+*/
+
+function calcularPuntosVenta(totalVenta) {
+
+    const total = Number(totalVenta);
+
+    if (
+        !Number.isFinite(total) ||
+        total <= 0
+    ) {
+        return 0;
+    }
+
+    return Math.floor(total * 0.05);
+}
+
+
+/*
+    Conversión de puntos a quetzales.
+
+    1 punto equivale a Q1.
+*/
+
+function calcularValorPuntos(puntos) {
+
+    const cantidad = Number(puntos);
+
+    if (
+        !Number.isFinite(cantidad) ||
+        cantidad <= 0
+    ) {
+        return 0;
+    }
+
+    return cantidad;
+}
+
+
+/*
+    Consulta el saldo de puntos de un usuario.
+*/
+
+async function consultarPuntosCliente(usuarioId) {
+
+    if (!usuarioId) {
+
+        throw new Error(
+            "No se identificó al usuario."
+        );
+
+    }
+
+    const { data, error } =
+        await supabaseClient
+            .from("perfiles")
+            .select('"Puntos"')
+            .eq("id", usuarioId)
+            .maybeSingle();
+
+    if (error) {
+        throw error;
+    }
+
+    if (!data) {
+
+        throw new Error(
+            "No se encontró el perfil."
+        );
+
+    }
+
+    const puntos =
+        Number(data["Puntos"] || 0);
+
+    return {
+
+        puntos,
+
+        valorQuetzales:
+            calcularValorPuntos(puntos)
+
+    };
+
+}
+
+
+/*
+    Actualiza los puntos visibles en el perfil.
+*/
+
+async function actualizarPuntosPerfil() {
+
+    if (
+        !usuarioActual ||
+        !puntosUsuario
+    ) {
+        return;
+    }
+
+    try {
+
+        const saldo =
+            await consultarPuntosCliente(
+                usuarioActual.id
+            );
+
+        if (perfilActual) {
+
+            perfilActual["Puntos"] =
+                saldo.puntos;
+
+        }
+
+        puntosUsuario.textContent =
+            saldo.puntos.toLocaleString(
+                "es-GT"
+            );
+
+        actualizarBotonesCanje();
+
+        return saldo;
+
+    } catch (error) {
+
+        console.error(
+            "Error actualizando puntos:",
+            error
+        );
+
+    }
+
+}
+
+
+/*
+    Permite consultar cuánto ganaría una compra.
+
+    No modifica el saldo.
+*/
+
+function mostrarCalculoPuntos(totalVenta) {
+
+    const total =
+        Number(totalVenta);
+
+    const puntos =
+        calcularPuntosVenta(total);
+
+    return {
+
+        totalCompra:
+            total,
+
+        puntosGanados:
+            puntos,
+
+        valorCanjeable:
+            calcularValorPuntos(puntos)
+
+    };
+
+}
+
+
+/* =========================================================
    IMÁGENES DE SUPABASE STORAGE
-   ========================================================= */
+========================================================= */
 
 function obtenerUrlImagen(imagen) {
+
     if (!imagen) {
         return "";
     }
 
-    let ruta = String(imagen).trim();
+    let ruta =
+        String(imagen).trim();
 
     if (!ruta) {
         return "";
     }
 
-    /* Si ya es una URL completa */
     if (
         /^https?:\/\//i.test(ruta) ||
         /^data:/i.test(ruta)
@@ -132,25 +318,33 @@ function obtenerUrlImagen(imagen) {
         return ruta;
     }
 
-    /* Quitar / iniciales */
-    ruta = ruta.replace(/^\/+/, "");
+    ruta =
+        ruta.replace(/^\/+/, "");
 
-    /* Si viene como URL interna de Supabase */
     if (
-        /^storage\/v1\/object\/public\/productos\//i.test(ruta)
+        /^storage\/v1\/object\/public\/productos\//i.test(
+            ruta
+        )
     ) {
-        ruta = ruta.replace(
-            /^storage\/v1\/object\/public\/productos\//i,
-            ""
-        );
+
+        ruta =
+            ruta.replace(
+                /^storage\/v1\/object\/public\/productos\//i,
+                ""
+            );
+
     }
 
-    /* Si viene como productos/foto.jpg */
-    if (/^productos\//i.test(ruta)) {
-        ruta = ruta.replace(
-            /^productos\//i,
-            ""
-        );
+    if (
+        /^productos\//i.test(ruta)
+    ) {
+
+        ruta =
+            ruta.replace(
+                /^productos\//i,
+                ""
+            );
+
     }
 
     return (
@@ -158,14 +352,16 @@ function obtenerUrlImagen(imagen) {
         "/storage/v1/object/public/productos/" +
         ruta
     );
+
 }
 
 
 /* =========================================================
    OBTENER IMAGEN DEL PRODUCTO
-   ========================================================= */
+========================================================= */
 
 function obtenerImagenProducto(producto) {
+
     if (!producto) {
         return "";
     }
@@ -179,24 +375,27 @@ function obtenerImagenProducto(producto) {
         "";
 
     return obtenerUrlImagen(imagen);
+
 }
 
 
 /* =========================================================
    OBTENER PRECIO
-   ========================================================= */
+========================================================= */
 
 function obtenerPrecioProducto(producto) {
+
     if (!producto) {
         return 0;
     }
 
-    const precio = Number(
-        producto.precio_final ??
-        producto.precio ??
-        producto.precioFinal ??
-        0
-    );
+    const precio =
+        Number(
+            producto.precio_final ??
+            producto.precio ??
+            producto.precioFinal ??
+            0
+        );
 
     if (
         !Number.isFinite(precio) ||
@@ -206,25 +405,16 @@ function obtenerPrecioProducto(producto) {
     }
 
     return precio;
+
 }
 
 
 /* =========================================================
    CATEGORÍAS
-   ========================================================= */
-
-/*
-   Esta función intenta obtener el nombre de categoría
-   directamente desde el producto.
-
-   Si el SELECT trae categoria_id pero no trae el nombre,
-   usamos el mapa de categorías cargado desde Supabase.
-*/
-
-const mapaCategorias = new Map();
-
+========================================================= */
 
 function obtenerCategoriaProducto(producto) {
+
     if (!producto) {
         return "";
     }
@@ -240,94 +430,110 @@ function obtenerCategoriaProducto(producto) {
         ) ||
         ""
     );
+
 }
 
 
 /* =========================================================
    CARGAR CATEGORÍAS
-   ========================================================= */
+========================================================= */
 
 async function cargarCategorias() {
+
     mapaCategorias.clear();
 
     try {
-        const resultado =
+
+        const { data, error } =
             await supabaseClient
                 .from("categorias")
                 .select("*");
 
-        if (resultado.error) {
+        if (error) {
+
             console.warn(
                 "No se pudieron cargar las categorías:",
-                resultado.error
+                error
             );
 
             return;
         }
 
-        const categorias =
-            resultado.data || [];
+        (data || []).forEach(
+            function (categoria) {
 
-        categorias.forEach(function (categoria) {
+                const id =
+                    categoria.id ??
+                    categoria.categoria_id;
 
-            const id =
-                categoria.id ??
-                categoria.categoria_id;
+                const nombre =
+                    categoria.nombre ??
+                    categoria.nombre_categoria ??
+                    categoria.categoria ??
+                    categoria.descripcion ??
+                    "";
 
-            const nombre =
-                categoria.nombre ??
-                categoria.nombre_categoria ??
-                categoria.categoria ??
-                categoria.descripcion ??
-                "";
+                if (
+                    id !== undefined &&
+                    id !== null &&
+                    nombre
+                ) {
 
-            if (
-                id !== undefined &&
-                id !== null &&
-                nombre
-            ) {
-                mapaCategorias.set(
-                    String(id),
-                    String(nombre)
-                );
+                    mapaCategorias.set(
+                        String(id),
+                        String(nombre)
+                    );
+
+                }
+
             }
-        });
+        );
 
     } catch (error) {
+
         console.error(
             "Error cargando categorías:",
             error
         );
+
     }
+
 }
 
 
 /* =========================================================
-   MOSTRAR MENSAJE DE LOGIN
-   ========================================================= */
+   MENSAJE DE LOGIN
+========================================================= */
 
 function mostrarMensajeLogin(
     mensaje,
     tipo = ""
 ) {
+
     if (!mensajeLogin) {
         return;
     }
 
-    mensajeLogin.textContent = mensaje;
+    mensajeLogin.textContent =
+        mensaje;
 
     mensajeLogin.className =
         "mensaje-login";
 
     if (tipo) {
-        mensajeLogin.classList.add(tipo);
+
+        mensajeLogin.classList.add(
+            tipo
+        );
+
     }
+
 }
 
 
 /* =========================================================
    CARGAR PERFIL
-   ========================================================= */
+========================================================= */
 
 async function cargarPerfil(user) {
 
@@ -339,7 +545,7 @@ async function cargarPerfil(user) {
 
     try {
 
-        const resultado =
+        const { data, error } =
             await supabaseClient
                 .from("perfiles")
                 .select(`
@@ -354,32 +560,42 @@ async function cargarPerfil(user) {
                 .eq("id", user.id)
                 .maybeSingle();
 
-        if (resultado.error) {
+        if (error) {
 
             console.error(
                 "Error cargando perfil:",
-                resultado.error
+                error
             );
 
             return;
         }
 
-        let perfil =
-            resultado.data;
+        let perfil = data;
 
-        /* Si no existe perfil, crearlo */
+        /*
+            Si no existe perfil, crearlo.
+        */
 
         if (!perfil) {
 
             const nuevoPerfil = {
+
                 id: user.id,
+
                 nombre: "",
+
                 apellido: "",
+
                 rol: "cliente",
+
                 "Puntos": 0
+
             };
 
-            const insertado =
+            const {
+                data: perfilCreado,
+                error: errorInsertar
+            } =
                 await supabaseClient
                     .from("perfiles")
                     .insert(nuevoPerfil)
@@ -394,21 +610,23 @@ async function cargarPerfil(user) {
                     `)
                     .single();
 
-            if (insertado.error) {
+            if (errorInsertar) {
 
                 console.error(
                     "Error creando perfil:",
-                    insertado.error
+                    errorInsertar
                 );
 
                 return;
             }
 
             perfil =
-                insertado.data;
+                perfilCreado;
+
         }
 
-        perfilActual = perfil;
+        perfilActual =
+            perfil;
 
         actualizarInterfazUsuario();
 
@@ -422,13 +640,15 @@ async function cargarPerfil(user) {
             "Error cargando perfil:",
             error
         );
+
     }
+
 }
 
 
 /* =========================================================
    ACTUALIZAR INTERFAZ DEL USUARIO
-   ========================================================= */
+========================================================= */
 
 function actualizarInterfazUsuario() {
 
@@ -451,13 +671,17 @@ function actualizarInterfazUsuario() {
         `${nombre} ${apellido}`.trim();
 
     if (usuarioNombre) {
+
         usuarioNombre.textContent =
             nombreCompleto;
+
     }
 
     if (usuarioCorreo) {
+
         usuarioCorreo.textContent =
             usuarioActual.email || "";
+
     }
 
     const puntos =
@@ -466,88 +690,119 @@ function actualizarInterfazUsuario() {
         );
 
     if (puntosUsuario) {
+
         puntosUsuario.textContent =
-            puntos.toLocaleString("es-GT");
+            puntos.toLocaleString(
+                "es-GT"
+            );
+
     }
 
     if (estadoSesion) {
+
         estadoSesion.textContent =
             "Sesión iniciada";
+
     }
 
     if (seccionLogin) {
+
         seccionLogin.style.display =
             "none";
+
     }
 
     if (seccionUsuario) {
+
         seccionUsuario.style.display =
             "";
+
     }
 
     if (seccionPuntos) {
+
         seccionPuntos.style.display =
             "";
+
     }
 
     if (seccionCanje) {
+
         seccionCanje.style.display =
             "";
+
     }
 
     if (seccionHistorial) {
+
         seccionHistorial.style.display =
             "";
+
     }
+
 }
 
 
 /* =========================================================
    MOSTRAR FORMULARIO DE LOGIN
-   ========================================================= */
+========================================================= */
 
 function mostrarFormularioLogin() {
 
     usuarioActual = null;
+
     perfilActual = null;
 
     if (estadoSesion) {
+
         estadoSesion.textContent =
             "No has iniciado sesión";
+
     }
 
     if (seccionLogin) {
+
         seccionLogin.style.display =
             "";
+
     }
 
     if (seccionUsuario) {
+
         seccionUsuario.style.display =
             "none";
+
     }
 
     if (seccionPuntos) {
+
         seccionPuntos.style.display =
             "none";
+
     }
 
     if (seccionCanje) {
+
         seccionCanje.style.display =
             "none";
+
     }
 
     if (seccionHistorial) {
+
         seccionHistorial.style.display =
             "none";
+
     }
 
     actualizarBotonesCanje();
+
 }
 
 
 /* =========================================================
    LOGIN
-   ========================================================= */
+========================================================= */
 
 if (formLogin) {
 
@@ -584,9 +839,13 @@ if (formLogin) {
             }
 
             if (btnLogin) {
-                btnLogin.disabled = true;
+
+                btnLogin.disabled =
+                    true;
+
                 btnLogin.textContent =
                     "Ingresando...";
+
             }
 
             mostrarMensajeLogin(
@@ -596,18 +855,21 @@ if (formLogin) {
 
             try {
 
-                /* Intentar iniciar sesión */
+                /*
+                    Mantiene el comportamiento original:
+                    iniciar sesión y, si son credenciales inválidas,
+                    intentar registrar la cuenta.
+                */
 
                 let resultado =
                     await supabaseClient.auth
                         .signInWithPassword({
-                            email: correo,
-                            password: password
-                        });
 
-                /*
-                    Si no existe la cuenta, intentar crearla.
-                */
+                            email: correo,
+
+                            password: password
+
+                        });
 
                 if (resultado.error) {
 
@@ -624,13 +886,17 @@ if (formLogin) {
                         const registro =
                             await supabaseClient.auth
                                 .signUp({
+
                                     email: correo,
+
                                     password: password
+
                                 });
 
                         if (registro.error) {
 
                             throw registro.error;
+
                         }
 
                         if (registro.data?.session) {
@@ -650,11 +916,13 @@ if (formLogin) {
                                 "Cuenta creada. Revisa tu correo para confirmar tu cuenta.",
                                 "exito"
                             );
+
                         }
 
                     } else {
 
                         throw resultado.error;
+
                     }
 
                 } else {
@@ -667,6 +935,7 @@ if (formLogin) {
                         "Inicio de sesión exitoso.",
                         "exito"
                     );
+
                 }
 
             } catch (error) {
@@ -685,21 +954,31 @@ if (formLogin) {
             } finally {
 
                 if (btnLogin) {
-                    btnLogin.disabled = false;
+
+                    btnLogin.disabled =
+                        false;
+
                     btnLogin.textContent =
                         "Iniciar sesión";
+
                 }
+
             }
+
         }
     );
+
 }
 
 
 /* =========================================================
-   MOSTRAR / OCULTAR PASSWORD
-   ========================================================= */
+   MOSTRAR / OCULTAR CONTRASEÑA
+========================================================= */
 
-if (mostrarPassword && loginPassword) {
+if (
+    mostrarPassword &&
+    loginPassword
+) {
 
     mostrarPassword.addEventListener(
         "change",
@@ -709,14 +988,16 @@ if (mostrarPassword && loginPassword) {
                 mostrarPassword.checked
                     ? "text"
                     : "password";
+
         }
     );
+
 }
 
 
 /* =========================================================
    BOTONES DE CANJE
-   ========================================================= */
+========================================================= */
 
 function prepararBotonesCanje() {
 
@@ -725,114 +1006,142 @@ function prepararBotonesCanje() {
             ".btn-canjear"
         );
 
-    botones.forEach(function (boton) {
+    botones.forEach(
+        function (boton) {
 
-        boton.addEventListener(
-            "click",
-            async function (event) {
+            /*
+                Evita registrar dos veces
+                el mismo evento.
+            */
 
-                event.preventDefault();
-                event.stopPropagation();
+            if (
+                boton.dataset.eventoCanjePreparado ===
+                "true"
+            ) {
 
-                if (!usuarioActual) {
+                return;
 
-                    alert(
-                        "Debes iniciar sesión para realizar un canje."
-                    );
+            }
 
-                    return;
-                }
+            boton.dataset.eventoCanjePreparado =
+                "true";
 
-                const recompensa =
-                    boton.dataset.recompensa ||
-                    "Canje";
+            boton.addEventListener(
+                "click",
+                async function (event) {
 
-                const categoria =
-                    boton.dataset.categoria ||
-                    boton.closest(
-                        "[data-categoria]"
-                    )?.dataset.categoria ||
-                    recompensa;
+                    event.preventDefault();
 
-                const puntosMaximos =
-                    Number(
-                        boton.dataset.puntos || 0
-                    );
+                    event.stopPropagation();
 
-                if (
-                    !Number.isFinite(
-                        puntosMaximos
-                    ) ||
-                    puntosMaximos <= 0
-                ) {
-
-                    alert(
-                        "El nivel de puntos no es válido."
-                    );
-
-                    return;
-                }
-
-                try {
-
-                    const resultado =
-                        await supabaseClient
-                            .from("perfiles")
-                            .select('"Puntos"')
-                            .eq(
-                                "id",
-                                usuarioActual.id
-                            )
-                            .single();
-
-                    if (resultado.error) {
-                        throw resultado.error;
-                    }
-
-                    const puntosActuales =
-                        Number(
-                            resultado.data?.["Puntos"] ??
-                            0
-                        );
-
-                    if (
-                        puntosActuales <
-                        puntosMaximos
-                    ) {
+                    if (!usuarioActual) {
 
                         alert(
-                            `Necesitas ${puntosMaximos.toLocaleString("es-GT")} puntos para acceder a este nivel. Actualmente tienes ${puntosActuales.toLocaleString("es-GT")}.`
+                            "Debes iniciar sesión para realizar un canje."
                         );
 
                         return;
                     }
 
-                    await abrirSelectorProductosCanje(
-                        recompensa,
-                        categoria,
-                        puntosMaximos
-                    );
+                    const recompensa =
+                        boton.dataset.recompensa ||
+                        "Canje";
 
-                } catch (error) {
+                    const categoria =
+                        boton.dataset.categoria ||
+                        boton.closest(
+                            "[data-categoria]"
+                        )?.dataset.categoria ||
+                        recompensa;
 
-                    console.error(
-                        "Error preparando canje:",
-                        error
-                    );
+                    const puntosMaximos =
+                        Number(
+                            boton.dataset.puntos ||
+                            0
+                        );
 
-                    alert(
-                        "No se pudo iniciar el canje."
-                    );
+                    if (
+                        !Number.isFinite(
+                            puntosMaximos
+                        ) ||
+                        puntosMaximos <= 0
+                    ) {
+
+                        alert(
+                            "El nivel de puntos no es válido."
+                        );
+
+                        return;
+                    }
+
+                    try {
+
+                        const {
+                            data,
+                            error
+                        } =
+                            await supabaseClient
+                                .from("perfiles")
+                                .select('"Puntos"')
+                                .eq(
+                                    "id",
+                                    usuarioActual.id
+                                )
+                                .single();
+
+                        if (error) {
+                            throw error;
+                        }
+
+                        const puntosActuales =
+                            Number(
+                                data?.["Puntos"] ??
+                                0
+                            );
+
+                        if (
+                            puntosActuales <
+                            puntosMaximos
+                        ) {
+
+                            alert(
+                                `Necesitas ${puntosMaximos.toLocaleString("es-GT")} puntos para acceder a este nivel. Actualmente tienes ${puntosActuales.toLocaleString("es-GT")}.`
+                            );
+
+                            return;
+                        }
+
+                        await abrirSelectorProductosCanje(
+                            recompensa,
+                            categoria,
+                            puntosMaximos
+                        );
+
+                    } catch (error) {
+
+                        console.error(
+                            "Error preparando canje:",
+                            error
+                        );
+
+                        alert(
+                            "No se pudo iniciar el canje."
+                        );
+
+                    }
+
                 }
-            }
-        );
-    });
+            );
+
+        }
+    );
+
 }
 
 
 /* =========================================================
    ACTUALIZAR ESTADO DE LOS BOTONES
-   ========================================================= */
+========================================================= */
 
 function actualizarBotonesCanje() {
 
@@ -846,46 +1155,56 @@ function actualizarBotonesCanje() {
             perfilActual?.["Puntos"] ?? 0
         );
 
-    botones.forEach(function (boton) {
+    botones.forEach(
+        function (boton) {
 
-        const puntosMaximos =
-            Number(
-                boton.dataset.puntos || 0
-            );
+            const puntosMaximos =
+                Number(
+                    boton.dataset.puntos ||
+                    0
+                );
 
-        if (!usuarioActual) {
+            if (!usuarioActual) {
 
-            boton.disabled = false;
-            boton.textContent =
-                "Canjear";
+                boton.disabled =
+                    false;
 
-            return;
+                boton.textContent =
+                    "Canjear";
+
+                return;
+            }
+
+            if (
+                puntosActuales <
+                puntosMaximos
+            ) {
+
+                boton.disabled =
+                    true;
+
+                boton.textContent =
+                    "Puntos insuficientes";
+
+            } else {
+
+                boton.disabled =
+                    false;
+
+                boton.textContent =
+                    "Canjear";
+
+            }
+
         }
+    );
 
-        if (
-            puntosActuales <
-            puntosMaximos
-        ) {
-
-            boton.disabled = true;
-
-            boton.textContent =
-                "Puntos insuficientes";
-
-        } else {
-
-            boton.disabled = false;
-
-            boton.textContent =
-                "Canjear";
-        }
-    });
 }
 
 
 /* =========================================================
-   ABRIR MODAL DE PRODUCTOS
-   ========================================================= */
+   ABRIR MODAL DE PRODUCTOS PARA CANJE
+========================================================= */
 
 async function abrirSelectorProductosCanje(
     recompensa,
@@ -934,20 +1253,30 @@ async function abrirSelectorProductosCanje(
 
         texto.textContent =
             `${categoriaSeleccionada} · Hasta Q${puntosMaximos.toLocaleString("es-GT")}. Elige el producto que deseas canjear.`;
+
     }
 
     if (mensaje) {
-        mensaje.textContent = "";
+
+        mensaje.textContent =
+            "";
+
     }
 
     contenedor.innerHTML = `
         <div class="cargando-canjes">
+
             <i class="fa-solid fa-spinner fa-spin"></i>
-            <span>Cargando productos...</span>
+
+            <span>
+                Cargando productos...
+            </span>
+
         </div>
     `;
 
-    modal.style.display = "flex";
+    modal.style.display =
+        "flex";
 
     document.body.style.overflow =
         "hidden";
@@ -958,25 +1287,19 @@ async function abrirSelectorProductosCanje(
             function () {
 
                 cerrarModalCanje();
+
             };
+
     }
 
     try {
 
-        /*
-            Primero cargamos las categorías.
-
-            Esto permite traducir categoria_id
-            al nombre real de la categoría.
-        */
-
         await cargarCategorias();
 
-        /*
-            Obtener todos los productos activos.
-        */
-
-        const resultado =
+        const {
+            data,
+            error
+        } =
             await supabaseClient
                 .from("productos")
                 .select("*")
@@ -988,12 +1311,12 @@ async function abrirSelectorProductosCanje(
                     }
                 );
 
-        if (resultado.error) {
-            throw resultado.error;
+        if (error) {
+            throw error;
         }
 
         const todosLosProductos =
-            resultado.data || [];
+            data || [];
 
         const categoriaNormalizada =
             normalizarTexto(
@@ -1001,22 +1324,7 @@ async function abrirSelectorProductosCanje(
             );
 
         /*
-            =================================================
-            FILTRO IMPORTANTE
-            =================================================
-
-            Aquí se muestran SOLO productos de la categoría
-            seleccionada.
-
-            Ejemplo:
-
-            Playeras -> solamente Playeras
-            Gorras -> solamente Gorras
-            Hoodies -> solamente Hoodies
-            etc.
-
-            También se verifica que el precio no supere
-            el límite de puntos del nivel.
+            Filtrar por categoría y precio.
         */
 
         const productos =
@@ -1032,7 +1340,9 @@ async function abrirSelectorProductosCanje(
                         precio <= 0 ||
                         precio > puntosMaximos
                     ) {
+
                         return false;
+
                     }
 
                     const categoriaProducto =
@@ -1046,6 +1356,7 @@ async function abrirSelectorProductosCanje(
                         categoriaProducto ===
                         categoriaNormalizada
                     );
+
                 }
             );
 
@@ -1053,14 +1364,26 @@ async function abrirSelectorProductosCanje(
 
             contenedor.innerHTML = `
                 <div class="sin-productos-canje">
+
                     <i class="fa-solid fa-box-open"></i>
-                    <h3>No hay productos disponibles</h3>
+
+                    <h3>
+                        No hay productos disponibles
+                    </h3>
+
                     <p>
+
                         No encontramos productos de
-                        ${escapeHTML(categoriaSeleccionada)}
+                        ${escapeHTML(
+                categoriaSeleccionada
+            )}
                         de hasta
-                        Q${puntosMaximos.toLocaleString("es-GT")}.
+                        Q${puntosMaximos.toLocaleString(
+                "es-GT"
+            )}.
+
                     </p>
+
                 </div>
             `;
 
@@ -1068,121 +1391,149 @@ async function abrirSelectorProductosCanje(
         }
 
         contenedor.innerHTML =
-            productos.map(
-                function (producto) {
+            productos
+                .map(
+                    function (producto) {
 
-                    const nombre =
-                        producto.nombre ||
-                        producto.nombre_producto ||
-                        "Producto";
+                        const nombre =
+                            producto.nombre ||
+                            producto.nombre_producto ||
+                            "Producto";
 
-                    const precio =
-                        obtenerPrecioProducto(
-                            producto
-                        );
+                        const precio =
+                            obtenerPrecioProducto(
+                                producto
+                            );
 
-                    const imagen =
-                        obtenerImagenProducto(
-                            producto
-                        );
+                        const imagen =
+                            obtenerImagenProducto(
+                                producto
+                            );
 
-                    const categoria =
-                        obtenerCategoriaProducto(
-                            producto
-                        ) ||
-                        categoriaSeleccionada;
+                        const categoria =
+                            obtenerCategoriaProducto(
+                                producto
+                            ) ||
+                            categoriaSeleccionada;
 
-                    const idProducto =
-                        producto.id;
+                        const idProducto =
+                            producto.id;
 
-                    return `
-                        <article
-                            class="producto-canje-card"
-                        >
-
-                            <div
-                                class="producto-canje-foto"
-                            >
-
-                                ${imagen
-                            ? `
-                                            <img
-                                                src="${escapeHTML(imagen)}"
-                                                alt="${escapeHTML(nombre)}"
-                                                class="producto-canje-imagen"
-                                                loading="lazy"
-                                                onerror="
-                                                    this.style.display='none';
-                                                    this.parentElement
-                                                        .querySelector('.producto-canje-sin-imagen')
-                                                        .style.display='flex';
-                                                "
-                                            >
-
-                                            <div
-                                                class="producto-canje-sin-imagen"
-                                                style="display:none;"
-                                            >
-                                                <i class="fa-solid fa-image"></i>
-                                            </div>
-                                        `
-                            : `
-                                            <div
-                                                class="producto-canje-sin-imagen"
-                                                style="display:flex;"
-                                            >
-                                                <i class="fa-solid fa-image"></i>
-                                            </div>
-                                        `
-                        }
-
-                            </div>
-
-                            <div
-                                class="producto-canje-info"
+                        return `
+                            <article
+                                class="producto-canje-card"
                             >
 
                                 <div
-                                    class="producto-canje-categoria"
+                                    class="producto-canje-foto"
                                 >
-                                    ${escapeHTML(categoria)}
-                                </div>
 
-                                <h3>
-                                    ${escapeHTML(nombre)}
-                                </h3>
+                                    ${imagen
+                                ? `
 
-                                <div
-                                    class="producto-canje-precio"
-                                >
-                                    Q${precio.toLocaleString(
-                            "es-GT",
-                            {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
+                                                <img
+                                                    src="${escapeHTML(imagen)}"
+                                                    alt="${escapeHTML(nombre)}"
+                                                    class="producto-canje-imagen"
+                                                    loading="lazy"
+
+                                                    onerror="
+                                                        this.style.display='none';
+
+                                                        this.parentElement
+                                                            .querySelector('.producto-canje-sin-imagen')
+                                                            .style.display='flex';
+                                                    "
+                                                >
+
+                                                <div
+                                                    class="producto-canje-sin-imagen"
+                                                    style="display:none;"
+                                                >
+
+                                                    <i class="fa-solid fa-image"></i>
+
+                                                </div>
+
+                                            `
+                                : `
+
+                                                <div
+                                                    class="producto-canje-sin-imagen"
+                                                    style="display:flex;"
+                                                >
+
+                                                    <i class="fa-solid fa-image"></i>
+
+                                                </div>
+
+                                            `
                             }
-                        )}
+
                                 </div>
 
-                                <button
-                                    type="button"
-                                    class="btn-seleccionar-producto-canje"
-                                    data-producto-id="${escapeHTML(idProducto)}"
+
+                                <div
+                                    class="producto-canje-info"
                                 >
-                                    <i class="fa-solid fa-gift"></i>
-                                    Seleccionar
-                                </button>
 
-                            </div>
+                                    <div
+                                        class="producto-canje-categoria"
+                                    >
 
-                        </article>
-                    `;
-                }
-            ).join("");
+                                        ${escapeHTML(
+                                categoria
+                            )}
 
-        /*
-            Preparar botones de selección.
-        */
+                                    </div>
+
+
+                                    <h3>
+                                        ${escapeHTML(
+                                nombre
+                            )}
+                                    </h3>
+
+
+                                    <div
+                                        class="producto-canje-precio"
+                                    >
+
+                                        Q${precio.toLocaleString(
+                                "es-GT",
+                                {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }
+                            )}
+
+                                    </div>
+
+
+                                    <button
+                                        type="button"
+                                        class="btn-seleccionar-producto-canje"
+                                        data-producto-id="${escapeHTML(
+                                idProducto
+                            )}"
+                                    >
+
+                                        <i
+                                            class="fa-solid fa-gift"
+                                        ></i>
+
+                                        Seleccionar
+
+                                    </button>
+
+                                </div>
+
+                            </article>
+                        `;
+
+                    }
+                )
+                .join("");
 
         contenedor
             .querySelectorAll(
@@ -1201,10 +1552,14 @@ async function abrirSelectorProductosCanje(
                             const producto =
                                 productos.find(
                                     function (item) {
-                                        return String(
-                                            item.id
-                                        ) ===
-                                            String(id);
+
+                                        return (
+                                            String(
+                                                item.id
+                                            ) ===
+                                            String(id)
+                                        );
+
                                     }
                                 );
 
@@ -1218,8 +1573,10 @@ async function abrirSelectorProductosCanje(
                                 categoriaSeleccionada,
                                 puntosMaximos
                             );
+
                         }
                     );
+
                 }
             );
 
@@ -1232,21 +1589,31 @@ async function abrirSelectorProductosCanje(
 
         contenedor.innerHTML = `
             <div class="sin-productos-canje">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <h3>Error al cargar productos</h3>
+
+                <i
+                    class="fa-solid fa-triangle-exclamation"
+                ></i>
+
+                <h3>
+                    Error al cargar productos
+                </h3>
+
                 <p>
                     No se pudieron cargar los productos.
                     Intenta nuevamente.
                 </p>
+
             </div>
         `;
+
     }
+
 }
 
 
 /* =========================================================
    CERRAR MODAL
-   ========================================================= */
+========================================================= */
 
 function cerrarModalCanje() {
 
@@ -1256,16 +1623,21 @@ function cerrarModalCanje() {
         );
 
     if (modal) {
-        modal.style.display = "none";
+
+        modal.style.display =
+            "none";
+
     }
 
-    document.body.style.overflow = "";
+    document.body.style.overflow =
+        "";
+
 }
 
 
 /* =========================================================
    CERRAR MODAL AL HACER CLICK FUERA
-   ========================================================= */
+========================================================= */
 
 const modalCanjeProducto =
     document.getElementById(
@@ -1284,15 +1656,18 @@ if (modalCanjeProducto) {
             ) {
 
                 cerrarModalCanje();
+
             }
+
         }
     );
+
 }
 
 
 /* =========================================================
    ESC PARA CERRAR MODAL
-   ========================================================= */
+========================================================= */
 
 document.addEventListener(
     "keydown",
@@ -1313,15 +1688,18 @@ document.addEventListener(
             ) {
 
                 cerrarModalCanje();
+
             }
+
         }
+
     }
 );
 
 
 /* =========================================================
-   CONFIRMAR PRODUCTO
-   ========================================================= */
+   CONFIRMAR PRODUCTO DE CANJE
+========================================================= */
 
 async function confirmarProductoCanje(
     producto,
@@ -1389,11 +1767,10 @@ async function confirmarProductoCanje(
     /*
         1 punto = Q1.
 
-        Si el precio tiene centavos,
-        se redondea hacia arriba.
+        Los precios con centavos se redondean hacia arriba.
 
         Ejemplo:
-        Q149.50 = 150 puntos
+        Q149.50 = 150 puntos.
     */
 
     const puntosUtilizados =
@@ -1401,13 +1778,21 @@ async function confirmarProductoCanje(
 
     const confirmacion =
         window.confirm(
-            `¿Deseas canjear "${nombreProducto}" por ${puntosUtilizados.toLocaleString("es-GT")} puntos?\n\nPrecio: Q${precio.toLocaleString(
+
+            `¿Deseas canjear "${nombreProducto}" por ${puntosUtilizados.toLocaleString("es-GT")} puntos?\n\n` +
+
+            `Precio: Q${precio.toLocaleString(
                 "es-GT",
                 {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 }
-            )}\n\nNivel máximo: ${puntosMaximos.toLocaleString("es-GT")} puntos`
+            )}\n\n` +
+
+            `Nivel máximo: ${puntosMaximos.toLocaleString(
+                "es-GT"
+            )} puntos`
+
         );
 
     if (!confirmacion) {
@@ -1417,11 +1802,13 @@ async function confirmarProductoCanje(
     try {
 
         /*
-            Obtener puntos reales nuevamente
-            para evitar errores si cambió la cantidad.
+            Consultar nuevamente el saldo actual.
         */
 
-        const resultadoPerfil =
+        const {
+            data: perfil,
+            error: errorPerfil
+        } =
             await supabaseClient
                 .from("perfiles")
                 .select('"Puntos"')
@@ -1431,13 +1818,13 @@ async function confirmarProductoCanje(
                 )
                 .single();
 
-        if (resultadoPerfil.error) {
-            throw resultadoPerfil.error;
+        if (errorPerfil) {
+            throw errorPerfil;
         }
 
         const puntosActuales =
             Number(
-                resultadoPerfil.data?.["Puntos"] ??
+                perfil?.["Puntos"] ??
                 0
             );
 
@@ -1457,32 +1844,41 @@ async function confirmarProductoCanje(
             puntosActuales -
             puntosUtilizados;
 
+
         /*
-            Actualizar puntos.
+            Descontar puntos.
         */
 
-        const actualizacion =
+        const {
+            error: errorActualizacion
+        } =
             await supabaseClient
                 .from("perfiles")
                 .update({
-                    "Puntos": puntosRestantes,
+
+                    "Puntos":
+                        puntosRestantes,
+
                     actualizado_en:
                         new Date().toISOString()
+
                 })
                 .eq(
                     "id",
                     usuarioActual.id
                 );
 
-        if (actualizacion.error) {
-            throw actualizacion.error;
+        if (errorActualizacion) {
+            throw errorActualizacion;
         }
 
+
         /*
-            Registrar canje.
+            Registrar el canje en Supabase.
         */
 
         const registroCanje = {
+
             usuario_id:
                 usuarioActual.id,
 
@@ -1491,40 +1887,63 @@ async function confirmarProductoCanje(
 
             puntos:
                 puntosUtilizados
+
         };
 
-        const canjeInsertado =
+
+        const {
+            data: canjeInsertado,
+            error: errorCanje
+        } =
             await supabaseClient
                 .from("canjes")
-                .insert(
-                    registroCanje
-                )
+                .insert(registroCanje)
                 .select()
                 .single();
 
+
         /*
-            Si falla el registro del canje,
-            devolver los puntos.
+            Si falla el registro,
+            intentar devolver los puntos.
         */
 
-        if (canjeInsertado.error) {
+        if (errorCanje) {
 
-            await supabaseClient
-                .from("perfiles")
-                .update({
-                    "Puntos":
-                        puntosActuales
-                })
-                .eq(
-                    "id",
-                    usuarioActual.id
+            const {
+                error: errorReversion
+            } =
+                await supabaseClient
+                    .from("perfiles")
+                    .update({
+
+                        "Puntos":
+                            puntosActuales,
+
+                        actualizado_en:
+                            new Date().toISOString()
+
+                    })
+                    .eq(
+                        "id",
+                        usuarioActual.id
+                    );
+
+            if (errorReversion) {
+
+                console.error(
+                    "No se pudieron restaurar los puntos:",
+                    errorReversion
                 );
 
-            throw canjeInsertado.error;
+            }
+
+            throw errorCanje;
+
         }
 
+
         /*
-            Generar código.
+            Generar código del canje.
         */
 
         const codigo =
@@ -1534,17 +1953,18 @@ async function confirmarProductoCanje(
                 .substring(2, 8)
                 .toUpperCase();
 
+
         /*
-            Guardar información detallada
-            en localStorage.
+            Guardar los detalles locales del canje.
         */
 
         const canjeLocal = {
 
-            activo: true,
+            activo:
+                true,
 
             id:
-                canjeInsertado.data?.id ||
+                canjeInsertado?.id ||
                 null,
 
             usuario_id:
@@ -1568,7 +1988,8 @@ async function confirmarProductoCanje(
             producto_categoria:
                 obtenerCategoriaProducto(
                     producto
-                ) || categoria,
+                ) ||
+                categoria,
 
             producto_imagen:
                 imagen,
@@ -1593,7 +2014,9 @@ async function confirmarProductoCanje(
 
             creado_en:
                 new Date().toISOString()
+
         };
+
 
         let canjesGuardados = [];
 
@@ -1603,22 +2026,33 @@ async function confirmarProductoCanje(
                 JSON.parse(
                     localStorage.getItem(
                         "dlLuxuryCanje"
-                    ) || "[]"
+                    ) ||
+                    "[]"
                 );
 
-            if (Array.isArray(existentes)) {
+            if (
+                Array.isArray(
+                    existentes
+                )
+            ) {
+
                 canjesGuardados =
                     existentes;
+
             }
 
         } catch (error) {
 
-            canjesGuardados = [];
+            canjesGuardados =
+                [];
+
         }
+
 
         canjesGuardados.unshift(
             canjeLocal
         );
+
 
         localStorage.setItem(
             "dlLuxuryCanje",
@@ -1627,8 +2061,9 @@ async function confirmarProductoCanje(
             )
         );
 
+
         /*
-            Actualizar perfil local.
+            Actualizar el perfil local.
         */
 
         if (perfilActual) {
@@ -1638,6 +2073,7 @@ async function confirmarProductoCanje(
 
             perfilActual.actualizado_en =
                 new Date().toISOString();
+
         }
 
         if (puntosUsuario) {
@@ -1646,63 +2082,111 @@ async function confirmarProductoCanje(
                 puntosRestantes.toLocaleString(
                     "es-GT"
                 );
-        }
 
-        /*
-            Actualizar botones.
-        */
+        }
 
         actualizarBotonesCanje();
 
-        /*
-            Cerrar modal.
-        */
-
         cerrarModalCanje();
-
-        /*
-            Recargar historial.
-        */
 
         await cargarHistorialCanjes();
 
-        /*
-            WhatsApp
-        */
+
+        /* =====================================================
+           WHATSAPP
+           
+           ÚNICO CAMBIO:
+           - Número actualizado
+           - Indica que se paga/canjea con puntos
+           - Incluye foto del producto
+        ===================================================== */
 
         const mensajeWhatsApp =
-            `Hola, quiero utilizar mi canje de DL Luxury.
 
-Producto: ${nombreProducto}
-Categoría: ${categoria}
-Precio: Q${precio.toLocaleString(
+            `Hola, quiero utilizar mi canje de DL Luxury.\n\n` +
+
+            `🎁 CANJE DE PRODUCTO\n` +
+            `━━━━━━━━━━━━━━━━━━\n\n` +
+
+            `📦 Producto: ${nombreProducto}\n` +
+
+            `🏷️ Categoría: ${categoria}\n` +
+
+            `💰 Precio: Q${precio.toLocaleString(
                 "es-GT",
                 {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 }
-            )}
-Puntos utilizados: ${puntosUtilizados}
-Nivel máximo: ${puntosMaximos}
-Puntos restantes: ${puntosRestantes}
+            )}\n` +
 
-Código de canje: ${codigo}
+            `⭐ Puntos utilizados: ${puntosUtilizados.toLocaleString(
+                "es-GT"
+            )}\n` +
 
-Imagen: ${imagen || "Sin imagen"}`;
+            `⭐ Nivel máximo: ${puntosMaximos.toLocaleString(
+                "es-GT"
+            )}\n` +
+
+            `⭐ Puntos restantes: ${puntosRestantes.toLocaleString(
+                "es-GT"
+            )}\n` +
+
+            `🎟️ Código de canje: ${codigo}\n\n` +
+
+            `💳 FORMA DE PAGO: CANJE CON PUNTOS\n` +
+
+            `El producto será pagado/canjeado utilizando mis puntos de DL Luxury.\n` +
+
+            `No realizaré un pago en efectivo por este producto.\n\n` +
+
+            `📷 Foto del producto:\n` +
+
+            `${imagen || "Sin imagen disponible"}\n\n` +
+
+            `Quedo pendiente de la confirmación del canje.`;
+
+
+        /*
+            Número de WhatsApp:
+
+            +502 5725 5468
+
+            Para wa.me se escribe:
+            50257255468
+        */
+
+        const numeroWhatsApp =
+            "50257255468";
+
 
         const urlWhatsApp =
-            "https://wa.me/50246880894?text=" +
+            "https://wa.me/" +
+            numeroWhatsApp +
+            "?text=" +
             encodeURIComponent(
                 mensajeWhatsApp
             );
 
+
         /*
-            Mostrar mensaje.
+            Mensaje de éxito original.
         */
 
         alert(
-            `¡Canje realizado correctamente!\n\nProducto: ${nombreProducto}\nPuntos utilizados: ${puntosUtilizados}\nPuntos restantes: ${puntosRestantes}\n\nCódigo: ${codigo}`
+
+            `¡Canje realizado correctamente!\n\n` +
+
+            `Producto: ${nombreProducto}\n` +
+
+            `Puntos utilizados: ${puntosUtilizados}\n` +
+
+            `Puntos restantes: ${puntosRestantes}\n\n` +
+
+            `Código: ${codigo}`
+
         );
+
 
         /*
             Abrir WhatsApp.
@@ -1712,6 +2196,7 @@ Imagen: ${imagen || "Sin imagen"}`;
             urlWhatsApp,
             "_blank"
         );
+
 
     } catch (error) {
 
@@ -1724,13 +2209,15 @@ Imagen: ${imagen || "Sin imagen"}`;
             error.message ||
             "No se pudo completar el canje."
         );
+
     }
+
 }
 
 
 /* =========================================================
    HISTORIAL DE CANJES
-   ========================================================= */
+========================================================= */
 
 async function cargarHistorialCanjes() {
 
@@ -1742,15 +2229,25 @@ async function cargarHistorialCanjes() {
     }
 
     historialCanjes.innerHTML = `
+
         <div class="cargando-canjes">
+
             <i class="fa-solid fa-spinner fa-spin"></i>
-            <span>Cargando historial...</span>
+
+            <span>
+                Cargando historial...
+            </span>
+
         </div>
+
     `;
 
     try {
 
-        const resultado =
+        const {
+            data,
+            error
+        } =
             await supabaseClient
                 .from("canjes")
                 .select(`
@@ -1770,93 +2267,119 @@ async function cargarHistorialCanjes() {
                     }
                 );
 
-        if (resultado.error) {
-            throw resultado.error;
+        if (error) {
+            throw error;
         }
 
         const canjes =
-            resultado.data || [];
+            data || [];
 
         if (!canjes.length) {
 
             historialCanjes.innerHTML = `
+
                 <div class="sin-historial">
-                    <i class="fa-solid fa-gift"></i>
+
+                    <i
+                        class="fa-solid fa-gift"
+                    ></i>
+
                     <p>
                         Aún no tienes canjes realizados.
                     </p>
+
                 </div>
+
             `;
 
             return;
         }
 
         historialCanjes.innerHTML =
-            canjes.map(
-                function (canje) {
+            canjes
+                .map(
+                    function (canje) {
 
-                    const fecha =
-                        canje.creado_en
-                            ? new Date(
-                                canje.creado_en
-                            ).toLocaleString(
-                                "es-GT",
-                                {
-                                    dateStyle:
-                                        "medium",
-                                    timeStyle:
-                                        "short"
-                                }
-                            )
-                            : "";
+                        const fecha =
+                            canje.creado_en
+                                ? new Date(
+                                    canje.creado_en
+                                ).toLocaleString(
+                                    "es-GT",
+                                    {
+                                        dateStyle:
+                                            "medium",
 
-                    const puntos =
-                        Number(
-                            canje.puntos || 0
-                        );
+                                        timeStyle:
+                                            "short"
+                                    }
+                                )
+                                : "";
 
-                    return `
-                        <div
-                            class="historial-item"
-                        >
+                        const puntos =
+                            Number(
+                                canje.puntos ||
+                                0
+                            );
 
-                            <div
-                                class="historial-icono"
-                            >
-                                <i class="fa-solid fa-gift"></i>
-                            </div>
+                        return `
 
                             <div
-                                class="historial-info"
+                                class="historial-item"
                             >
 
-                                <h4>
-                                    ${escapeHTML(
-                        canje.recompensa ||
-                        "Canje"
-                    )}
-                                </h4>
+                                <div
+                                    class="historial-icono"
+                                >
 
-                                <span>
-                                    ${escapeHTML(
-                        fecha
-                    )}
-                                </span>
+                                    <i
+                                        class="fa-solid fa-gift"
+                                    ></i>
+
+                                </div>
+
+
+                                <div
+                                    class="historial-info"
+                                >
+
+                                    <h4>
+
+                                        ${escapeHTML(
+                            canje.recompensa ||
+                            "Canje"
+                        )}
+
+                                    </h4>
+
+                                    <span>
+
+                                        ${escapeHTML(
+                            fecha
+                        )}
+
+                                    </span>
+
+                                </div>
+
+
+                                <div
+                                    class="historial-puntos"
+                                >
+
+                                    -${puntos.toLocaleString(
+                            "es-GT"
+                        )} pts
+
+                                </div>
 
                             </div>
 
-                            <div
-                                class="historial-puntos"
-                            >
-                                -${puntos.toLocaleString(
-                        "es-GT"
-                    )} pts
-                            </div>
+                        `;
 
-                        </div>
-                    `;
-                }
-            ).join("");
+                    }
+                )
+                .join("");
 
     } catch (error) {
 
@@ -1866,20 +2389,31 @@ async function cargarHistorialCanjes() {
         );
 
         historialCanjes.innerHTML = `
-            <div class="sin-historial">
-                <i class="fa-solid fa-triangle-exclamation"></i>
+
+            <div
+                class="sin-historial"
+            >
+
+                <i
+                    class="fa-solid fa-triangle-exclamation"
+                ></i>
+
                 <p>
                     No se pudo cargar el historial.
                 </p>
+
             </div>
+
         `;
+
     }
+
 }
 
 
 /* =========================================================
    CERRAR SESIÓN
-   ========================================================= */
+========================================================= */
 
 if (btnCerrarSesion) {
 
@@ -1898,15 +2432,16 @@ if (btnCerrarSesion) {
 
             try {
 
-                const resultado =
+                const { error } =
                     await supabaseClient.auth
                         .signOut();
 
-                if (resultado.error) {
-                    throw resultado.error;
+                if (error) {
+                    throw error;
                 }
 
                 usuarioActual = null;
+
                 perfilActual = null;
 
                 mostrarFormularioLogin();
@@ -1933,15 +2468,18 @@ if (btnCerrarSesion) {
                 alert(
                     "No se pudo cerrar la sesión."
                 );
+
             }
+
         }
     );
+
 }
 
 
 /* =========================================================
    CONTADOR DEL CARRITO
-   ========================================================= */
+========================================================= */
 
 function actualizarContadorCarrito() {
 
@@ -1955,20 +2493,27 @@ function actualizarContadorCarrito() {
             JSON.parse(
                 localStorage.getItem(
                     "dlLuxuryCarrito"
-                ) || "[]"
+                ) ||
+                "[]"
             );
 
-        if (!Array.isArray(carrito)) {
+        if (
+            !Array.isArray(carrito)
+        ) {
 
             contadorCarrito.textContent =
                 "0";
 
             return;
+
         }
 
         const cantidad =
             carrito.reduce(
-                function (total, producto) {
+                function (
+                    total,
+                    producto
+                ) {
 
                     const cantidadProducto =
                         Number(
@@ -1987,6 +2532,7 @@ function actualizarContadorCarrito() {
                                 : 1
                         )
                     );
+
                 },
                 0
             );
@@ -2003,35 +2549,35 @@ function actualizarContadorCarrito() {
 
         contadorCarrito.textContent =
             "0";
+
     }
+
 }
 
 
 /* =========================================================
    SESIÓN INICIAL
-   ========================================================= */
+========================================================= */
 
 async function iniciarPerfil() {
 
     try {
 
-        /*
-            Cargar categorías desde el inicio
-            para que categoria_id esté disponible.
-        */
-
         await cargarCategorias();
 
-        const resultado =
+        const {
+            data,
+            error
+        } =
             await supabaseClient.auth
                 .getSession();
 
-        if (resultado.error) {
-            throw resultado.error;
+        if (error) {
+            throw error;
         }
 
         const sesion =
-            resultado.data?.session;
+            data?.session;
 
         if (sesion?.user) {
 
@@ -2042,6 +2588,7 @@ async function iniciarPerfil() {
         } else {
 
             mostrarFormularioLogin();
+
         }
 
     } catch (error) {
@@ -2052,27 +2599,29 @@ async function iniciarPerfil() {
         );
 
         mostrarFormularioLogin();
+
     }
 
     actualizarContadorCarrito();
 
     prepararBotonesCanje();
+
 }
 
 
 /* =========================================================
    CAMBIOS DE AUTENTICACIÓN
-   ========================================================= */
+========================================================= */
 
 supabaseClient.auth.onAuthStateChange(
-    async function (
+    function (
         event,
         session
     ) {
 
         /*
-            Evitar hacer procesos innecesarios
-            cuando la sesión sigue igual.
+            Se programa la carga del perfil
+            fuera del callback inmediato.
         */
 
         if (
@@ -2084,23 +2633,33 @@ supabaseClient.auth.onAuthStateChange(
             )
         ) {
 
-            await cargarPerfil(
-                session.user
-            );
+            Promise
+                .resolve()
+                .then(
+                    function () {
+
+                        return cargarPerfil(
+                            session.user
+                        );
+
+                    }
+                );
 
         } else if (
             event === "SIGNED_OUT"
         ) {
 
             mostrarFormularioLogin();
+
         }
+
     }
 );
 
 
 /* =========================================================
-   CARRITO
-   ========================================================= */
+   CAMBIOS DEL CARRITO EN OTRAS PESTAÑAS
+========================================================= */
 
 window.addEventListener(
     "storage",
@@ -2112,14 +2671,16 @@ window.addEventListener(
         ) {
 
             actualizarContadorCarrito();
+
         }
+
     }
 );
 
 
 /* =========================================================
    INICIAR TODO
-   ========================================================= */
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -2129,3 +2690,621 @@ document.addEventListener(
 
     }
 );
+
+
+/* =========================================================
+   CATÁLOGO PRINCIPAL DE PRODUCTOS PARA CANJE
+========================================================= */
+
+async function cargarCatalogoCanje() {
+
+    const catalogo =
+        document.getElementById(
+            "catalogoCanje"
+        );
+
+    if (!catalogo) {
+
+        console.warn(
+            "No existe #catalogoCanje"
+        );
+
+        return;
+    }
+
+    catalogo.innerHTML = `
+
+        <div
+            class="productos-canje-cargando"
+        >
+
+            <i
+                class="fa-solid fa-spinner fa-spin"
+            ></i>
+
+            <p>
+                Cargando productos...
+            </p>
+
+        </div>
+
+    `;
+
+    try {
+
+        await cargarCategorias();
+
+        const {
+            data: productos,
+            error
+        } =
+            await supabaseClient
+                .from("productos")
+                .select("*")
+                .eq("activo", true)
+                .order(
+                    "id",
+                    {
+                        ascending: false
+                    }
+                );
+
+        if (error) {
+
+            console.error(
+                "Error Supabase productos:",
+                error
+            );
+
+            throw error;
+
+        }
+
+        console.log(
+            "PRODUCTOS RECIBIDOS:",
+            productos
+        );
+
+        if (
+            !productos ||
+            productos.length === 0
+        ) {
+
+            catalogo.innerHTML = `
+
+                <div
+                    class="productos-canje-vacio"
+                >
+
+                    <i
+                        class="fa-solid fa-box-open"
+                    ></i>
+
+                    <p>
+                        No hay productos disponibles.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+        catalogo.innerHTML =
+            productos
+                .map(
+                    function (producto) {
+
+                        const nombre =
+                            producto.nombre ||
+                            producto.nombre_producto ||
+                            "Producto";
+
+                        const precio =
+                            obtenerPrecioProducto(
+                                producto
+                            );
+
+                        const categoria =
+                            obtenerCategoriaProducto(
+                                producto
+                            ) ||
+                            "DL Luxury";
+
+                        const imagen =
+                            obtenerImagenProducto(
+                                producto
+                            );
+
+                        const puntosNecesarios =
+                            Math.ceil(
+                                precio
+                            );
+
+                        return `
+
+                            <article
+                                class="producto-canje-card"
+
+                                data-nombre="${escapeHTML(
+                            nombre
+                        )}"
+
+                                data-categoria="${escapeHTML(
+                            categoria
+                        )}"
+                            >
+
+                                <div
+                                    class="producto-canje-foto"
+                                >
+
+                                    ${imagen
+                                ? `
+
+                                                <img
+                                                    src="${escapeHTML(
+                                    imagen
+                                )}"
+
+                                                    alt="${escapeHTML(
+                                    nombre
+                                )}"
+
+                                                    class="producto-canje-imagen"
+
+                                                    loading="lazy"
+
+                                                    onerror="
+                                                        this.style.display='none';
+
+                                                        this.parentElement
+                                                            .querySelector('.producto-canje-sin-imagen')
+                                                            .style.display='flex';
+                                                    "
+                                                >
+
+                                                <div
+                                                    class="producto-canje-sin-imagen"
+                                                    style="display:none;"
+                                                >
+
+                                                    <i
+                                                        class="fa-solid fa-image"
+                                                    ></i>
+
+                                                </div>
+
+                                            `
+                                : `
+
+                                                <div
+                                                    class="producto-canje-sin-imagen"
+                                                    style="display:flex;"
+                                                >
+
+                                                    <i
+                                                        class="fa-solid fa-image"
+                                                    ></i>
+
+                                                </div>
+
+                                            `
+                            }
+
+                                </div>
+
+
+                                <div
+                                    class="producto-canje-info"
+                                >
+
+                                    <span
+                                        class="producto-canje-categoria"
+                                    >
+
+                                        ${escapeHTML(
+                                categoria
+                            )}
+
+                                    </span>
+
+
+                                    <h3>
+
+                                        ${escapeHTML(
+                                nombre
+                            )}
+
+                                    </h3>
+
+
+                                    <p
+                                        class="producto-canje-precio"
+                                    >
+
+                                        Q${precio.toLocaleString(
+                                "es-GT",
+                                {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }
+                            )}
+
+                                    </p>
+
+
+                                    <small
+                                        class="producto-canje-puntos"
+                                    >
+
+                                        Necesitas
+                                        ${puntosNecesarios.toLocaleString(
+                                "es-GT"
+                            )}
+                                        puntos
+
+                                    </small>
+
+
+                                    <button
+                                        type="button"
+
+                                        class="btn-seleccionar-producto-canje"
+
+                                        data-producto-id="${escapeHTML(
+                                producto.id
+                            )}"
+                                    >
+
+                                        <i
+                                            class="fa-solid fa-gift"
+                                        ></i>
+
+                                        Canjear producto
+
+                                    </button>
+
+                                </div>
+
+                            </article>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
+        prepararBotonesCatalogoCanje(
+            productos
+        );
+
+        aplicarFiltrosCatalogoCanje();
+
+    } catch (error) {
+
+        console.error(
+            "ERROR CARGANDO CATÁLOGO DE CANJE:",
+            error
+        );
+
+        catalogo.innerHTML = `
+
+            <div
+                class="productos-canje-vacio"
+            >
+
+                <i
+                    class="fa-solid fa-triangle-exclamation"
+                ></i>
+
+                <p>
+                    No se pudieron cargar los productos.
+                </p>
+
+                <small>
+
+                    ${escapeHTML(
+            error?.message ||
+            "Error desconocido al consultar productos."
+        )}
+
+                </small>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   BOTONES DEL CATÁLOGO PRINCIPAL
+========================================================= */
+
+function prepararBotonesCatalogoCanje(
+    productos
+) {
+
+    const botones =
+        document.querySelectorAll(
+            "#catalogoCanje .btn-seleccionar-producto-canje"
+        );
+
+    botones.forEach(
+        function (boton) {
+
+            boton.addEventListener(
+                "click",
+                async function () {
+
+                    if (!usuarioActual) {
+
+                        alert(
+                            "Debes iniciar sesión para realizar un canje."
+                        );
+
+                        return;
+                    }
+
+                    const productoId =
+                        boton.dataset.productoId;
+
+                    const producto =
+                        productos.find(
+                            function (item) {
+
+                                return (
+                                    String(
+                                        item.id
+                                    ) ===
+                                    String(
+                                        productoId
+                                    )
+                                );
+
+                            }
+                        );
+
+                    if (!producto) {
+
+                        alert(
+                            "No se encontró el producto seleccionado."
+                        );
+
+                        return;
+                    }
+
+                    const precio =
+                        obtenerPrecioProducto(
+                            producto
+                        );
+
+                    if (
+                        !Number.isFinite(
+                            precio
+                        ) ||
+                        precio <= 0
+                    ) {
+
+                        alert(
+                            "El precio de este producto no es válido."
+                        );
+
+                        return;
+                    }
+
+                    const puntosNecesarios =
+                        Math.ceil(
+                            precio
+                        );
+
+                    try {
+
+                        const saldo =
+                            await consultarPuntosCliente(
+                                usuarioActual.id
+                            );
+
+                        if (
+                            saldo.puntos <
+                            puntosNecesarios
+                        ) {
+
+                            alert(
+
+                                `No tienes suficientes puntos.\n\n` +
+
+                                `Tienes: ${saldo.puntos.toLocaleString("es-GT")} puntos.\n\n` +
+
+                                `Necesitas: ${puntosNecesarios.toLocaleString("es-GT")} puntos.`
+
+                            );
+
+                            return;
+
+                        }
+
+                        const categoria =
+                            obtenerCategoriaProducto(
+                                producto
+                            ) ||
+                            "DL Luxury";
+
+                        await confirmarProductoCanje(
+
+                            producto,
+
+                            "Catálogo",
+
+                            categoria,
+
+                            saldo.puntos
+
+                        );
+
+                    } catch (error) {
+
+                        console.error(
+                            "Error preparando producto para canje:",
+                            error
+                        );
+
+                        alert(
+                            error.message ||
+                            "No se pudo preparar el canje."
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   BUSCAR Y FILTRAR CATÁLOGO
+========================================================= */
+
+function aplicarFiltrosCatalogoCanje() {
+
+    const catalogo =
+        document.getElementById(
+            "catalogoCanje"
+        );
+
+    const buscador =
+        document.getElementById(
+            "buscarProductoCanje"
+        );
+
+    const filtro =
+        document.getElementById(
+            "filtroCategoriaCanje"
+        );
+
+    if (!catalogo) {
+        return;
+    }
+
+    const busqueda =
+        normalizarTexto(
+            buscador?.value || ""
+        );
+
+    const categoriaSeleccionada =
+        normalizarTexto(
+            filtro?.value || ""
+        );
+
+    const tarjetas =
+        catalogo.querySelectorAll(
+            ".producto-canje-card"
+        );
+
+    tarjetas.forEach(
+        function (tarjeta) {
+
+            const nombre =
+                normalizarTexto(
+                    tarjeta.dataset.nombre ||
+                    tarjeta.querySelector(
+                        "h3"
+                    )?.textContent ||
+                    ""
+                );
+
+            const categoria =
+                normalizarTexto(
+                    tarjeta.dataset.categoria ||
+                    tarjeta.querySelector(
+                        ".producto-canje-categoria"
+                    )?.textContent ||
+                    ""
+                );
+
+            const coincideBusqueda =
+                !busqueda ||
+                nombre.includes(
+                    busqueda
+                );
+
+            const coincideCategoria =
+                !categoriaSeleccionada ||
+                categoria ===
+                categoriaSeleccionada ||
+                categoria.includes(
+                    categoriaSeleccionada
+                );
+
+            tarjeta.style.display =
+                coincideBusqueda &&
+                    coincideCategoria
+                    ? ""
+                    : "none";
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   EVENTOS DEL BUSCADOR Y FILTRO
+========================================================= */
+
+const buscadorCatalogo =
+    document.getElementById(
+        "buscarProductoCanje"
+    );
+
+if (buscadorCatalogo) {
+
+    buscadorCatalogo.addEventListener(
+        "input",
+        aplicarFiltrosCatalogoCanje
+    );
+
+}
+
+
+const filtroCatalogo =
+    document.getElementById(
+        "filtroCategoriaCanje"
+    );
+
+if (filtroCatalogo) {
+
+    filtroCatalogo.addEventListener(
+        "change",
+        aplicarFiltrosCatalogoCanje
+    );
+
+}
+
+
+/* =========================================================
+   CARGAR CATÁLOGO AL INICIAR SESIÓN
+========================================================= */
+
+const iniciarPerfilOriginal =
+    iniciarPerfil;
+
+iniciarPerfil = async function () {
+
+    await iniciarPerfilOriginal();
+
+    if (usuarioActual) {
+
+        await cargarCatalogoCanje();
+
+    }
+
+};
