@@ -2,6 +2,7 @@
    DL LUXURY
 
    ACCESORIOS - TIENDA / VENTAS
+
    SUPABASE + STORAGE
 
    ARCHIVO:
@@ -14,6 +15,7 @@
    productos/accesorios
 
    IMPORTANTE:
+
    - Este archivo maneja EXCLUSIVAMENTE ACCESORIOS.
    - No usa descuentos.
    - No modifica productos.
@@ -22,6 +24,7 @@
    - Evita doble carga.
    - Evita doble clic al agregar al carrito.
    - Agregar al carrito NO redirige.
+
 ========================================================= */
 
 if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
@@ -695,18 +698,14 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
             }
 
             productosTienda.innerHTML = `
-
                 <div style="
                     grid-column:1/-1;
                     padding:40px 20px;
                     text-align:center;
                     color:#777;
                 ">
-
                     Cargando accesorios...
-
                 </div>
-
             `;
 
             try {
@@ -776,14 +775,12 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
                 productosFiltrados = [];
 
                 productosTienda.innerHTML = `
-
                     <div style="
                         grid-column:1/-1;
                         padding:50px 20px;
                         text-align:center;
                         color:#d00000;
                     ">
-
                         <i
                             class="fa-solid fa-triangle-exclamation"
                             style="
@@ -802,14 +799,10 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
                             font-size:13px;
                             color:#777;
                         ">
-
                             Revisa tu conexión e
                             inténtalo nuevamente.
-
                         </p>
-
                     </div>
-
                 `;
 
                 if (sinResultados) {
@@ -818,6 +811,65 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
                         "none";
                 }
             }
+        }
+
+
+        /* =====================================================
+           NORMALIZAR GÉNERO
+           
+           TODOS:
+           Hombre + Mujer + Unisex
+
+           PARA ÉL:
+           Hombre + Unisex
+
+           PARA ELLA:
+           Mujer + Unisex
+
+           UNISEX:
+           Solamente Unisex
+        ===================================================== */
+
+        function normalizarGenero(valor) {
+
+            let texto =
+                String(valor || "todos")
+                    .trim()
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(
+                        /[\u0300-\u036f]/g,
+                        ""
+                    );
+
+            if (
+                texto === "para el" ||
+                texto === "hombre" ||
+                texto === "masculino" ||
+                texto === "men"
+            ) {
+
+                return "hombre";
+            }
+
+            if (
+                texto === "para ella" ||
+                texto === "mujer" ||
+                texto === "femenino" ||
+                texto === "women"
+            ) {
+
+                return "mujer";
+            }
+
+            if (
+                texto === "unisex"
+            ) {
+
+                return "unisex";
+            }
+
+            return "todos";
         }
 
 
@@ -831,10 +883,11 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
                 [...productos];
 
 
-            /* GÉNERO */
+            /* =================================================
+               GÉNERO
+            ================================================= */
 
             if (
-                generoActual &&
                 generoActual !== "todos"
             ) {
 
@@ -842,30 +895,66 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
                     resultado.filter(
                         producto => {
 
-                            const genero =
-                                String(
-                                    producto.genero ||
-                                    ""
-                                ).toLowerCase();
+                            const generoProducto =
+                                normalizarGenero(
+                                    producto.genero
+                                );
+
+
+                            /* PARA ÉL */
 
                             if (
-                                genero ===
+                                generoActual ===
+                                "hombre"
+                            ) {
+
+                                return (
+                                    generoProducto ===
+                                    "hombre" ||
+                                    generoProducto ===
+                                    "unisex"
+                                );
+                            }
+
+
+                            /* PARA ELLA */
+
+                            if (
+                                generoActual ===
+                                "mujer"
+                            ) {
+
+                                return (
+                                    generoProducto ===
+                                    "mujer" ||
+                                    generoProducto ===
+                                    "unisex"
+                                );
+                            }
+
+
+                            /* UNISEX */
+
+                            if (
+                                generoActual ===
                                 "unisex"
                             ) {
 
-                                return true;
+                                return (
+                                    generoProducto ===
+                                    "unisex"
+                                );
                             }
 
-                            return (
-                                genero ===
-                                generoActual.toLowerCase()
-                            );
+                            return true;
                         }
                     );
             }
 
 
-            /* BUSCADOR */
+            /* =================================================
+               BUSCADOR
+            ================================================= */
 
             const texto =
                 buscarProducto
@@ -908,7 +997,9 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
             }
 
 
-            /* CATEGORÍA */
+            /* =================================================
+               CATEGORÍA
+            ================================================= */
 
             if (
                 filtroCategoria &&
@@ -926,7 +1017,9 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
             }
 
 
-            /* ORDEN */
+            /* =================================================
+               ORDEN
+            ================================================= */
 
             const orden =
                 ordenarProductos
@@ -1166,7 +1259,6 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
 
 
             tarjeta.innerHTML = `
-
                 <div class="producto-imagen-container">
 
                     <img
@@ -1195,64 +1287,46 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
                     : "Agregar a favoritos"
                 }"
                     >
-
                         <i class="${favorito
                     ? "fa-solid fa-heart"
                     : "fa-regular fa-heart"
                 }"></i>
-
                     </button>
 
                 </div>
 
-
                 <div class="producto-info">
 
                     <span class="producto-genero">
-
                         ${escaparHTML(
                     generoTexto
                 )}
-
                     </span>
 
-
                     <h3 class="producto-nombre">
-
                         ${escaparHTML(
                     producto.nombre ||
                     "Sin nombre"
                 )}
-
                     </h3>
 
-
                     <p class="producto-descripcion">
-
                         ${escaparHTML(
                     descripcion
                 )}
-
                     </p>
 
-
                     <div class="producto-precio">
-
                         ${formatearPrecio(
                     precio
                 )}
-
                     </div>
 
-
                     <div class="producto-stock ${claseStock}">
-
                         ${escaparHTML(
                     textoStock
                 )}
-
                     </div>
-
 
                     <button
                         type="button"
@@ -1263,16 +1337,13 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
                     : ""
                 }
                     >
-
                         ${stock <= 0
                     ? "Agotado"
                     : "Agregar al carrito"
                 }
-
                     </button>
 
                 </div>
-
             `;
 
 
@@ -1339,7 +1410,6 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
             /* =================================================
                BOTÓN AGREGAR AL CARRITO
 
-               IMPORTANTE:
                NO REDIRIGE A carrito.html
             ================================================= */
 
@@ -1369,7 +1439,6 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
                 );
             }
 
-
             return tarjeta;
         }
 
@@ -1381,9 +1450,9 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
         function obtenerTextoGenero(genero) {
 
             const valor =
-                String(
-                    genero || ""
-                ).toLowerCase();
+                normalizarGenero(
+                    genero
+                );
 
             if (
                 valor === "hombre"
@@ -1655,11 +1724,8 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
             if (favorito) {
 
                 modalProductoFavorito.innerHTML = `
-
                     <i class="fa-solid fa-heart"></i>
-
                     Quitar de favoritos
-
                 `;
 
                 modalProductoFavorito.style.color =
@@ -1668,11 +1734,8 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
             } else {
 
                 modalProductoFavorito.innerHTML = `
-
                     <i class="fa-regular fa-heart"></i>
-
                     Agregar a favoritos
-
                 `;
 
                 modalProductoFavorito.style.color =
@@ -1777,7 +1840,6 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
         /* =====================================================
            AGREGAR AL CARRITO DESDE MODAL
 
-           IMPORTANTE:
            NO REDIRIGE A carrito.html
         ===================================================== */
 
@@ -1863,11 +1925,34 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
                             "active"
                         );
 
+
+                        /*
+                           IMPORTANTE:
+
+                           Se toma primero data-genero.
+                           Si no existe, se usa el texto
+                           del botón.
+
+                           Ejemplos reconocidos:
+
+                           todos
+                           Para él
+                           Para ella
+                           hombre
+                           mujer
+                           masculino
+                           femenino
+                           men
+                           women
+                           unisex
+                        */
+
                         generoActual =
-                            String(
+                            normalizarGenero(
                                 boton.dataset.genero ||
+                                boton.textContent ||
                                 "todos"
-                            ).toLowerCase();
+                            );
 
                         mostrarProductos();
                     }
@@ -2141,4 +2226,5 @@ if (window.__DL_LUXURY_ACCESORIOS_JS_LOADED__) {
         };
 
     });
+
 }
