@@ -1,9 +1,10 @@
 /* =========================================================
    DL LUXURY
-   PERFIL + LOGIN + PUNTOS + CANJE DE PRODUCTOS
+   PERFIL + LOGIN + REGISTRO AUTOMÁTICO + PUNTOS + CANJE DE PRODUCTOS
 
    FUNCIONES:
    - Inicio de sesión con Supabase
+   - Registro automático si el usuario no existe
    - Perfil del usuario
    - Puntos
    - Catálogo completo de productos para canje
@@ -45,15 +46,6 @@ const supabaseClient =
 const CLAVE_CARRITO = "dlLuxuryCarrito";
 const CLAVE_CANJE = "dlLuxuryCanje";
 
-/*
-   WhatsApp DL Luxury
-
-   Número:
-   +502 5725 5468
-
-   Formato internacional sin:
-   + espacios guiones
-*/
 const NUMERO_WHATSAPP_CANJE = "50257255468";
 
 
@@ -259,15 +251,6 @@ function obtenerPuntosProducto(producto) {
 
     const precio =
         obtenerPrecioProducto(producto);
-
-    /*
-       1 punto = Q1
-
-       Q5      = 5 puntos
-       Q100    = 100 puntos
-       Q150    = 150 puntos
-       Q199.50 = 200 puntos
-    */
 
     return Math.ceil(precio);
 }
@@ -691,7 +674,7 @@ function mostrarFormularioLogin() {
 
 
 /* =========================================================
-   18. LOGIN
+   18. LOGIN + REGISTRO AUTOMÁTICO
 ========================================================= */
 
 if (formLogin) {
@@ -723,13 +706,23 @@ if (formLogin) {
                 return;
             }
 
+            if (password.length < 6) {
+
+                mostrarMensajeLogin(
+                    "La contraseña debe tener al menos 6 caracteres.",
+                    "error"
+                );
+
+                return;
+            }
+
             if (btnLogin) {
 
                 btnLogin.disabled = true;
 
                 btnLogin.innerHTML = `
                     <i class="fa-solid fa-spinner fa-spin"></i>
-                    Iniciando sesión...
+                    Verificando...
                 `;
             }
 
@@ -737,9 +730,13 @@ if (formLogin) {
 
             try {
 
+                /* =================================================
+                   PRIMERO INTENTAR INICIAR SESIÓN
+                ================================================= */
+
                 const {
-                    data,
-                    error
+                    data: loginData,
+                    error: loginError
                 } =
                     await supabaseClient.auth
                         .signInWithPassword({
@@ -747,45 +744,116 @@ if (formLogin) {
                             password: password
                         });
 
-                if (error) {
+                /* =================================================
+                   SI EL LOGIN FUNCIONA
+                ================================================= */
 
-                    console.error(
-                        "Error de login:",
-                        error
+                if (!loginError && loginData?.user) {
+
+                    console.log(
+                        "LOGIN CORRECTO:",
+                        loginData.user.email
                     );
 
-                    const mensajeError =
+                    mostrarMensajeLogin(
+                        "Inicio de sesión correcto.",
+                        "success"
+                    );
+
+                    await cargarPerfil(
+                        loginData.user
+                    );
+
+                    return;
+                }
+
+
+                /* =================================================
+                   SI NO EXISTE / CREDENCIALES INVÁLIDAS
+                   INTENTAR CREAR CUENTA
+                ================================================= */
+
+                console.log(
+                    "La cuenta no pudo iniciar sesión.",
+                    loginError
+                );
+
+                if (
+                    loginError &&
+                    normalizarTexto(
+                        loginError.message
+                    ).includes(
+                        "email not confirmed"
+                    )
+                ) {
+
+                    mostrarMensajeLogin(
+                        "Tu correo todavía no ha sido confirmado.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                /* =================================================
+                   REGISTRO AUTOMÁTICO
+                ================================================= */
+
+                if (btnLogin) {
+
+                    btnLogin.innerHTML = `
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        Creando cuenta...
+                    `;
+                }
+
+                const {
+                    data: registroData,
+                    error: registroError
+                } =
+                    await supabaseClient.auth
+                        .signUp({
+                            email: correo,
+                            password: password
+                        });
+
+
+                /* =================================================
+                   ERROR AL CREAR CUENTA
+                ================================================= */
+
+                if (registroError) {
+
+                    console.error(
+                        "ERROR CREANDO CUENTA:",
+                        registroError
+                    );
+
+                    const mensajeRegistro =
                         normalizarTexto(
-                            error.message
+                            registroError.message
                         );
 
                     if (
-                        mensajeError.includes(
-                            "invalid login credentials"
+                        mensajeRegistro.includes(
+                            "user already registered"
+                        ) ||
+                        mensajeRegistro.includes(
+                            "already registered"
                         )
                     ) {
 
                         mostrarMensajeLogin(
-                            "Correo o contraseña incorrectos.",
-                            "error"
-                        );
-
-                    } else if (
-                        mensajeError.includes(
-                            "email not confirmed"
-                        )
-                    ) {
-
-                        mostrarMensajeLogin(
-                            "Tu correo todavía no ha sido confirmado.",
+                            "El correo ya está registrado. Verifica que la contraseña sea correcta.",
                             "error"
                         );
 
                     } else {
 
                         mostrarMensajeLogin(
-                            error.message ||
-                            "No se pudo iniciar sesión.",
+                            registroError.message ||
+                            "No se pudo crear la cuenta.",
                             "error"
                         );
                     }
@@ -793,10 +861,18 @@ if (formLogin) {
                     return;
                 }
 
-                if (!data?.user) {
+
+                /* =================================================
+                   USUARIO CREADO
+                ================================================= */
+
+                const nuevoUsuario =
+                    registroData?.user;
+
+                if (!nuevoUsuario) {
 
                     mostrarMensajeLogin(
-                        "No se pudo obtener el usuario.",
+                        "No se pudo crear el usuario.",
                         "error"
                     );
 
@@ -804,28 +880,50 @@ if (formLogin) {
                 }
 
                 console.log(
-                    "LOGIN CORRECTO:",
-                    data.user.email
+                    "CUENTA CREADA:",
+                    nuevoUsuario
                 );
 
+
+                /* =================================================
+                   SUPABASE PUEDE REQUERIR CONFIRMACIÓN
+                ================================================= */
+
+                if (
+                    !registroData.session
+                ) {
+
+                    mostrarMensajeLogin(
+                        "Cuenta creada. Revisa tu correo para confirmar la cuenta y después inicia sesión.",
+                        "success"
+                    );
+
+                    return;
+                }
+
+
+                /* =================================================
+                   CREAR / CARGAR PERFIL
+                ================================================= */
+
                 mostrarMensajeLogin(
-                    "Inicio de sesión correcto.",
+                    "Cuenta creada correctamente. Bienvenido a DL Luxury.",
                     "success"
                 );
 
                 await cargarPerfil(
-                    data.user
+                    nuevoUsuario
                 );
 
             } catch (error) {
 
                 console.error(
-                    "Error inesperado de login:",
+                    "Error inesperado de login/registro:",
                     error
                 );
 
                 mostrarMensajeLogin(
-                    "Ocurrió un error al iniciar sesión.",
+                    "Ocurrió un error al iniciar sesión o crear la cuenta.",
                     "error"
                 );
 
@@ -1356,8 +1454,7 @@ function abrirDetalleProducto(id) {
         ) {
 
             detalleStockProducto.textContent =
-                `Disponible: ${stock} unidad${stock === 1 ? "" : "es"
-                }`;
+                `Disponible: ${stock} unidad${stock === 1 ? "" : "es"}`;
 
         } else {
 
@@ -1608,10 +1705,6 @@ async function confirmarProductoCanje(producto) {
 
     try {
 
-        /* =================================================
-           OBTENER PRODUCTO ACTUAL
-        ================================================= */
-
         const {
             data: productoActual,
             error: errorProducto
@@ -1651,11 +1744,6 @@ async function confirmarProductoCanje(producto) {
             return;
         }
 
-
-        /* =================================================
-           VERIFICAR PRODUCTO ACTIVO
-        ================================================= */
-
         if (productoActual.activo !== true) {
 
             alert(
@@ -1666,11 +1754,6 @@ async function confirmarProductoCanje(producto) {
 
             return;
         }
-
-
-        /* =================================================
-           VERIFICAR STOCK
-        ================================================= */
 
         const stockActual =
             Number(
@@ -1696,11 +1779,6 @@ async function confirmarProductoCanje(producto) {
             return;
         }
 
-
-        /* =================================================
-           OBTENER PRECIO
-        ================================================= */
-
         const precio =
             obtenerPrecioProducto(
                 productoActual
@@ -1718,18 +1796,8 @@ async function confirmarProductoCanje(producto) {
             return;
         }
 
-
-        /* =================================================
-           PUNTOS NECESARIOS
-        ================================================= */
-
         const puntosUtilizados =
             Math.ceil(precio);
-
-
-        /* =================================================
-           OBTENER PERFIL REAL
-        ================================================= */
 
         const {
             data: perfilReal,
@@ -1770,11 +1838,6 @@ async function confirmarProductoCanje(producto) {
             return;
         }
 
-
-        /* =================================================
-           VERIFICAR PUNTOS
-        ================================================= */
-
         if (
             puntosActuales <
             puntosUtilizados
@@ -1788,11 +1851,6 @@ async function confirmarProductoCanje(producto) {
 
             return;
         }
-
-
-        /* =================================================
-           INFORMACIÓN DEL PRODUCTO
-        ================================================= */
 
         const nuevoSaldo =
             puntosActuales -
@@ -1817,11 +1875,6 @@ async function confirmarProductoCanje(producto) {
                 productoActual
             );
 
-
-        /* =================================================
-           CONFIRMAR CANJE
-        ================================================= */
-
         const confirmar =
             window.confirm(
                 `¿Deseas canjear este producto?\n\n` +
@@ -1836,11 +1889,6 @@ async function confirmarProductoCanje(producto) {
         if (!confirmar) {
             return;
         }
-
-
-        /* =================================================
-           PREPARAR TEXTO WHATSAPP
-        ================================================= */
 
         const codigo =
             "DL-" +
@@ -1890,11 +1938,6 @@ async function confirmarProductoCanje(producto) {
             urlWhatsApp
         );
 
-
-        /* =================================================
-           DESCONTAR PUNTOS
-        ================================================= */
-
         console.log(
             "INTENTANDO DESCONTAR PUNTOS..."
         );
@@ -1942,11 +1985,6 @@ async function confirmarProductoCanje(producto) {
 
             return;
         }
-
-
-        /* =================================================
-           DESCONTAR STOCK
-        ================================================= */
 
         const nuevoStock =
             Math.max(
@@ -1998,11 +2036,6 @@ async function confirmarProductoCanje(producto) {
             "ERROR ACTUALIZANDO STOCK:",
             errorStock
         );
-
-
-        /* =================================================
-           SI FALLA EL STOCK
-        ================================================= */
 
         if (errorStock) {
 
@@ -2069,11 +2102,6 @@ async function confirmarProductoCanje(producto) {
             "STOCK ACTUALIZADO CORRECTAMENTE"
         );
 
-
-        /* =================================================
-           REGISTRAR CANJE EN SUPABASE
-        ================================================= */
-
         const {
             data: canjeRegistrado,
             error: errorCanje
@@ -2091,11 +2119,6 @@ async function confirmarProductoCanje(producto) {
             })
             .select("*")
             .maybeSingle();
-
-
-        /* =================================================
-           SI FALLA REGISTRO DEL CANJE
-        ================================================= */
 
         if (
             errorCanje ||
@@ -2167,21 +2190,11 @@ async function confirmarProductoCanje(producto) {
             return;
         }
 
-
-        /* =================================================
-           ACTUALIZAR PERFIL LOCAL
-        ================================================= */
-
         perfilActual = {
             ...perfilReal,
             "Puntos":
                 nuevoSaldo
         };
-
-
-        /* =================================================
-           GUARDAR CANJE LOCAL
-        ================================================= */
 
         const datosCanje = {
 
@@ -2250,17 +2263,7 @@ async function confirmarProductoCanje(producto) {
             datosCanje
         );
 
-
-        /* =================================================
-           ACTUALIZAR INTERFAZ
-        ================================================= */
-
         actualizarInterfazUsuario();
-
-
-        /* =================================================
-           ACTUALIZAR PRODUCTO EN MEMORIA
-        ================================================= */
 
         const indice =
             productosCanje.findIndex(
@@ -2282,17 +2285,7 @@ async function confirmarProductoCanje(producto) {
 
         renderizarCatalogoCanje();
 
-
-        /* =================================================
-           RECARGAR HISTORIAL
-        ================================================= */
-
         await cargarHistorialCanjes();
-
-
-        /* =================================================
-           MENSAJE DE ÉXITO
-        ================================================= */
 
         alert(
             `¡Canje realizado correctamente!\n\n` +
@@ -2307,11 +2300,6 @@ async function confirmarProductoCanje(producto) {
 
             `Ahora se abrirá WhatsApp.`
         );
-
-
-        /* =================================================
-           ABRIR WHATSAPP
-        ================================================= */
 
         console.log(
             "ABRIENDO WHATSAPP..."
@@ -2328,11 +2316,6 @@ async function confirmarProductoCanje(producto) {
                 "_blank"
             );
 
-        /*
-           Si el navegador bloquea la nueva pestaña,
-           usamos la misma ventana como respaldo.
-        */
-
         if (!ventanaWhatsApp) {
 
             console.warn(
@@ -2342,7 +2325,6 @@ async function confirmarProductoCanje(producto) {
             window.location.href =
                 urlWhatsApp;
         }
-
 
         console.log(
             "CANJE REALIZADO:",
