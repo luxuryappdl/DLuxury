@@ -1,7 +1,5 @@
-
 /* =========================================================
    DL LUXURY
-
    PERFUMES - TIENDA / VENTAS
    SUPABASE + STORAGE
 
@@ -22,6 +20,11 @@
    - Evita doble carga del archivo.
    - Evita doble clic / doble evento al agregar al carrito.
    - El botón agrega al carrito y NO redirige.
+
+   FILTRO GÉNERO:
+   - Para él = Hombre + Unisex
+   - Para ella = Mujer + Unisex
+   - Todos = Hombre + Mujer + Unisex
 ========================================================= */
 
 
@@ -39,7 +42,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
     window.__DL_LUXURY_PERFUMES_JS_LOADED__ = true;
 
-
     document.addEventListener("DOMContentLoaded", () => {
 
 
@@ -55,9 +57,11 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
         const CATEGORIA_PERFUMES = 4;
 
-        const STORAGE_BUCKET = "productos";
+        const STORAGE_BUCKET =
+            "productos";
 
-        const STORAGE_CARPETA = "perfume";
+        const STORAGE_CARPETA =
+            "perfume";
 
 
         /* =====================================================
@@ -87,13 +91,11 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
             return;
         }
 
-
         const supabaseClient =
             window.supabase.createClient(
                 SUPABASE_URL,
                 SUPABASE_KEY
             );
-
 
         window.perfumesSupabase =
             supabaseClient;
@@ -213,7 +215,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
         let agregandoAlCarrito = false;
 
-
         if (
             typeof window.__DL_LUXURY_PERFUMES_CART_LOCK__ ===
             "undefined"
@@ -290,7 +291,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 return;
             }
 
-
             if (
                 Number(producto.categoria_id) !==
                 CATEGORIA_PERFUMES
@@ -303,10 +303,8 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 return;
             }
 
-
             let favoritos =
                 obtenerFavoritos();
-
 
             const indice =
                 favoritos.findIndex(
@@ -319,7 +317,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                             producto.id
                         )
                 );
-
 
             if (indice >= 0) {
 
@@ -357,17 +354,14 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                         CATEGORIA_PERFUMES
                 });
 
-
                 mostrarMensaje(
                     "Producto agregado a favoritos"
                 );
             }
 
-
             guardarFavoritos(
                 favoritos
             );
-
 
             actualizarCorazones();
 
@@ -417,7 +411,7 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
         /* =====================================================
            AGREGAR AL CARRITO
-
+           
            IMPORTANTE:
            - Agrega el producto.
            - NO redirige.
@@ -435,7 +429,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 return false;
             }
 
-
             if (
                 !producto ||
                 !producto.id
@@ -443,7 +436,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
                 return false;
             }
-
 
             /* SOLO PERFUMES */
 
@@ -459,12 +451,10 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 return false;
             }
 
-
             agregandoAlCarrito = true;
 
             window.__DL_LUXURY_PERFUMES_CART_LOCK__ =
                 true;
-
 
             try {
 
@@ -472,7 +462,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     Number(
                         producto.stock
                     ) || 0;
-
 
                 if (stock <= 0) {
 
@@ -483,10 +472,8 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     return false;
                 }
 
-
                 let carrito =
                     obtenerCarrito();
-
 
                 const indice =
                     carrito.findIndex(
@@ -499,14 +486,12 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                             )
                     );
 
-
                 if (indice >= 0) {
 
                     const cantidadActual =
                         Number(
                             carrito[indice].cantidad
                         ) || 0;
-
 
                     if (
                         cantidadActual >=
@@ -520,10 +505,8 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                         return false;
                     }
 
-
                     carrito[indice].cantidad =
                         cantidadActual + 1;
-
 
                     /* ACTUALIZAR INFORMACIÓN */
 
@@ -551,7 +534,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
                     carrito[indice].categoria_id =
                         CATEGORIA_PERFUMES;
-
 
                 } else {
 
@@ -590,22 +572,17 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     });
                 }
 
-
                 guardarCarrito(
                     carrito
                 );
 
-
                 actualizarContadorCarrito();
-
 
                 mostrarMensaje(
                     "Producto agregado al carrito"
                 );
 
-
                 return true;
-
 
             } catch (error) {
 
@@ -614,14 +591,11 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     error
                 );
 
-
                 mostrarMensaje(
                     "No se pudo agregar el producto al carrito"
                 );
 
-
                 return false;
-
 
             } finally {
 
@@ -652,15 +626,12 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     "contadorCarrito"
                 );
 
-
             if (!contador) {
                 return;
             }
 
-
             const carrito =
                 obtenerCarrito();
-
 
             const cantidad =
                 carrito.reduce(
@@ -677,10 +648,8 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     0
                 );
 
-
             contador.textContent =
                 cantidad;
-
 
             contador.style.display =
                 cantidad > 0
@@ -696,22 +665,17 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
         function obtenerURLImagen(imagen) {
 
             if (!imagen) {
-
                 return PLACEHOLDER;
             }
-
 
             const valor =
                 String(
                     imagen
                 ).trim();
 
-
             if (!valor) {
-
                 return PLACEHOLDER;
             }
-
 
             /* DATA IMAGE */
 
@@ -723,7 +687,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
                 return valor;
             }
-
 
             /* URL COMPLETA */
 
@@ -739,19 +702,16 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 return valor;
             }
 
-
             let ruta =
                 valor.replace(
                     /^\/+/,
                     ""
                 );
 
-
             /* SI VIENE COMO URL DE STORAGE */
 
             const marcadorStorage =
                 "/storage/v1/object/public/";
-
 
             if (
                 ruta.includes(
@@ -764,7 +724,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                         marcadorStorage
                     );
 
-
                 ruta =
                     ruta.substring(
                         posicion +
@@ -772,13 +731,11 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     );
             }
 
-
             ruta =
                 ruta.replace(
                     /^\/+/,
                     ""
                 );
-
 
             /* QUITAR BUCKET */
 
@@ -794,7 +751,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     );
             }
 
-
             /* SI VIENE COMO productos/perfume/... */
 
             if (
@@ -808,7 +764,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                         "productos/".length
                     );
             }
-
 
             /* SI VIENE COMO perfume/... */
 
@@ -824,7 +779,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 );
             }
 
-
             /* SI VIENE SOLO EL NOMBRE */
 
             if (
@@ -834,7 +788,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 ruta =
                     `${STORAGE_CARPETA}/${ruta}`;
             }
-
 
             /* ASEGURAR CARPETA PERFUME */
 
@@ -847,7 +800,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 ruta =
                     `${STORAGE_CARPETA}/${ruta}`;
             }
-
 
             return (
                 `${SUPABASE_URL}/storage/v1/object/public/` +
@@ -871,9 +823,7 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 return;
             }
 
-
             productosTienda.innerHTML = `
-
                 <div style="
                     grid-column: 1 / -1;
                     padding: 40px 20px;
@@ -881,13 +831,9 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     color: #777;
                     font-size: 14px;
                 ">
-
                     Cargando perfumes...
-
                 </div>
-
             `;
-
 
             try {
 
@@ -924,12 +870,9 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                             }
                         );
 
-
                 if (error) {
-
                     throw error;
                 }
-
 
                 productos =
                     Array.isArray(data)
@@ -942,15 +885,12 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                         )
                         : [];
 
-
                 productosFiltrados =
                     [
                         ...productos
                     ];
 
-
                 mostrarProductos();
-
 
             } catch (error) {
 
@@ -959,14 +899,11 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     error
                 );
 
-
                 productos = [];
 
                 productosFiltrados = [];
 
-
                 productosTienda.innerHTML = `
-
                     <div style="
                         grid-column: 1 / -1;
                         padding: 50px 20px;
@@ -983,29 +920,21 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                             "
                         ></i>
 
-
                         <strong>
-
                             No se pudieron cargar los perfumes
-
                         </strong>
-
 
                         <p style="
                             margin-top:8px;
                             font-size:13px;
                             color:#777;
                         ">
-
                             Revisa tu conexión e
                             inténtalo nuevamente.
-
                         </p>
 
                     </div>
-
                 `;
-
 
                 if (sinResultados) {
 
@@ -1028,7 +957,18 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 ];
 
 
-            /* FILTRO GÉNERO */
+            /* =================================================
+               FILTRO GÉNERO
+
+               Para él:
+               Hombre + Unisex
+
+               Para ella:
+               Mujer + Unisex
+
+               Todos:
+               Hombre + Mujer + Unisex
+            ================================================= */
 
             if (
                 generoActual &&
@@ -1043,17 +983,26 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                                 String(
                                     producto.genero ||
                                     ""
-                                ).toLowerCase();
+                                )
+                                    .trim()
+                                    .toLowerCase();
 
+
+                            /* UNISEX */
 
                             if (
-                                genero ===
-                                "unisex"
+                                genero === "unisex" &&
+                                (
+                                    generoActual === "hombre" ||
+                                    generoActual === "mujer"
+                                )
                             ) {
 
                                 return true;
                             }
 
+
+                            /* HOMBRE / MUJER */
 
                             return (
                                 genero ===
@@ -1064,7 +1013,9 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
             }
 
 
-            /* BUSCADOR */
+            /* =================================================
+               BUSCADOR
+            ================================================= */
 
             const texto =
                 buscarProducto
@@ -1072,7 +1023,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                         .trim()
                         .toLowerCase()
                     : "";
-
 
             if (texto) {
 
@@ -1086,20 +1036,17 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                                     ""
                                 ).toLowerCase();
 
-
                             const descripcion =
                                 String(
                                     producto.descripcion ||
                                     ""
                                 ).toLowerCase();
 
-
                             const genero =
                                 String(
                                     producto.genero ||
                                     ""
                                 ).toLowerCase();
-
 
                             return (
                                 nombre.includes(texto) ||
@@ -1111,7 +1058,9 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
             }
 
 
-            /* CATEGORÍA */
+            /* =================================================
+               CATEGORÍA
+            ================================================= */
 
             if (
                 filtroCategoria &&
@@ -1129,13 +1078,14 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
             }
 
 
-            /* ORDEN */
+            /* =================================================
+               ORDEN
+            ================================================= */
 
             const orden =
                 ordenarProductos
                     ? ordenarProductos.value
                     : "";
-
 
             switch (orden) {
 
@@ -1241,7 +1191,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     break;
             }
 
-
             productosFiltrados =
                 resultado;
         }
@@ -1255,10 +1204,8 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
             aplicarFiltros();
 
-
             productosTienda.innerHTML =
                 "";
-
 
             if (
                 productosFiltrados.length === 0
@@ -1273,13 +1220,11 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 return;
             }
 
-
             if (sinResultados) {
 
                 sinResultados.style.display =
                     "none";
             }
-
 
             productosFiltrados.forEach(
                 producto => {
@@ -1289,13 +1234,11 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                             producto
                         );
 
-
                     productosTienda.appendChild(
                         tarjeta
                     );
                 }
             );
-
 
             actualizarCorazones();
         }
@@ -1312,38 +1255,31 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     "article"
                 );
 
-
             tarjeta.className =
                 "producto-card";
 
-
             tarjeta.dataset.id =
                 producto.id;
-
 
             const stock =
                 Number(
                     producto.stock
                 ) || 0;
 
-
             const precio =
                 Number(
                     producto.precio
                 ) || 0;
-
 
             const imagen =
                 obtenerURLImagen(
                     producto.imagen
                 );
 
-
             const favorito =
                 esFavorito(
                     producto.id
                 );
-
 
             let textoStock = "";
 
@@ -1358,7 +1294,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 claseStock =
                     "agotado";
 
-
             } else if (stock <= 3) {
 
                 textoStock =
@@ -1366,7 +1301,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
                 claseStock =
                     "poco-stock";
-
 
             } else {
 
@@ -1396,7 +1330,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
 
             tarjeta.innerHTML = `
-
                 <div class="producto-imagen-container">
 
                     <img
@@ -1408,7 +1341,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
             )}"
                         loading="lazy"
                     >
-
 
                     <button
                         type="button"
@@ -1499,7 +1431,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     </button>
 
                 </div>
-
             `;
 
 
@@ -1511,7 +1442,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 tarjeta.querySelector(
                     ".producto-imagen"
                 );
-
 
             if (imagenElemento) {
 
@@ -1544,7 +1474,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                         return;
                     }
 
-
                     if (
                         event.target.closest(
                             ".btn-comprar"
@@ -1553,7 +1482,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
                         return;
                     }
-
 
                     abrirModalProducto(
                         producto
@@ -1571,7 +1499,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     ".btn-favorito"
                 );
 
-
             if (botonFavorito) {
 
                 botonFavorito.addEventListener(
@@ -1581,7 +1508,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                         event.preventDefault();
 
                         event.stopPropagation();
-
 
                         alternarFavorito(
                             producto
@@ -1603,7 +1529,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     ".btn-comprar"
                 );
 
-
             if (botonComprar) {
 
                 botonComprar.addEventListener(
@@ -1614,12 +1539,9 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
                         event.stopPropagation();
 
-
                         if (stock <= 0) {
-
                             return;
                         }
-
 
                         agregarAlCarrito(
                             producto
@@ -1627,7 +1549,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     }
                 );
             }
-
 
             return tarjeta;
         }
@@ -1644,14 +1565,12 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     genero || ""
                 ).toLowerCase();
 
-
             if (
                 valor === "hombre"
             ) {
 
                 return "Perfumes para él";
             }
-
 
             if (
                 valor === "mujer"
@@ -1660,14 +1579,12 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 return "Perfumes para ella";
             }
 
-
             if (
                 valor === "unisex"
             ) {
 
                 return "Perfumes unisex";
             }
-
 
             return genero
                 ? String(genero)
@@ -1682,10 +1599,8 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
         function abrirModalProducto(producto) {
 
             if (!modalProducto) {
-
                 return;
             }
-
 
             if (
                 !producto ||
@@ -1696,22 +1611,18 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 return;
             }
 
-
             productoModalActual =
                 producto;
-
 
             const imagen =
                 obtenerURLImagen(
                     producto.imagen
                 );
 
-
             const precio =
                 Number(
                     producto.precio
                 ) || 0;
-
 
             const stock =
                 Number(
@@ -1731,7 +1642,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 modalProductoImagen.alt =
                     producto.nombre ||
                     "Perfume";
-
 
                 modalProductoImagen.onerror =
                     function () {
@@ -1769,11 +1679,9 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                         ""
                     ).trim();
 
-
                 modalProductoDescripcion.textContent =
                     descripcion ||
                     "Sin descripción disponible.";
-
 
                 modalProductoDescripcion.style.display =
                     "block";
@@ -1803,7 +1711,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     "none";
             }
 
-
             if (
                 modalProductoDescuento
             ) {
@@ -1827,7 +1734,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     modalProductoStock.style.color =
                         "#d00000";
 
-
                 } else if (stock <= 3) {
 
                     modalProductoStock.textContent =
@@ -1835,7 +1741,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
                     modalProductoStock.style.color =
                         "#d97706";
-
 
                 } else {
 
@@ -1857,7 +1762,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 modalProductoComprar.disabled =
                     stock <= 0;
 
-
                 modalProductoComprar.textContent =
                     stock <= 0
                         ? "Agotado"
@@ -1876,7 +1780,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 "activo"
             );
 
-
             document.body.classList.add(
                 "modal-abierto"
             );
@@ -1890,20 +1793,16 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
         function cerrarModal() {
 
             if (!modalProducto) {
-
                 return;
             }
-
 
             modalProducto.classList.remove(
                 "activo"
             );
 
-
             document.body.classList.remove(
                 "modal-abierto"
             );
-
 
             productoModalActual =
                 null;
@@ -1924,38 +1823,27 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                 return;
             }
 
-
             const favorito =
                 esFavorito(
                     productoModalActual.id
                 );
 
-
             if (favorito) {
 
                 modalProductoFavorito.innerHTML = `
-
                     <i class="fa-solid fa-heart"></i>
-
                     Quitar de favoritos
-
                 `;
-
 
                 modalProductoFavorito.style.color =
                     "#e00000";
 
-
             } else {
 
                 modalProductoFavorito.innerHTML = `
-
                     <i class="fa-regular fa-heart"></i>
-
                     Agregar a favoritos
-
                 `;
-
 
                 modalProductoFavorito.style.color =
                     "#111";
@@ -1979,24 +1867,20 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                         const id =
                             boton.dataset.id;
 
-
                         const activo =
                             esFavorito(
                                 id
                             );
-
 
                         boton.classList.toggle(
                             "favorito-activo",
                             activo
                         );
 
-
                         boton.innerHTML =
                             activo
                                 ? `<i class="fa-solid fa-heart"></i>`
                                 : `<i class="fa-regular fa-heart"></i>`;
-
 
                         boton.setAttribute(
                             "aria-label",
@@ -2081,14 +1965,12 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
                     event.stopPropagation();
 
-
                     if (
                         !productoModalActual
                     ) {
 
                         return;
                     }
-
 
                     agregarAlCarrito(
                         productoModalActual
@@ -2114,14 +1996,12 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
                     event.stopPropagation();
 
-
                     if (
                         !productoModalActual
                     ) {
 
                         return;
                     }
-
 
                     alternarFavorito(
                         productoModalActual
@@ -2151,18 +2031,17 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                             }
                         );
 
-
                         boton.classList.add(
                             "active"
                         );
-
 
                         generoActual =
                             String(
                                 boton.dataset.genero ||
                                 "todos"
-                            ).toLowerCase();
-
+                            )
+                                .trim()
+                                .toLowerCase();
 
                         mostrarProductos();
                     }
@@ -2236,7 +2115,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     precio
                 ) || 0;
 
-
             return numero.toLocaleString(
                 "es-GT",
                 {
@@ -2291,7 +2169,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                     ".mensaje-perfumes"
                 );
 
-
             if (!contenedor) {
 
                 contenedor =
@@ -2299,93 +2176,71 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
                         "div"
                     );
 
-
                 contenedor.className =
                     "mensaje-perfumes";
-
 
                 contenedor.style.position =
                     "fixed";
 
-
                 contenedor.style.left =
                     "50%";
-
 
                 contenedor.style.bottom =
                     "90px";
 
-
                 contenedor.style.transform =
                     "translateX(-50%) translateY(20px)";
-
 
                 contenedor.style.zIndex =
                     "999999";
 
-
                 contenedor.style.padding =
                     "12px 18px";
-
 
                 contenedor.style.background =
                     "#050505";
 
-
                 contenedor.style.color =
                     "#fff";
-
 
                 contenedor.style.borderRadius =
                     "9px";
 
-
                 contenedor.style.fontSize =
                     "13px";
-
 
                 contenedor.style.fontWeight =
                     "600";
 
-
                 contenedor.style.boxShadow =
                     "0 8px 25px rgba(0,0,0,.2)";
-
 
                 contenedor.style.opacity =
                     "0";
 
-
                 contenedor.style.pointerEvents =
                     "none";
 
-
                 contenedor.style.transition =
                     "all .25s ease";
-
 
                 document.body.appendChild(
                     contenedor
                 );
             }
 
-
             contenedor.textContent =
                 mensaje;
-
 
             contenedor.style.opacity =
                 "1";
 
-
             contenedor.style.transform =
                 "translateX(-50%) translateY(0)";
-
 
             clearTimeout(
                 contenedor._timer
             );
-
 
             contenedor._timer =
                 setTimeout(
@@ -2393,7 +2248,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
                         contenedor.style.opacity =
                             "0";
-
 
                         contenedor.style.transform =
                             "translateX(-50%) translateY(20px)";
@@ -2419,7 +2273,6 @@ if (window.__DL_LUXURY_PERFUMES_JS_LOADED__) {
 
         window.perfumesSupabaseListo =
             true;
-
 
         document.dispatchEvent(
             new CustomEvent(
