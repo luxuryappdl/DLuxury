@@ -1,8 +1,6 @@
 /* =========================================================
    DL LUXURY
-
    HOODIES - TIENDA / VENTAS
-
    SUPABASE + STORAGE
 
    ARCHIVO:
@@ -20,6 +18,12 @@
    - No modifica productos.
    - No usa precio_final.
    - Agregar al carrito NO redirige.
+
+   GÉNERO:
+   - Todos → Hombre + Mujer + Unisex
+   - Para él → Hombre + Unisex
+   - Para ella → Mujer + Unisex
+   - Unisex → Unisex solamente
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -35,12 +39,14 @@ document.addEventListener("DOMContentLoaded", () => {
         "sb_publishable_Qdae9GUtmuosAPP4kemF3A_Vr4HFo0n";
 
     const CATEGORIA_HOODIES = 3;
-
     const STORAGE_BUCKET = "productos";
     const STORAGE_CARPETA = "hoodies";
 
-    const STORAGE_FAVORITOS = "dlLuxuryFavoritos";
-    const STORAGE_CARRITO = "dlLuxuryCarrito";
+    const STORAGE_FAVORITOS =
+        "dlLuxuryFavoritos";
+
+    const STORAGE_CARRITO =
+        "dlLuxuryCarrito";
 
     const PLACEHOLDER =
         "https://placehold.co/600x700?text=Sin+imagen";
@@ -263,7 +269,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             favoritos.push({
 
-                id: producto.id,
+                id:
+                    producto.id,
 
                 nombre:
                     producto.nombre,
@@ -433,18 +440,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             carrito.push({
 
-                id: producto.id,
+                id:
+                    producto.id,
 
                 nombre:
                     producto.nombre,
 
                 descripcion:
-                    producto.descripcion ||
-                    "",
+                    producto.descripcion || "",
 
                 precio:
-                    Number(producto.precio) ||
-                    0,
+                    Number(producto.precio) || 0,
 
                 imagen:
                     obtenerURLImagen(
@@ -455,13 +461,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     stock,
 
                 genero:
-                    producto.genero ||
-                    "",
+                    producto.genero || "",
 
                 categoria_id:
                     CATEGORIA_HOODIES,
 
-                cantidad: 1
+                cantidad:
+                    1
             });
         }
 
@@ -553,6 +559,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "data:image/"
             )
         ) {
+
             return valor;
         }
 
@@ -565,6 +572,7 @@ document.addEventListener("DOMContentLoaded", () => {
             valor.startsWith("http://") ||
             valor.startsWith("https://")
         ) {
+
             return valor;
         }
 
@@ -622,7 +630,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /* =================================================
            SI VIENE COMO:
-
            productos/hoodies/imagen.jpg
         ================================================= */
 
@@ -689,9 +696,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-
         productosTienda.innerHTML = `
-
             <div style="
                 grid-column: 1 / -1;
                 padding: 40px 20px;
@@ -699,9 +704,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 color: #777;
                 font-size: 14px;
             ">
-
                 Cargando hoodies...
-
             </div>
         `;
 
@@ -753,7 +756,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             productos =
                 Array.isArray(data)
-                    ? data
+                    ? data.filter(
+                        producto =>
+                            Number(
+                                producto.categoria_id
+                            ) ===
+                            CATEGORIA_HOODIES
+                    )
                     : [];
 
 
@@ -763,7 +772,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             mostrarProductos();
 
-
         } catch (error) {
 
             console.error(
@@ -771,13 +779,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 error
             );
 
-
             productos = [];
             productosFiltrados = [];
 
 
             productosTienda.innerHTML = `
-
                 <div style="
                     grid-column: 1 / -1;
                     padding: 50px 20px;
@@ -803,10 +809,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         font-size:13px;
                         color:#777;
                     ">
-
                         Revisa tu conexión e
                         inténtalo nuevamente.
-
                     </p>
 
                 </div>
@@ -823,6 +827,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
+       NORMALIZAR GÉNERO
+    ===================================================== */
+
+    function normalizarGenero(valor) {
+
+        let genero =
+            String(
+                valor || ""
+            )
+                .trim()
+                .toLowerCase();
+
+        genero =
+            genero
+                .normalize("NFD")
+                .replace(
+                    /[\u0300-\u036f]/g,
+                    ""
+                );
+
+        if (
+            genero === "para el" ||
+            genero === "hombre" ||
+            genero === "masculino" ||
+            genero === "men"
+        ) {
+
+            return "hombre";
+        }
+
+        if (
+            genero === "para ella" ||
+            genero === "mujer" ||
+            genero === "femenino" ||
+            genero === "women"
+        ) {
+
+            return "mujer";
+        }
+
+        if (
+            genero === "unisex"
+        ) {
+
+            return "unisex";
+        }
+
+        return genero || "todos";
+    }
+
+
+    /* =====================================================
        FILTROS
     ===================================================== */
 
@@ -834,6 +890,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /* =================================================
            FILTRO GÉNERO
+
+           TODOS:
+           Hombre + Mujer + Unisex
+
+           HOMBRE:
+           Hombre + Unisex
+
+           MUJER:
+           Mujer + Unisex
+
+           UNISEX:
+           Unisex solamente
         ================================================= */
 
         if (
@@ -845,29 +913,69 @@ document.addEventListener("DOMContentLoaded", () => {
                 resultado.filter(
                     producto => {
 
-                        const genero =
-                            String(
-                                producto.genero ||
-                                ""
-                            ).toLowerCase();
+                        const generoProducto =
+                            normalizarGenero(
+                                producto.genero
+                            );
 
 
-                        /*
-                           UNISEX APARECE
-                           EN HOMBRE Y MUJER
-                        */
+                        /* =====================================
+                           PARA ÉL
+                        ===================================== */
 
                         if (
-                            genero ===
+                            generoActual ===
+                            "hombre"
+                        ) {
+
+                            return (
+                                generoProducto ===
+                                "hombre" ||
+                                generoProducto ===
+                                "unisex"
+                            );
+                        }
+
+
+                        /* =====================================
+                           PARA ELLA
+                        ===================================== */
+
+                        if (
+                            generoActual ===
+                            "mujer"
+                        ) {
+
+                            return (
+                                generoProducto ===
+                                "mujer" ||
+                                generoProducto ===
+                                "unisex"
+                            );
+                        }
+
+
+                        /* =====================================
+                           UNISEX
+                        ===================================== */
+
+                        if (
+                            generoActual ===
                             "unisex"
                         ) {
-                            return true;
+
+                            return (
+                                generoProducto ===
+                                "unisex"
+                            );
                         }
 
 
                         return (
-                            genero ===
-                            generoActual.toLowerCase()
+                            generoProducto ===
+                            normalizarGenero(
+                                generoActual
+                            )
                         );
                     }
                 );
@@ -932,8 +1040,8 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
 
             /*
-               ESTA PÁGINA ÚNICAMENTE
-               TRABAJA CON HOODIES.
+                ESTA PÁGINA ÚNICAMENTE
+                TRABAJA CON HOODIES.
             */
 
             if (
@@ -1208,7 +1316,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     "
                 >
 
-
                 <button
                     type="button"
                     class="btn-favorito ${favorito
@@ -1235,55 +1342,41 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="producto-info">
 
                 <span class="producto-genero">
-
                     ${escaparHTML(
                 generoTexto
             )}
-
                 </span>
 
 
                 <h3 class="producto-nombre">
-
                     ${escaparHTML(
                 producto.nombre ||
                 "Sin nombre"
             )}
-
                 </h3>
 
 
                 <p class="producto-descripcion">
-
                     ${escaparHTML(
                 producto.descripcion ||
                 "Sin descripción disponible."
             )}
-
                 </p>
 
 
                 <div class="producto-precio">
-
                     ${formatearPrecio(
                 precio
             )}
-
                 </div>
 
 
                 <div class="producto-stock ${claseStock}">
-
                     ${escaparHTML(
                 textoStock
             )}
-
                 </div>
 
-
-                <!-- =================================================
-                     BOTÓN AGREGAR AL CARRITO
-                ================================================= -->
 
                 <button
                     type="button"
@@ -1294,12 +1387,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 : ""
             }
                 >
-
                     ${stock <= 0
                 ? "Agotado"
                 : "Agregar al carrito"
             }
-
                 </button>
 
             </div>
@@ -1309,8 +1400,7 @@ document.addEventListener("DOMContentLoaded", () => {
         /* =================================================
            CLICK TARJETA
 
-           IMPORTANTE:
-           No abre el modal si se presiona
+           No abre modal si se presiona
            favorito o carrito.
         ================================================= */
 
@@ -1323,6 +1413,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         ".btn-favorito"
                     )
                 ) {
+
                     return;
                 }
 
@@ -1332,6 +1423,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         ".btn-comprar"
                     )
                 ) {
+
                     return;
                 }
 
@@ -1373,9 +1465,8 @@ document.addEventListener("DOMContentLoaded", () => {
         /* =================================================
            BOTÓN AGREGAR AL CARRITO
 
-           IMPORTANTE:
            SOLO AGREGA.
-           NO REDIRIGE A carrito.html.
+           NO REDIRIGE.
         ================================================= */
 
         const botonComprar =
@@ -1399,11 +1490,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
 
-                    /* =========================================
-                       AGREGAR AL CARRITO
-                       SIN REDIRECCIÓN
-                    ========================================= */
-
                     agregarAlCarrito(
                         producto
                     );
@@ -1425,9 +1511,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
 
         const valor =
-            String(
-                genero || ""
-            ).toLowerCase();
+            normalizarGenero(
+                genero
+            );
 
 
         if (
@@ -1482,12 +1568,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 producto.imagen
             );
 
-
         const precio =
             Number(
                 producto.precio
             ) || 0;
-
 
         const stock =
             Number(
@@ -1721,6 +1805,7 @@ document.addEventListener("DOMContentLoaded", () => {
             !modalProductoFavorito ||
             !productoModalActual
         ) {
+
             return;
         }
 
@@ -1734,10 +1819,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (favorito) {
 
             modalProductoFavorito.innerHTML = `
-
                 <i class="fa-solid fa-heart"></i>
                 Quitar de favoritos
-
             `;
 
             modalProductoFavorito.style.color =
@@ -1746,10 +1829,8 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
 
             modalProductoFavorito.innerHTML = `
-
                 <i class="fa-regular fa-heart"></i>
                 Agregar a favoritos
-
             `;
 
             modalProductoFavorito.style.color =
@@ -1865,8 +1946,7 @@ document.addEventListener("DOMContentLoaded", () => {
        BOTÓN AGREGAR AL CARRITO
        DEL MODAL
 
-       IMPORTANTE:
-       AHORA SOLO AGREGA.
+       SOLO AGREGA.
        NO MANDA A carrito.html.
     ===================================================== */
 
@@ -1885,14 +1965,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (
                     !productoModalActual
                 ) {
+
                     return;
                 }
 
-
-                /* =========================================
-                   AGREGAR AL CARRITO
-                   SIN REDIRECCIÓN
-                ========================================= */
 
                 agregarAlCarrito(
                     productoModalActual
@@ -1920,6 +1996,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (
                     !productoModalActual
                 ) {
+
                     return;
                 }
 
@@ -1958,11 +2035,85 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
-                    generoActual =
+                    /*
+                       NORMALIZAR EL VALOR
+                       DEL BOTÓN
+                    */
+
+                    let valorGenero =
                         String(
                             boton.dataset.genero ||
+                            boton.textContent ||
                             "todos"
-                        ).toLowerCase();
+                        )
+                            .trim()
+                            .toLowerCase();
+
+
+                    valorGenero =
+                        valorGenero
+                            .normalize("NFD")
+                            .replace(
+                                /[\u0300-\u036f]/g,
+                                ""
+                            );
+
+
+                    /*
+                       PARA ÉL / HOMBRE
+                    */
+
+                    if (
+                        valorGenero === "para el" ||
+                        valorGenero === "hombre" ||
+                        valorGenero === "masculino" ||
+                        valorGenero === "men"
+                    ) {
+
+                        generoActual =
+                            "hombre";
+                    }
+
+
+                    /*
+                       PARA ELLA / MUJER
+                    */
+
+                    else if (
+                        valorGenero === "para ella" ||
+                        valorGenero === "mujer" ||
+                        valorGenero === "femenino" ||
+                        valorGenero === "women"
+                    ) {
+
+                        generoActual =
+                            "mujer";
+                    }
+
+
+                    /*
+                       UNISEX
+                    */
+
+                    else if (
+                        valorGenero ===
+                        "unisex"
+                    ) {
+
+                        generoActual =
+                            "unisex";
+                    }
+
+
+                    /*
+                       TODOS
+                    */
+
+                    else {
+
+                        generoActual =
+                            "todos";
+                    }
 
 
                     mostrarProductos();
@@ -2117,58 +2268,44 @@ document.addEventListener("DOMContentLoaded", () => {
             contenedor.style.position =
                 "fixed";
 
-
             contenedor.style.left =
                 "50%";
-
 
             contenedor.style.bottom =
                 "90px";
 
-
             contenedor.style.transform =
                 "translateX(-50%) translateY(20px)";
-
 
             contenedor.style.zIndex =
                 "999999";
 
-
             contenedor.style.padding =
                 "12px 18px";
-
 
             contenedor.style.background =
                 "#050505";
 
-
             contenedor.style.color =
                 "#fff";
-
 
             contenedor.style.borderRadius =
                 "9px";
 
-
             contenedor.style.fontSize =
                 "13px";
-
 
             contenedor.style.fontWeight =
                 "600";
 
-
             contenedor.style.boxShadow =
                 "0 8px 25px rgba(0,0,0,.2)";
-
 
             contenedor.style.opacity =
                 "0";
 
-
             contenedor.style.pointerEvents =
                 "none";
-
 
             contenedor.style.transition =
                 "all .25s ease";
@@ -2203,7 +2340,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     contenedor.style.opacity =
                         "0";
-
 
                     contenedor.style.transform =
                         "translateX(-50%) translateY(20px)";
