@@ -1,8 +1,6 @@
 /* =========================================================
    DL LUXURY
-
    GORRAS - TIENDA / VENTAS
-
    SUPABASE + STORAGE
 
    ARCHIVO:
@@ -20,6 +18,12 @@
    - No modifica productos.
    - No usa precio_final.
    - Agregar al carrito NO redirige a carrito.html.
+
+   FILTRO DE GÉNERO:
+   - Todos     → Hombre + Mujer + Unisex
+   - Para él   → Hombre + Unisex
+   - Para ella → Mujer + Unisex
+   - Unisex    → Unisex
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -37,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const CATEGORIA_GORRAS = 1;
 
     const STORAGE_BUCKET = "productos";
+
     const STORAGE_CARPETA = "gorras";
 
     const STORAGE_FAVORITOS =
@@ -54,9 +59,11 @@ document.addEventListener("DOMContentLoaded", () => {
     ===================================================== */
 
     if (!window.supabase) {
+
         console.error(
             "DL Luxury: Supabase no está cargado."
         );
+
         return;
     }
 
@@ -170,8 +177,11 @@ document.addEventListener("DOMContentLoaded", () => {
     ===================================================== */
 
     let productos = [];
+
     let productosFiltrados = [];
+
     let generoActual = "todos";
+
     let productoModalActual = null;
 
 
@@ -464,7 +474,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 categoria_id:
                     producto.categoria_id
-
             });
 
             mostrarMensaje(
@@ -478,6 +487,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         actualizarCorazones();
+
         actualizarFavoritoModal();
     }
 
@@ -528,9 +538,7 @@ document.addEventListener("DOMContentLoaded", () => {
        AGREGAR AL CARRITO
 
        IMPORTANTE:
-
-       Este botón SOLO agrega el producto.
-
+       SOLO agrega el producto.
        NO redirige a carrito.html.
     ===================================================== */
 
@@ -621,7 +629,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             carrito[indice].categoria_id =
                 CATEGORIA_GORRAS;
-
 
         } else {
 
@@ -761,6 +768,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 Cargando gorras...
 
             </div>
+
         `;
 
 
@@ -811,6 +819,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     : [];
 
 
+            /* =================================================
+               SEGURIDAD EXTRA:
+               SOLO GORRAS
+            ================================================= */
+
+            productos =
+                productos.filter(
+                    producto =>
+                        Number(
+                            producto.categoria_id
+                        ) ===
+                        CATEGORIA_GORRAS
+                );
+
+
             productosFiltrados =
                 [...productos];
 
@@ -827,6 +850,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             productos = [];
+
             productosFiltrados = [];
 
 
@@ -863,6 +887,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </p>
 
                 </div>
+
             `;
 
 
@@ -872,6 +897,65 @@ document.addEventListener("DOMContentLoaded", () => {
                     "none";
             }
         }
+    }
+
+
+    /* =====================================================
+       NORMALIZAR GÉNERO
+    ===================================================== */
+
+    function normalizarGenero(
+        genero
+    ) {
+
+        let valor =
+            String(
+                genero || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        valor =
+            valor
+                .normalize("NFD")
+                .replace(
+                    /[\u0300-\u036f]/g,
+                    ""
+                );
+
+
+        if (
+            valor === "hombre" ||
+            valor === "masculino" ||
+            valor === "men" ||
+            valor === "para el"
+        ) {
+
+            return "hombre";
+        }
+
+
+        if (
+            valor === "mujer" ||
+            valor === "femenino" ||
+            valor === "women" ||
+            valor === "para ella"
+        ) {
+
+            return "mujer";
+        }
+
+
+        if (
+            valor === "unisex"
+        ) {
+
+            return "unisex";
+        }
+
+
+        return valor;
     }
 
 
@@ -887,6 +971,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /* =================================================
            FILTRO GÉNERO
+
+           TODOS:
+           Hombre + Mujer + Unisex
+
+           HOMBRE:
+           Hombre + Unisex
+
+           MUJER:
+           Mujer + Unisex
+
+           UNISEX:
+           Unisex solamente
         ================================================= */
 
         if (
@@ -896,11 +992,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
             resultado =
                 resultado.filter(
-                    producto =>
-                        String(
-                            producto.genero || ""
-                        ).toLowerCase() ===
-                        generoActual.toLowerCase()
+                    producto => {
+
+                        const generoProducto =
+                            normalizarGenero(
+                                producto.genero
+                            );
+
+
+                        if (
+                            generoActual ===
+                            "hombre"
+                        ) {
+
+                            return (
+                                generoProducto ===
+                                "hombre" ||
+                                generoProducto ===
+                                "unisex"
+                            );
+                        }
+
+
+                        if (
+                            generoActual ===
+                            "mujer"
+                        ) {
+
+                            return (
+                                generoProducto ===
+                                "mujer" ||
+                                generoProducto ===
+                                "unisex"
+                            );
+                        }
+
+
+                        if (
+                            generoActual ===
+                            "unisex"
+                        ) {
+
+                            return (
+                                generoProducto ===
+                                "unisex"
+                            );
+                        }
+
+
+                        return (
+                            generoProducto ===
+                            generoActual
+                        );
+                    }
                 );
         }
 
@@ -925,19 +1069,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         const nombre =
                             String(
-                                producto.nombre || ""
+                                producto.nombre ||
+                                ""
                             ).toLowerCase();
 
 
                         const descripcion =
                             String(
-                                producto.descripcion || ""
+                                producto.descripcion ||
+                                ""
                             ).toLowerCase();
 
 
                         const genero =
                             String(
-                                producto.genero || ""
+                                producto.genero ||
+                                ""
                             ).toLowerCase();
 
 
@@ -987,8 +1134,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 resultado.sort(
                     (a, b) =>
-                        Number(a.precio || 0) -
-                        Number(b.precio || 0)
+                        Number(
+                            a.precio || 0
+                        ) -
+                        Number(
+                            b.precio || 0
+                        )
                 );
 
                 break;
@@ -998,8 +1149,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 resultado.sort(
                     (a, b) =>
-                        Number(b.precio || 0) -
-                        Number(a.precio || 0)
+                        Number(
+                            b.precio || 0
+                        ) -
+                        Number(
+                            a.precio || 0
+                        )
                 );
 
                 break;
@@ -1180,6 +1335,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         let textoStock = "";
+
         let claseStock = "";
 
 
@@ -1223,7 +1379,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     class="producto-imagen"
                     src="${escaparHTML(imagen)}"
                     alt="${escaparHTML(
-            producto.nombre || "Gorra"
+            producto.nombre ||
+            "Gorra"
         )}"
                     loading="lazy"
                     onerror="
@@ -1322,6 +1479,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </button>
 
             </div>
+
         `;
 
 
@@ -1341,6 +1499,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         ".btn-favorito"
                     )
                 ) {
+
                     return;
                 }
 
@@ -1350,6 +1509,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         ".btn-comprar"
                     )
                 ) {
+
                     return;
                 }
 
@@ -1389,13 +1549,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /* =================================================
            BOTÓN AGREGAR AL CARRITO
-
-           IMPORTANTE:
-
-           - Agrega el producto.
-           - Actualiza el contador.
-           - Muestra mensaje.
-           - NO redirige.
         ================================================= */
 
         const botonComprar =
@@ -1411,6 +1564,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 event => {
 
                     event.preventDefault();
+
                     event.stopPropagation();
 
 
@@ -1418,13 +1572,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         return;
                     }
 
-
-                    /* =====================================
-                       SOLO AGREGAR AL CARRITO
-
-                       NO window.location.href
-                       NO carrito.html
-                    ===================================== */
 
                     agregarAlCarrito(
                         producto
@@ -1447,20 +1594,32 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
 
         const valor =
-            String(
-                genero || ""
-            ).toLowerCase();
+            normalizarGenero(
+                genero
+            );
 
 
-        if (valor === "hombre") {
+        if (
+            valor === "hombre"
+        ) {
 
             return "Gorras para él";
         }
 
 
-        if (valor === "mujer") {
+        if (
+            valor === "mujer"
+        ) {
 
             return "Gorras para ella";
+        }
+
+
+        if (
+            valor === "unisex"
+        ) {
+
+            return "Gorras unisex";
         }
 
 
@@ -1509,7 +1668,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             modalProductoImagen.src =
                 imagen;
-
 
             modalProductoImagen.alt =
                 producto.nombre ||
@@ -1649,12 +1807,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             modalProductoComprar.innerHTML =
                 stock <= 0
-
                     ? `
                         <i class="fa-solid fa-ban"></i>
                         Agotado
                     `
-
                     : `
                         <i class="fa-solid fa-cart-shopping"></i>
                         Agregar al carrito
@@ -1720,6 +1876,7 @@ document.addEventListener("DOMContentLoaded", () => {
             !modalProductoFavorito ||
             !productoModalActual
         ) {
+
             return;
         }
 
@@ -1786,11 +1943,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     boton.innerHTML =
                         activo
-
                             ? `
                                 <i class="fa-solid fa-heart"></i>
                             `
-
                             : `
                                 <i class="fa-regular fa-heart"></i>
                             `;
@@ -1860,9 +2015,7 @@ document.addEventListener("DOMContentLoaded", () => {
        BOTÓN AGREGAR AL CARRITO DEL MODAL
 
        IMPORTANTE:
-
        SOLO agrega al carrito.
-
        NO redirige a carrito.html.
     ===================================================== */
 
@@ -1873,22 +2026,17 @@ document.addEventListener("DOMContentLoaded", () => {
             event => {
 
                 event.preventDefault();
+
                 event.stopPropagation();
 
 
                 if (
                     !productoModalActual
                 ) {
+
                     return;
                 }
 
-
-                /* =========================================
-                   SOLO AGREGAR
-
-                   NO window.location.href
-                   NO carrito.html
-                ========================================= */
 
                 agregarAlCarrito(
                     productoModalActual
@@ -1914,6 +2062,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (
                     !productoModalActual
                 ) {
+
                     return;
                 }
 
@@ -1928,6 +2077,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        BOTONES DE GÉNERO
+
+       IMPORTANTE:
+
+       Normalizamos valores como:
+
+       Para él
+       Para ella
+       Hombre
+       Mujer
+       Masculino
+       Femenino
+       Unisex
+
+       para evitar problemas con acentos o
+       diferentes valores en el HTML.
     ===================================================== */
 
     botonesGenero.forEach(
@@ -1952,11 +2116,66 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
-                    generoActual =
+                    let valorGenero =
                         String(
                             boton.dataset.genero ||
+                            boton.textContent ||
                             "todos"
-                        ).toLowerCase();
+                        )
+                            .trim()
+                            .toLowerCase();
+
+
+                    valorGenero =
+                        valorGenero
+                            .normalize("NFD")
+                            .replace(
+                                /[\u0300-\u036f]/g,
+                                ""
+                            );
+
+
+                    if (
+                        valorGenero ===
+                        "para el" ||
+                        valorGenero ===
+                        "hombre" ||
+                        valorGenero ===
+                        "masculino" ||
+                        valorGenero ===
+                        "men"
+                    ) {
+
+                        generoActual =
+                            "hombre";
+
+                    } else if (
+                        valorGenero ===
+                        "para ella" ||
+                        valorGenero ===
+                        "mujer" ||
+                        valorGenero ===
+                        "femenino" ||
+                        valorGenero ===
+                        "women"
+                    ) {
+
+                        generoActual =
+                            "mujer";
+
+                    } else if (
+                        valorGenero ===
+                        "unisex"
+                    ) {
+
+                        generoActual =
+                            "unisex";
+
+                    } else {
+
+                        generoActual =
+                            "todos";
+                    }
 
 
                     mostrarProductos();
@@ -2187,7 +2406,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     contenedor.style.opacity =
                         "0";
 
-
                     contenedor.style.transform =
                         "translateX(-50%) translateY(20px)";
 
@@ -2213,6 +2431,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ) {
 
                 actualizarCorazones();
+
                 actualizarFavoritoModal();
             }
 
@@ -2242,7 +2461,9 @@ document.addEventListener("DOMContentLoaded", () => {
             ) {
 
                 actualizarContadorCarrito();
+
                 actualizarCorazones();
+
                 actualizarFavoritoModal();
             }
         }
