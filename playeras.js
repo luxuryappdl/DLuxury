@@ -1,7 +1,7 @@
 /* =========================================================
    DL LUXURY
-
    PLAYERAS - TIENDA / VENTAS
+
    SUPABASE + STORAGE
 
    ARCHIVO:
@@ -30,6 +30,12 @@
    - Guarda precio
    - Guarda stock
    - Guarda categoría
+
+   GÉNERO:
+   - Todos = Hombre + Mujer + Unisex
+   - Para él = Hombre + Unisex
+   - Para ella = Mujer + Unisex
+   - Unisex = Unisex
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", async function () {
@@ -47,9 +53,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         "sb_publishable_Qdae9GUtmuosAPP4kemF3A_Vr4HFo0n";
 
     if (!window.supabase) {
+
         console.error(
             "❌ Supabase no está cargado. Verifica el CDN de Supabase."
         );
+
         return;
     }
 
@@ -65,7 +73,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     ===================================================== */
 
     const BUCKET = "productos";
+
     const CARPETA_PLAYERAS = "playeras";
+
     const CATEGORIA_PLAYERAS = 2;
 
 
@@ -93,10 +103,15 @@ document.addEventListener("DOMContentLoaded", async function () {
     ===================================================== */
 
     let productos = [];
+
     let productosFiltrados = [];
+
     let generoActual = "todos";
+
     let textoBusqueda = "";
+
     let ordenActual = "default";
+
     let productoModalActual = null;
 
 
@@ -218,11 +233,14 @@ document.addEventListener("DOMContentLoaded", async function () {
                 "🔄 Cargando SOLO PLAYERAS desde Supabase..."
             );
 
+
             const {
                 data,
                 error
             } = await supabaseClient
+
                 .from("productos")
+
                 .select(`
                     id,
                     nombre,
@@ -235,14 +253,17 @@ document.addEventListener("DOMContentLoaded", async function () {
                     categoria_id,
                     creado_en
                 `)
+
                 .eq(
                     "categoria_id",
                     CATEGORIA_PLAYERAS
                 )
+
                 .eq(
                     "activo",
                     true
                 )
+
                 .order(
                     "creado_en",
                     {
@@ -278,11 +299,14 @@ document.addEventListener("DOMContentLoaded", async function () {
                     error.code
                 );
 
+
                 mostrarMensaje(
                     "No se pudieron cargar las playeras."
                 );
 
+
                 productos = [];
+
                 productosFiltrados = [];
 
                 return;
@@ -300,8 +324,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                             return Number(
                                 producto.categoria_id
-                            ) ===
-                                CATEGORIA_PLAYERAS;
+                            ) === CATEGORIA_PLAYERAS;
+
                         }
                     )
                     : [];
@@ -321,15 +345,20 @@ document.addEventListener("DOMContentLoaded", async function () {
             productosFiltrados =
                 [...productos];
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "❌ Error inesperado cargando Playeras:",
                 error
             );
 
+
             productos = [];
+
             productosFiltrados = [];
+
 
             mostrarMensaje(
                 "Ocurrió un error al cargar las playeras."
@@ -356,6 +385,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         aplicarFiltros();
 
+
         contenedorProductos.innerHTML = "";
 
 
@@ -368,10 +398,14 @@ document.addEventListener("DOMContentLoaded", async function () {
                 sinResultados.style.display =
                     "block";
 
-            } else {
+            }
+
+            else {
 
                 contenedorProductos.innerHTML = `
+
                     <div class="sin-resultados">
+
                         <i class="fa-solid fa-shirt"></i>
 
                         <h3>
@@ -381,6 +415,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         <p>
                             Intenta buscar otro producto.
                         </p>
+
                     </div>
                 `;
             }
@@ -403,6 +438,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     crearTarjetaProducto(
                         producto
                     );
+
 
                 contenedorProductos.appendChild(
                     tarjeta
@@ -428,15 +464,25 @@ document.addEventListener("DOMContentLoaded", async function () {
             productos.filter(
                 function (producto) {
 
+
+                    /* =========================================
+                       SEGURIDAD CATEGORÍA
+                    ========================================= */
+
                     if (
                         Number(
                             producto.categoria_id
                         ) !==
                         CATEGORIA_PLAYERAS
                     ) {
+
                         return false;
                     }
 
+
+                    /* =========================================
+                       NOMBRE
+                    ========================================= */
 
                     const nombre =
                         String(
@@ -445,12 +491,32 @@ document.addEventListener("DOMContentLoaded", async function () {
                             .toLowerCase();
 
 
+                    /* =========================================
+                       DESCRIPCIÓN
+                    ========================================= */
+
                     const descripcion =
                         String(
                             producto.descripcion || ""
                         )
                             .toLowerCase();
 
+
+                    /* =========================================
+                       GÉNERO DEL PRODUCTO
+                    ========================================= */
+
+                    const generoProducto =
+                        String(
+                            producto.genero || ""
+                        )
+                            .toLowerCase()
+                            .trim();
+
+
+                    /* =========================================
+                       BUSCADOR
+                    ========================================= */
 
                     const coincideBusqueda =
                         !busqueda ||
@@ -459,40 +525,100 @@ document.addEventListener("DOMContentLoaded", async function () {
                         ) ||
                         descripcion.includes(
                             busqueda
+                        ) ||
+                        generoProducto.includes(
+                            busqueda
                         );
 
 
-                    let coincideGenero =
-                        true;
+                    /* =========================================
+                       GÉNERO
+
+                       TODOS:
+                       Hombre + Mujer + Unisex
+
+                       PARA ÉL:
+                       Hombre + Unisex
+
+                       PARA ELLA:
+                       Mujer + Unisex
+
+                       UNISEX:
+                       Unisex
+                    ========================================= */
+
+                    let coincideGenero = true;
 
 
                     if (
-                        generoActual !==
-                        "todos"
+                        generoActual !== "todos"
                     ) {
 
-                        const genero =
-                            String(
-                                producto.genero || ""
-                            )
-                                .toLowerCase()
-                                .trim();
+
+                        /* ==============================
+                           PARA ÉL / HOMBRE
+                        ============================== */
+
+                        if (
+                            generoActual === "hombre"
+                        ) {
+
+                            coincideGenero =
+                                generoProducto === "hombre" ||
+                                generoProducto === "unisex";
+                        }
 
 
-                        coincideGenero =
-                            genero ===
-                            generoActual;
+                        /* ==============================
+                           PARA ELLA / MUJER
+                        ============================== */
+
+                        else if (
+                            generoActual === "mujer"
+                        ) {
+
+                            coincideGenero =
+                                generoProducto === "mujer" ||
+                                generoProducto === "unisex";
+                        }
+
+
+                        /* ==============================
+                           UNISEX
+                        ============================== */
+
+                        else if (
+                            generoActual === "unisex"
+                        ) {
+
+                            coincideGenero =
+                                generoProducto === "unisex";
+                        }
+
+
+                        /* ==============================
+                           OTROS
+                        ============================== */
+
+                        else {
+
+                            coincideGenero =
+                                generoProducto ===
+                                generoActual;
+                        }
                     }
 
 
-                    let coincideCategoria =
-                        true;
+                    /* =========================================
+                       CATEGORÍA
+                    ========================================= */
+
+                    let coincideCategoria = true;
 
 
                     if (
                         filtroCategoria &&
-                        filtroCategoria.value !==
-                        "todos"
+                        filtroCategoria.value !== "todos"
                     ) {
 
                         coincideCategoria =
@@ -517,6 +643,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         ================================================= */
 
         switch (ordenActual) {
+
 
             case "precio-menor":
 
@@ -668,6 +795,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
         let textoStock = "";
+
         let claseStock = "";
 
 
@@ -678,24 +806,27 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             claseStock =
                 "agotado";
+        }
 
-        } else if (stock === 1) {
+        else if (stock === 1) {
 
             textoStock =
                 "Última unidad";
 
             claseStock =
                 "poco-stock";
+        }
 
-        } else if (stock <= 5) {
+        else if (stock <= 5) {
 
             textoStock =
                 `Solo ${stock} disponibles`;
 
             claseStock =
                 "poco-stock";
+        }
 
-        } else {
+        else {
 
             textoStock =
                 `${stock} disponibles`;
@@ -712,7 +843,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         let generoTexto =
             String(
                 producto.genero || ""
-            ).trim();
+            )
+                .trim();
 
 
         if (
@@ -722,16 +854,18 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             generoTexto =
                 "Hombre";
+        }
 
-        } else if (
+        else if (
             generoTexto.toLowerCase() ===
             "mujer"
         ) {
 
             generoTexto =
                 "Mujer";
+        }
 
-        } else if (
+        else if (
             generoTexto.toLowerCase() ===
             "unisex"
         ) {
@@ -765,7 +899,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                     title="Agregar a favoritos"
                     data-id="${producto.id}"
                 >
+
                     <i class="fa-regular fa-heart"></i>
+
                 </button>
 
             </div>
@@ -798,11 +934,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 ${producto.descripcion
                 ? `
                             <p class="producto-descripcion">
-
                                 ${escapeHTML(
                     producto.descripcion
                 )}
-
                             </p>
                         `
                 : ""
@@ -885,6 +1019,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         ".btn-favorito"
                     )
                 ) {
+
                     return;
                 }
 
@@ -894,6 +1029,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         ".btn-comprar"
                     )
                 ) {
+
                     return;
                 }
 
@@ -939,10 +1075,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
         /* =================================================
-           AGREGAR AL CARRITO DESDE TARJETA
-
-           IMPORTANTE:
-           NO REDIRIGE A carrito.html
+           AGREGAR AL CARRITO
         ================================================= */
 
         const botonComprar =
@@ -958,11 +1091,15 @@ document.addEventListener("DOMContentLoaded", async function () {
                 function (evento) {
 
                     evento.preventDefault();
+
                     evento.stopPropagation();
 
+
                     if (stock <= 0) {
+
                         return;
                     }
+
 
                     comprarProducto(
                         producto.id,
@@ -984,6 +1121,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     function obtenerURLImagen(valor) {
 
         if (!valor) {
+
             return PLACEHOLDER;
         }
 
@@ -993,6 +1131,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
         if (!valorTexto) {
+
             return PLACEHOLDER;
         }
 
@@ -1006,6 +1145,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 "data:image/"
             )
         ) {
+
             return valorTexto;
         }
 
@@ -1123,6 +1263,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     ) {
 
         if (!modalProducto) {
+
             return;
         }
 
@@ -1201,6 +1342,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         /* =================================================
            PRECIO ORIGINAL
+
            PLAYERAS NO TIENEN DESCUENTO
         ================================================= */
 
@@ -1233,6 +1375,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         /* =================================================
            DESCUENTO
+
+           DESACTIVADO
         ================================================= */
 
         if (
@@ -1284,7 +1428,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
         /* =================================================
-           BOTÓN AGREGAR AL CARRITO DEL MODAL
+           BOTÓN AGREGAR AL CARRITO
         ================================================= */
 
         if (
@@ -1336,6 +1480,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     function cerrarModal() {
 
         if (!modalProducto) {
+
             return;
         }
 
@@ -1407,9 +1552,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     /* =====================================================
        AGREGAR AL CARRITO DESDE MODAL
-
-       IMPORTANTE:
-       NO REDIRIGE A carrito.html
     ===================================================== */
 
     if (
@@ -1422,9 +1564,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                 evento.preventDefault();
 
+
                 if (
                     !productoModalActual
                 ) {
+
                     return;
                 }
 
@@ -1453,6 +1597,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 if (
                     !productoModalActual
                 ) {
+
                     return;
                 }
 
@@ -1473,9 +1618,7 @@ document.addEventListener("DOMContentLoaded", async function () {
        - TARJETA NORMAL
        - MODAL
 
-       irAlCarrito se mantiene por compatibilidad,
-       pero ahora SIEMPRE se utiliza false desde
-       los botones de Playeras.
+       NO REDIRIGE A carrito.html
     ===================================================== */
 
     function comprarProducto(
@@ -1601,7 +1744,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
             if (
-                cantidadActual >= stock
+                cantidadActual >=
+                stock
             ) {
 
                 mostrarMensaje(
@@ -1708,7 +1852,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
         /* =================================================
-           CERRAR MODAL SI ESTÁ ABIERTO
+           CERRAR MODAL
         ================================================= */
 
         if (
@@ -1765,12 +1909,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
         /* =================================================
-           REDIRECCIÓN
-
-           DESACTIVADA.
-
-           Las Playeras solamente se agregan al carrito.
-           NO se manda al usuario a carrito.html.
+           REDIRECCIÓN DESACTIVADA
         ================================================= */
 
         if (irAlCarrito) {
@@ -1797,6 +1936,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
             if (!datos) {
+
                 return [];
             }
 
@@ -1813,7 +1953,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 ? carrito
                 : [];
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "❌ Error leyendo carrito:",
@@ -1838,7 +1980,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 )
             );
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "❌ Error guardando carrito:",
@@ -1857,6 +2001,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (
             !contadorCarrito
         ) {
+
             return;
         }
 
@@ -1909,6 +2054,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
             if (!datos) {
+
                 return [];
             }
 
@@ -1925,7 +2071,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 ? favoritos
                 : [];
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "❌ Error leyendo favoritos:",
@@ -1950,7 +2098,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 )
             );
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "❌ Error guardando favoritos:",
@@ -2006,8 +2156,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             mostrarMensaje(
                 "Eliminado de favoritos."
             );
+        }
 
-        } else {
+        else {
 
             favoritos.push(
                 id
@@ -2049,6 +2200,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     ) {
 
         if (!boton) {
+
             return;
         }
 
@@ -2088,6 +2240,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     ) {
 
         if (!boton) {
+
             return;
         }
 
@@ -2099,26 +2252,29 @@ document.addEventListener("DOMContentLoaded", async function () {
             );
 
 
-            boton.innerHTML =
-                `
-                    <i class="fa-solid fa-heart"></i>
-                `;
+            boton.innerHTML = `
+
+                <i class="fa-solid fa-heart"></i>
+
+            `;
 
 
             boton.title =
                 "Quitar de favoritos";
+        }
 
-        } else {
+        else {
 
             boton.classList.remove(
                 "favorito-activo"
             );
 
 
-            boton.innerHTML =
-                `
-                    <i class="fa-regular fa-heart"></i>
-                `;
+            boton.innerHTML = `
+
+                <i class="fa-regular fa-heart"></i>
+
+            `;
 
 
             boton.title =
@@ -2151,6 +2307,18 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     /* =====================================================
        GÉNERO
+
+       TODOS:
+       Hombre + Mujer + Unisex
+
+       PARA ÉL:
+       Hombre + Unisex
+
+       PARA ELLA:
+       Mujer + Unisex
+
+       UNISEX:
+       Unisex
     ===================================================== */
 
     botonesGenero.forEach(
@@ -2159,6 +2327,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             boton.addEventListener(
                 "click",
                 function () {
+
+
+                    /* ==============================
+                       QUITAR ACTIVE
+                    ============================== */
 
                     botonesGenero.forEach(
                         function (btn) {
@@ -2170,18 +2343,103 @@ document.addEventListener("DOMContentLoaded", async function () {
                     );
 
 
+                    /* ==============================
+                       ACTIVAR BOTÓN
+                    ============================== */
+
                     boton.classList.add(
                         "active"
                     );
 
 
-                    generoActual =
+                    /* ==============================
+                       OBTENER VALOR
+                    ============================== */
+
+                    let valorGenero =
                         String(
                             boton.dataset.genero ||
+                            boton.textContent ||
                             "todos"
                         )
-                            .toLowerCase()
-                            .trim();
+                            .trim()
+                            .toLowerCase();
+
+
+                    /* ==============================
+                       QUITAR ACENTOS
+                    ============================== */
+
+                    valorGenero =
+                        valorGenero.normalize(
+                            "NFD"
+                        )
+                            .replace(
+                                /[\u0300-\u036f]/g,
+                                ""
+                            );
+
+
+                    /* ==============================
+                       NORMALIZAR HOMBRE
+                    ============================== */
+
+                    if (
+                        valorGenero === "para el" ||
+                        valorGenero === "hombre" ||
+                        valorGenero === "masculino" ||
+                        valorGenero === "men"
+                    ) {
+
+                        generoActual =
+                            "hombre";
+                    }
+
+
+                    /* ==============================
+                       NORMALIZAR MUJER
+                    ============================== */
+
+                    else if (
+                        valorGenero === "para ella" ||
+                        valorGenero === "mujer" ||
+                        valorGenero === "femenino" ||
+                        valorGenero === "women"
+                    ) {
+
+                        generoActual =
+                            "mujer";
+                    }
+
+
+                    /* ==============================
+                       NORMALIZAR UNISEX
+                    ============================== */
+
+                    else if (
+                        valorGenero === "unisex"
+                    ) {
+
+                        generoActual =
+                            "unisex";
+                    }
+
+
+                    /* ==============================
+                       TODOS
+                    ============================== */
+
+                    else {
+
+                        generoActual =
+                            "todos";
+                    }
+
+
+                    console.log(
+                        "🎯 Filtro género:",
+                        generoActual
+                    );
 
 
                     mostrarProductosVenta();
@@ -2351,22 +2609,27 @@ document.addEventListener("DOMContentLoaded", async function () {
         return String(
             texto ?? ""
         )
+
             .replace(
                 /&/g,
                 "&amp;"
             )
+
             .replace(
                 /</g,
                 "&lt;"
             )
+
             .replace(
                 />/g,
                 "&gt;"
             )
+
             .replace(
                 /"/g,
                 "&quot;"
             )
+
             .replace(
                 /'/g,
                 "&#039;"
