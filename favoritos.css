@@ -1,9 +1,33 @@
 /* =========================================================
    DL LUXURY
-   FAVORITOS
+   FAVORITOS - HALLOWEEN EDITION 🎃
    CSS COMPLETO
    TARJETAS DEL MISMO TAMAÑO QUE TIENDA
 ========================================================= */
+
+
+/* =========================================================
+   VARIABLES HALLOWEEN
+========================================================= */
+
+:root {
+    --halloween-black: #08060a;
+    --halloween-dark: #100b13;
+    --halloween-card: #151019;
+
+    --halloween-purple: #7627a8;
+    --halloween-purple-dark: #3b1457;
+
+    --halloween-orange: #ff6a00;
+    --halloween-orange-light: #ff8c1a;
+
+    --halloween-red: #9d1725;
+
+    --halloween-text: #f4eee7;
+    --halloween-muted: #aaa0aa;
+
+    --halloween-border: rgba(255, 106, 0, 0.25);
+}
 
 
 /* =========================================================
@@ -22,8 +46,17 @@ html {
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background: #f3f3f3;
-    color: #222;
+
+    background:
+        radial-gradient(circle at 10% 10%,
+            rgba(118, 39, 168, 0.13),
+            transparent 25%),
+        radial-gradient(circle at 90% 20%,
+            rgba(255, 106, 0, 0.08),
+            transparent 25%),
+        #08060a;
+
+    color: var(--halloween-text);
 }
 
 
@@ -35,9 +68,20 @@ body {
     width: 100%;
     min-height: 100vh;
     max-width: 1200px;
+
     margin: 0 auto;
-    background: #fff;
+
+    background:
+        radial-gradient(circle at 20% 30%,
+            rgba(118, 39, 168, 0.035),
+            transparent 25%),
+        radial-gradient(circle at 80% 70%,
+            rgba(255, 106, 0, 0.025),
+            transparent 25%),
+        var(--halloween-black);
+
     position: relative;
+
     overflow-x: hidden;
 }
 
@@ -56,11 +100,61 @@ body {
 
     padding: 0 30px;
 
-    background: #050505;
-    color: #fff;
+    background:
+        linear-gradient(135deg,
+            #08060a,
+            #170d1d,
+            #0b080e);
+
+    color: var(--halloween-text);
+
+    border-bottom: 1px solid rgba(255, 106, 0, 0.45);
+
+    box-shadow:
+        0 5px 25px rgba(0, 0, 0, 0.55),
+        0 1px 15px rgba(118, 39, 168, 0.15);
 
     position: relative;
+
     z-index: 20;
+}
+
+
+/* TELARAÑA HEADER */
+
+.hearder::before {
+    content: "🕸️";
+
+    position: absolute;
+
+    top: -5px;
+    left: 14px;
+
+    font-size: 43px;
+
+    opacity: 0.16;
+
+    pointer-events: none;
+}
+
+
+/* CALABAZA HEADER */
+
+.hearder::after {
+    content: "🎃";
+
+    position: absolute;
+
+    right: 65px;
+    top: 8px;
+
+    font-size: 43px;
+
+    opacity: 0.18;
+
+    pointer-events: none;
+
+    animation: halloweenGlow 3s ease-in-out infinite;
 }
 
 
@@ -77,6 +171,7 @@ body {
     justify-content: center;
 
     border: none;
+
     background: transparent;
 
     color: #fff;
@@ -91,8 +186,12 @@ body {
 }
 
 .menu-btn:hover {
-    color: #c69a2b;
+    color: var(--halloween-orange);
+
     transform: scale(1.05);
+
+    text-shadow:
+        0 0 10px rgba(255, 106, 0, 0.5);
 }
 
 .menu-btn:active {
@@ -115,6 +214,7 @@ body {
     position: relative;
 
     border: none;
+
     background: transparent;
 
     color: #fff;
@@ -129,8 +229,12 @@ body {
 }
 
 .notificacion:hover {
-    color: #c69a2b;
+    color: var(--halloween-orange);
+
     transform: scale(1.05);
+
+    text-shadow:
+        0 0 10px rgba(255, 106, 0, 0.5);
 }
 
 .notificacion:active {
@@ -153,9 +257,12 @@ body {
 
     border-radius: 50%;
 
-    background: #c69a2b;
+    background: var(--halloween-orange);
 
-    border: 2px solid #050505;
+    border: 2px solid #08060a;
+
+    box-shadow:
+        0 0 8px rgba(255, 106, 0, 0.6);
 }
 
 
@@ -165,7 +272,28 @@ body {
 
 .content {
     width: 100%;
+
     padding: 35px 45px 110px;
+
+    position: relative;
+}
+
+
+/* TELARAÑA DECORATIVA */
+
+.content::before {
+    content: "🕸️";
+
+    position: absolute;
+
+    top: 5px;
+    right: 10px;
+
+    font-size: 75px;
+
+    opacity: 0.08;
+
+    pointer-events: none;
 }
 
 
@@ -183,7 +311,30 @@ body {
     gap: 30px;
 
     margin-bottom: 30px;
+
+    position: relative;
 }
+
+
+/* FANTASMA */
+
+.favoritos-header::after {
+    content: "👻";
+
+    position: absolute;
+
+    right: 115px;
+    top: -18px;
+
+    font-size: 43px;
+
+    opacity: 0.12;
+
+    pointer-events: none;
+
+    animation: ghostGlow 4s ease-in-out infinite;
+}
+
 
 .favoritos-header>div:first-child {
     flex: 1;
@@ -199,7 +350,7 @@ body {
 
     margin-bottom: 8px;
 
-    color: #c69a2b;
+    color: var(--halloween-orange);
 
     font-size: 11px;
     font-weight: 800;
@@ -207,6 +358,9 @@ body {
     letter-spacing: 2px;
 
     text-transform: uppercase;
+
+    text-shadow:
+        0 0 10px rgba(255, 106, 0, 0.35);
 }
 
 
@@ -217,20 +371,24 @@ body {
 .favoritos-header h1 {
     margin: 0;
 
-    color: #111;
+    color: var(--halloween-text);
 
     font-size: 34px;
     font-weight: 800;
 
     line-height: 1.15;
+
+    text-shadow:
+        0 0 15px rgba(118, 39, 168, 0.35);
 }
 
 .favoritos-header p {
     margin-top: 10px;
 
-    color: #777;
+    color: var(--halloween-muted);
 
     font-size: 14px;
+
     line-height: 1.6;
 }
 
@@ -251,22 +409,54 @@ body {
 
     gap: 4px;
 
-    border: 1px solid #e2e2e2;
+    border: 1px solid rgba(255, 106, 0, 0.35);
+
     border-radius: 12px;
 
-    background: #fff;
+    background:
+        linear-gradient(145deg,
+            rgba(118, 39, 168, 0.18),
+            rgba(21, 16, 25, 0.96));
 
     box-shadow:
-        0 5px 18px rgba(0, 0, 0, 0.05);
+        0 8px 25px rgba(0, 0, 0, 0.35),
+        0 0 20px rgba(118, 39, 168, 0.08);
+
+    position: relative;
+
+    overflow: hidden;
 }
 
+
+/* CALABAZA */
+
+.favoritos-contador::after {
+    content: "🎃";
+
+    position: absolute;
+
+    right: -7px;
+    bottom: -8px;
+
+    font-size: 31px;
+
+    opacity: 0.15;
+
+    pointer-events: none;
+}
+
+
 .favoritos-contador i {
-    color: #c69a2b;
+    color: var(--halloween-orange);
+
     font-size: 20px;
+
+    text-shadow:
+        0 0 10px rgba(255, 106, 0, 0.5);
 }
 
 .favoritos-contador span {
-    color: #111;
+    color: #fff;
 
     font-size: 16px;
     font-weight: 800;
@@ -290,8 +480,29 @@ body {
 
     margin-bottom: 25px;
 
-    border-top: 1px solid #eeeeee;
-    border-bottom: 1px solid #eeeeee;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+    border-bottom: 1px solid rgba(255, 106, 0, 0.22);
+
+    position: relative;
+}
+
+
+/* CALAVERA */
+
+.favoritos-barra::after {
+    content: "💀";
+
+    position: absolute;
+
+    right: 170px;
+    top: 5px;
+
+    font-size: 31px;
+
+    opacity: 0.11;
+
+    pointer-events: none;
 }
 
 
@@ -300,9 +511,10 @@ body {
 ========================================================= */
 
 .favoritos-resultados strong {
-    color: #333;
+    color: var(--halloween-text);
 
     font-size: 13px;
+
     font-weight: 700;
 }
 
@@ -322,11 +534,16 @@ body {
 
     padding: 0 15px;
 
-    border: 1px solid #dddddd;
+    border: 1px solid rgba(255, 106, 0, 0.25);
+
     border-radius: 7px;
 
-    background: #fff;
-    color: #555;
+    background:
+        linear-gradient(135deg,
+            #171019,
+            #0d0a0f);
+
+    color: #aaa0aa;
 
     font-size: 12px;
     font-weight: 700;
@@ -337,15 +554,24 @@ body {
         background 0.25s ease,
         color 0.25s ease,
         border-color 0.25s ease,
-        transform 0.2s ease;
+        transform 0.2s ease,
+        box-shadow 0.25s ease;
 }
 
 .btn-limpiar:hover {
-    background: #111;
-    border-color: #111;
+    background:
+        linear-gradient(135deg,
+            var(--halloween-red),
+            #5c1018);
+
+    border-color: #d42b39;
+
     color: #fff;
 
     transform: translateY(-1px);
+
+    box-shadow:
+        0 0 15px rgba(157, 23, 37, 0.35);
 }
 
 .btn-limpiar:active {
@@ -367,6 +593,8 @@ body {
         repeat(4, minmax(0, 1fr));
 
     gap: 18px;
+
+    position: relative;
 }
 
 
@@ -381,10 +609,17 @@ body {
 
     overflow: hidden;
 
-    background: #fff;
+    background:
+        linear-gradient(145deg,
+            #171019,
+            #0d0a0f);
 
-    border: 1px solid #e7e7e7;
+    border: 1px solid rgba(255, 106, 0, 0.18);
+
     border-radius: 15px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.28);
 
     transition:
         transform 0.25s ease,
@@ -392,13 +627,56 @@ body {
         border-color 0.25s ease;
 }
 
-.favorito-card:hover {
-    transform: translateY(-4px);
 
-    border-color: #d6d6d6;
+/* CALAVERA EN TARJETAS */
+
+.favorito-card::before {
+    content: "💀";
+
+    position: absolute;
+
+    top: 7px;
+    right: 7px;
+
+    z-index: 5;
+
+    font-size: 24px;
+
+    opacity: 0.13;
+
+    pointer-events: none;
+}
+
+
+/* ARAÑA EN TARJETAS */
+
+.favorito-card::after {
+    content: "🕷️";
+
+    position: absolute;
+
+    left: 7px;
+    bottom: 7px;
+
+    z-index: 5;
+
+    font-size: 20px;
+
+    opacity: 0.11;
+
+    pointer-events: none;
+}
+
+
+.favorito-card:hover {
+    transform: translateY(-5px);
+
+    border-color:
+        rgba(255, 106, 0, 0.55);
 
     box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.09);
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(118, 39, 168, 0.15);
 }
 
 
@@ -416,8 +694,51 @@ body {
 
     overflow: hidden;
 
-    background: #f5f5f5;
+    background:
+        radial-gradient(circle at center,
+            #21162a,
+            #0b080d);
+
+    border-bottom:
+        1px solid rgba(255, 106, 0, 0.18);
 }
+
+
+.favorito-imagen::before {
+    content: "🕸️";
+
+    position: absolute;
+
+    top: -6px;
+    left: -2px;
+
+    z-index: 2;
+
+    font-size: 45px;
+
+    opacity: 0.10;
+
+    pointer-events: none;
+}
+
+
+.favorito-imagen::after {
+    content: "🎃";
+
+    position: absolute;
+
+    right: 6px;
+    bottom: 5px;
+
+    z-index: 2;
+
+    font-size: 24px;
+
+    opacity: 0.12;
+
+    pointer-events: none;
+}
+
 
 .favorito-imagen img {
     width: 100%;
@@ -432,7 +753,7 @@ body {
 }
 
 .favorito-card:hover .favorito-imagen img {
-    transform: scale(1.04);
+    transform: scale(1.05);
 }
 
 
@@ -453,33 +774,42 @@ body {
     top: 10px;
     right: 10px;
 
-    z-index: 3;
+    z-index: 8;
 
-    border: none;
+    border: 1px solid rgba(255, 106, 0, 0.25);
+
     border-radius: 50%;
 
-    background: rgba(255, 255, 255, 0.95);
+    background:
+        rgba(8, 6, 10, 0.92);
 
-    color: #111;
+    color: var(--halloween-orange);
 
     font-size: 14px;
 
     cursor: pointer;
 
     box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.12);
+        0 4px 15px rgba(0, 0, 0, 0.35);
 
     transition:
         background 0.25s ease,
         color 0.25s ease,
-        transform 0.2s ease;
+        transform 0.2s ease,
+        border-color 0.25s ease;
 }
 
 .favorito-quitar:hover {
-    background: #111;
+    background: var(--halloween-red);
+
+    border-color: #d42b39;
+
     color: #fff;
 
     transform: scale(1.08);
+
+    box-shadow:
+        0 0 15px rgba(157, 23, 37, 0.45);
 }
 
 .favorito-quitar:active {
@@ -493,6 +823,8 @@ body {
 
 .favorito-info {
     padding: 14px;
+
+    position: relative;
 }
 
 
@@ -505,7 +837,7 @@ body {
 
     margin-bottom: 6px;
 
-    color: #c69a2b;
+    color: var(--halloween-orange);
 
     font-size: 9px;
     font-weight: 900;
@@ -513,6 +845,9 @@ body {
     letter-spacing: 0.5px;
 
     text-transform: uppercase;
+
+    text-shadow:
+        0 0 8px rgba(255, 106, 0, 0.3);
 }
 
 
@@ -525,7 +860,7 @@ body {
 
     min-height: 38px;
 
-    color: #111;
+    color: var(--halloween-text);
 
     font-size: 14px;
     font-weight: 900;
@@ -541,7 +876,7 @@ body {
 .favorito-descripcion {
     margin-top: 7px;
 
-    color: #777;
+    color: var(--halloween-muted);
 
     font-size: 12px;
 
@@ -565,10 +900,13 @@ body {
 
     margin-top: 10px;
 
-    color: #111;
+    color: var(--halloween-orange-light);
 
     font-size: 17px;
     font-weight: 900;
+
+    text-shadow:
+        0 0 9px rgba(255, 106, 0, 0.3);
 }
 
 
@@ -581,14 +919,14 @@ body {
 
     margin-top: 6px;
 
-    color: #777;
+    color: #918791;
 
     font-size: 10px;
     font-weight: 700;
 }
 
 .favorito-stock.agotado {
-    color: #d62839;
+    color: #e33b4b;
 }
 
 
@@ -606,10 +944,14 @@ body {
 
     margin-top: 12px;
 
-    border: none;
+    border: 1px solid var(--halloween-purple);
+
     border-radius: 9px;
 
-    background: #111;
+    background:
+        linear-gradient(135deg,
+            #21122b,
+            #120b17);
 
     color: #fff;
 
@@ -623,17 +965,25 @@ body {
     transition:
         background 0.25s ease,
         color 0.25s ease,
-        transform 0.2s ease;
+        border-color 0.25s ease,
+        transform 0.2s ease,
+        box-shadow 0.25s ease;
 }
 
 .favorito-ver:hover {
-    background: #c69a2b;
+    background:
+        linear-gradient(135deg,
+            var(--halloween-purple),
+            #4b166b);
 
-    border-color: #c69a2b;
+    border-color: #9d42d0;
 
-    color: #111;
+    color: #fff;
 
     transform: translateY(-1px);
+
+    box-shadow:
+        0 7px 18px rgba(118, 39, 168, 0.3);
 }
 
 .favorito-ver:active {
@@ -660,10 +1010,14 @@ body {
 
     padding: 11px 15px;
 
-    border: none;
+    border: 1px solid var(--halloween-orange);
+
     border-radius: 9px;
 
-    background: #000;
+    background:
+        linear-gradient(135deg,
+            var(--halloween-orange),
+            #c94d00);
 
     color: #fff;
 
@@ -681,12 +1035,14 @@ body {
     appearance: none;
     -webkit-appearance: none;
 
-    box-shadow: none;
+    box-shadow:
+        0 4px 15px rgba(255, 106, 0, 0.12);
 
     transition:
         background 0.25s ease,
         transform 0.2s ease,
-        box-shadow 0.25s ease;
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
 }
 
 .favorito-card .favorito-comprar i {
@@ -698,14 +1054,19 @@ body {
 }
 
 .favorito-card .favorito-comprar:hover {
-    background: #c99a24;
+    background:
+        linear-gradient(135deg,
+            var(--halloween-purple),
+            #4b166b);
+
+    border-color: #9d42d0;
 
     color: #fff;
 
     transform: translateY(-2px);
 
     box-shadow:
-        0 6px 15px rgba(0, 0, 0, 0.15);
+        0 8px 20px rgba(118, 39, 168, 0.35);
 }
 
 .favorito-card .favorito-comprar:hover i {
@@ -719,9 +1080,11 @@ body {
 }
 
 .favorito-card .favorito-comprar:disabled {
-    background: #d5d5d5;
+    background: #302b31;
 
-    color: #777;
+    border-color: #403840;
+
+    color: #817781;
 
     cursor: not-allowed;
 
@@ -731,7 +1094,7 @@ body {
 }
 
 .favorito-card .favorito-comprar:disabled i {
-    color: #777;
+    color: #817781;
 }
 
 
@@ -752,10 +1115,50 @@ body {
     padding: 80px 20px;
 
     text-align: center;
+
+    position: relative;
 }
 
 .sin-favoritos.visible {
     display: flex;
+}
+
+
+/* FANTASMA */
+
+.sin-favoritos::before {
+    content: "👻";
+
+    position: absolute;
+
+    left: 18%;
+    top: 35px;
+
+    font-size: 48px;
+
+    opacity: 0.11;
+
+    pointer-events: none;
+
+    animation: ghostGlow 4s ease-in-out infinite;
+}
+
+
+/* ARAÑA */
+
+.sin-favoritos::after {
+    content: "🕷️";
+
+    position: absolute;
+
+    right: 18%;
+    bottom: 35px;
+
+    font-size: 38px;
+
+    opacity: 0.10;
+
+    pointer-events: none;
 }
 
 
@@ -775,11 +1178,37 @@ body {
 
     border-radius: 50%;
 
-    background: #f7f7f7;
+    background:
+        linear-gradient(145deg,
+            #21162a,
+            #0d090f);
 
-    color: #c69a2b;
+    border: 1px solid rgba(255, 106, 0, 0.3);
+
+    color: var(--halloween-orange);
 
     font-size: 30px;
+
+    box-shadow:
+        0 0 25px rgba(255, 106, 0, 0.12);
+
+    position: relative;
+}
+
+
+/* CALAVERA */
+
+.sin-favoritos-icon::after {
+    content: "💀";
+
+    position: absolute;
+
+    right: -15px;
+    top: -14px;
+
+    font-size: 25px;
+
+    opacity: 0.40;
 }
 
 
@@ -790,10 +1219,13 @@ body {
 .sin-favoritos h2 {
     margin: 0;
 
-    color: #111;
+    color: var(--halloween-text);
 
     font-size: 22px;
     font-weight: 800;
+
+    text-shadow:
+        0 0 12px rgba(118, 39, 168, 0.3);
 }
 
 .sin-favoritos p {
@@ -801,7 +1233,7 @@ body {
 
     margin-top: 10px;
 
-    color: #777;
+    color: var(--halloween-muted);
 
     font-size: 13px;
 
@@ -817,6 +1249,7 @@ body {
     height: 45px;
 
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
 
@@ -828,7 +1261,12 @@ body {
 
     border-radius: 8px;
 
-    background: #111;
+    border: 1px solid var(--halloween-orange);
+
+    background:
+        linear-gradient(135deg,
+            var(--halloween-orange),
+            #c94d00);
 
     color: #fff;
 
@@ -840,15 +1278,24 @@ body {
     transition:
         background 0.25s ease,
         color 0.25s ease,
-        transform 0.2s ease;
+        transform 0.2s ease,
+        box-shadow 0.25s ease;
 }
 
 .btn-ir-tienda:hover {
-    background: #c69a2b;
+    background:
+        linear-gradient(135deg,
+            var(--halloween-purple),
+            #4b166b);
 
-    color: #111;
+    border-color: #9d42d0;
+
+    color: #fff;
 
     transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(118, 39, 168, 0.3);
 }
 
 .btn-ir-tienda:active {
@@ -879,18 +1326,39 @@ body {
 
     z-index: 100;
 
-    background: #050505;
+    background:
+        linear-gradient(90deg,
+            #08060a,
+            #160d1b,
+            #08060a);
 
-    border-top: 1px solid #202020;
+    border-top: 1px solid rgba(255, 106, 0, 0.35);
 
     box-shadow:
-        0 -5px 20px rgba(0, 0, 0, 0.12);
+        0 -8px 25px rgba(0, 0, 0, 0.55),
+        0 -1px 12px rgba(118, 39, 168, 0.10);
+
+    position: fixed;
 }
 
 
-/* =========================================================
-   NAV ITEMS
-========================================================= */
+/* ARAÑA SOBRE NAV */
+
+.bottom-nav::before {
+    content: "🕷️";
+
+    position: absolute;
+
+    top: -18px;
+    right: 17%;
+
+    font-size: 24px;
+
+    opacity: 0.16;
+
+    pointer-events: none;
+}
+
 
 .nav-item {
     min-width: 70px;
@@ -906,7 +1374,7 @@ body {
 
     gap: 5px;
 
-    color: #999;
+    color: #918791;
 
     font-size: 10px;
     font-weight: 700;
@@ -927,7 +1395,10 @@ body {
 }
 
 .nav-item.active {
-    color: #c69a2b;
+    color: var(--halloween-orange);
+
+    text-shadow:
+        0 0 10px rgba(255, 106, 0, 0.45);
 }
 
 .nav-item:active {
@@ -960,12 +1431,15 @@ body {
 
     border-radius: 50%;
 
-    background: #c69a2b;
+    background: var(--halloween-orange);
 
     color: #111;
 
     font-size: 9px;
     font-weight: 800;
+
+    box-shadow:
+        0 0 10px rgba(255, 106, 0, 0.45);
 }
 
 
@@ -990,9 +1464,12 @@ body {
 
     padding: 25px;
 
-    background: rgba(0, 0, 0, 0.72);
+    background:
+        radial-gradient(circle at center,
+            rgba(118, 39, 168, 0.16),
+            rgba(0, 0, 0, 0.86));
 
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(5px);
 }
 
 .modal-producto.activo {
@@ -1020,12 +1497,58 @@ body {
 
     border-radius: 14px;
 
-    background: #fff;
+    background:
+        linear-gradient(145deg,
+            #171019,
+            #0c090e);
+
+    border: 1px solid rgba(255, 106, 0, 0.35);
 
     box-shadow:
-        0 25px 70px rgba(0, 0, 0, 0.30);
+        0 25px 70px rgba(0, 0, 0, 0.65),
+        0 0 30px rgba(118, 39, 168, 0.12);
 
     animation: aparecerModal 0.25s ease;
+}
+
+
+/* TELARAÑA MODAL */
+
+.modal-producto-contenido::before {
+    content: "🕸️";
+
+    position: absolute;
+
+    top: -4px;
+    left: -2px;
+
+    z-index: 5;
+
+    font-size: 65px;
+
+    opacity: 0.10;
+
+    pointer-events: none;
+}
+
+
+/* CALAVERA MODAL */
+
+.modal-producto-contenido::after {
+    content: "💀";
+
+    position: absolute;
+
+    right: 12px;
+    bottom: 10px;
+
+    z-index: 5;
+
+    font-size: 34px;
+
+    opacity: 0.08;
+
+    pointer-events: none;
 }
 
 
@@ -1048,7 +1571,6 @@ body {
         transform:
             translateY(0) scale(1);
     }
-
 }
 
 
@@ -1069,30 +1591,35 @@ body {
     top: 15px;
     right: 15px;
 
-    z-index: 5;
+    z-index: 10;
 
-    border: none;
+    border: 1px solid rgba(255, 106, 0, 0.3);
+
     border-radius: 50%;
 
-    background: rgba(255, 255, 255, 0.95);
+    background:
+        rgba(8, 6, 10, 0.92);
 
-    color: #111;
+    color: var(--halloween-orange);
 
     font-size: 16px;
 
     cursor: pointer;
 
     box-shadow:
-        0 3px 12px rgba(0, 0, 0, 0.12);
+        0 3px 15px rgba(0, 0, 0, 0.35);
 
     transition:
         background 0.25s ease,
         color 0.25s ease,
-        transform 0.2s ease;
+        transform 0.2s ease,
+        border-color 0.25s ease;
 }
 
 .modal-cerrar:hover {
-    background: #111;
+    background: var(--halloween-red);
+
+    border-color: #d42b39;
 
     color: #fff;
 
@@ -1116,7 +1643,13 @@ body {
 
     overflow: hidden;
 
-    background: #f5f5f5;
+    background:
+        radial-gradient(circle at center,
+            #21162a,
+            #08060a);
+
+    border-right:
+        1px solid rgba(255, 106, 0, 0.15);
 }
 
 .modal-producto-imagen img {
@@ -1141,6 +1674,28 @@ body {
     flex-direction: column;
 
     padding: 45px 40px;
+
+    position: relative;
+}
+
+
+/* CALABAZA MODAL */
+
+.modal-producto-info::after {
+    content: "🎃";
+
+    position: absolute;
+
+    right: 12px;
+    top: 12px;
+
+    font-size: 35px;
+
+    opacity: 0.11;
+
+    pointer-events: none;
+
+    animation: halloweenGlow 3s ease-in-out infinite;
 }
 
 
@@ -1153,7 +1708,7 @@ body {
 
     margin-bottom: 10px;
 
-    color: #c69a2b;
+    color: var(--halloween-orange);
 
     font-size: 11px;
     font-weight: 800;
@@ -1171,12 +1726,15 @@ body {
 .modal-producto-info h2 {
     margin: 0;
 
-    color: #111;
+    color: var(--halloween-text);
 
     font-size: 30px;
     font-weight: 800;
 
     line-height: 1.2;
+
+    text-shadow:
+        0 0 14px rgba(118, 39, 168, 0.3);
 }
 
 
@@ -1185,13 +1743,19 @@ body {
 ========================================================= */
 
 .modal-descripcion {
+    width: 100%;
+
     margin-top: 18px;
 
-    color: #777;
+    color: var(--halloween-muted);
 
     font-size: 13px;
 
     line-height: 1.7;
+
+    font-weight: 400;
+
+    word-break: break-word;
 }
 
 
@@ -1210,10 +1774,13 @@ body {
 }
 
 .modal-precio {
-    color: #111;
+    color: var(--halloween-orange-light);
 
     font-size: 25px;
     font-weight: 800;
+
+    text-shadow:
+        0 0 12px rgba(255, 106, 0, 0.3);
 }
 
 
@@ -1224,13 +1791,13 @@ body {
 .modal-stock {
     margin-top: 10px;
 
-    color: #777;
+    color: var(--halloween-muted);
 
     font-size: 12px;
 }
 
 .modal-stock strong {
-    color: #111;
+    color: var(--halloween-text);
 }
 
 
@@ -1252,11 +1819,14 @@ body {
 
     padding: 0 20px;
 
-    border: 1px solid #111;
+    border: 1px solid var(--halloween-orange);
 
     border-radius: 10px;
 
-    background: #111;
+    background:
+        linear-gradient(135deg,
+            var(--halloween-orange),
+            #c94d00);
 
     color: #fff;
 
@@ -1276,7 +1846,7 @@ body {
 }
 
 .modal-btn-carrito i {
-    color: #c69a2b;
+    color: #fff;
 
     font-size: 15px;
 
@@ -1286,28 +1856,31 @@ body {
 }
 
 .modal-btn-carrito:hover {
-    background: #c69a2b;
+    background:
+        linear-gradient(135deg,
+            var(--halloween-purple),
+            #4b166b);
 
-    border-color: #c69a2b;
+    border-color: #9d42d0;
 
-    color: #111;
+    color: #fff;
 
     transform: translateY(-2px);
 
     box-shadow:
-        0 8px 20px rgba(198, 154, 43, 0.30);
+        0 8px 20px rgba(118, 39, 168, 0.35);
 }
 
 .modal-btn-carrito:hover i {
-    color: #111;
+    color: #fff;
 
     transform: translateX(-2px);
 }
 
 .modal-btn-carrito:active {
-    background: #a77f20;
+    background: #4b166b;
 
-    border-color: #a77f20;
+    border-color: #4b166b;
 
     color: #fff;
 
@@ -1315,7 +1888,7 @@ body {
         translateY(1px) scale(0.98);
 
     box-shadow:
-        0 3px 8px rgba(0, 0, 0, 0.20);
+        0 3px 8px rgba(0, 0, 0, 0.3);
 }
 
 .modal-btn-carrito:active i {
@@ -1325,7 +1898,7 @@ body {
 }
 
 .modal-btn-carrito:focus-visible {
-    outline: 2px solid #c69a2b;
+    outline: 2px solid var(--halloween-orange);
 
     outline-offset: 3px;
 }
@@ -1347,13 +1920,14 @@ body {
 
     margin-top: 10px;
 
-    border: 1px solid #dddddd;
+    border: 1px solid rgba(255, 106, 0, 0.25);
 
     border-radius: 10px;
 
-    background: #fff;
+    background:
+        #171019;
 
-    color: #555;
+    color: #aaa0aa;
 
     font-size: 13px;
     font-weight: 700;
@@ -1368,13 +1942,16 @@ body {
 }
 
 .modal-btn-favorito i {
-    color: #c69a2b;
+    color: var(--halloween-orange);
 }
 
 .modal-btn-favorito:hover {
-    background: #111;
+    background:
+        linear-gradient(135deg,
+            var(--halloween-red),
+            #5c1018);
 
-    border-color: #111;
+    border-color: #d42b39;
 
     color: #fff;
 
@@ -1382,11 +1959,51 @@ body {
 }
 
 .modal-btn-favorito:hover i {
-    color: #c69a2b;
+    color: #fff;
 }
 
 .modal-btn-favorito:active {
     transform: scale(0.98);
+}
+
+
+/* =========================================================
+   ANIMACIONES HALLOWEEN
+========================================================= */
+
+@keyframes halloweenGlow {
+
+    0%,
+    100% {
+        transform: scale(1);
+
+        filter:
+            drop-shadow(0 0 4px rgba(255, 106, 0, 0.15));
+    }
+
+    50% {
+        transform: scale(1.08);
+
+        filter:
+            drop-shadow(0 0 12px rgba(255, 106, 0, 0.55));
+    }
+}
+
+
+@keyframes ghostGlow {
+
+    0%,
+    100% {
+        transform: translateY(0);
+
+        opacity: 0.08;
+    }
+
+    50% {
+        transform: translateY(-5px);
+
+        opacity: 0.18;
+    }
 }
 
 
@@ -1479,18 +2096,41 @@ body {
         padding: 0 20px;
     }
 
+    .hearder::before {
+        font-size: 30px;
+    }
+
+    .hearder::after {
+        right: 45px;
+        top: 10px;
+        font-size: 30px;
+    }
+
     .content {
         padding:
             28px 20px 100px;
+    }
+
+    .content::before {
+        font-size: 50px;
     }
 
     .favoritos-header h1 {
         font-size: 29px;
     }
 
+    .favoritos-header::after {
+        right: 75px;
+        font-size: 30px;
+    }
+
     .favoritos-contador {
         min-width: 65px;
         height: 65px;
+    }
+
+    .favoritos-contador::after {
+        font-size: 23px;
     }
 
     .bottom-nav {
@@ -1564,7 +2204,11 @@ body {
     }
 
     .modal-descripcion {
+        margin-top: 15px;
+
         font-size: 12px;
+
+        line-height: 1.6;
     }
 
     .modal-precio {
@@ -1871,6 +2515,7 @@ body {
 
     .favoritos-barra {
         flex-direction: column;
+
         align-items: flex-start;
     }
 
@@ -1894,42 +2539,17 @@ body {
 }
 
 
-
 /* =========================================================
-   DESCRIPCIÓN DEL PRODUCTO - MODAL
+   AJUSTE FINAL DESCRIPCIÓN MODAL
 ========================================================= */
-
-.modal-descripcion {
-    width: 100%;
-    margin-top: 18px;
-    color: #777;
-    font-size: 13px;
-    line-height: 1.7;
-    font-weight: 400;
-    word-break: break-word;
-}
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 600px) {
-
-    .modal-descripcion {
-        margin-top: 15px;
-        font-size: 12px;
-        line-height: 1.6;
-    }
-
-}
-
 
 @media (max-width: 420px) {
 
     .modal-descripcion {
         margin-top: 13px;
+
         font-size: 11px;
+
         line-height: 1.6;
     }
 
