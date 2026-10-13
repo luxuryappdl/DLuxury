@@ -1746,3 +1746,1369 @@ body {
     max-width: 100%;
     overflow-x: hidden;
 }
+
+
+/* =========================================================
+   =========================================================
+   DL LUXURY
+   HALLOWEEN OVERRIDE 🎃🕷️💀
+   
+   PEGAR ESTE BLOQUE AL FINAL DEL CSS
+   
+   NO MODIFICA:
+   - HTML
+   - JS
+   - ESTRUCTURA
+   - TAMAÑOS
+   - GRID
+   - RESPONSIVE
+   - FUNCIONES
+========================================================= */
+
+
+/* =========================================================
+   VARIABLES HALLOWEEN
+========================================================= */
+
+:root {
+    --dl-halloween-orange: #ff6a00;
+    --dl-halloween-orange-light: #ff8c1a;
+
+    --dl-halloween-purple: #7627a8;
+    --dl-halloween-purple-dark: #3b1457;
+
+    --dl-halloween-black: #08060a;
+    --dl-halloween-dark: #100b13;
+
+    --dl-halloween-red: #a81728;
+
+    --dl-halloween-glow-orange:
+        rgba(255, 106, 0, 0.35);
+
+    --dl-halloween-glow-purple:
+        rgba(118, 39, 168, 0.35);
+}
+
+
+/* =========================================================
+   FONDO GENERAL
+========================================================= */
+
+body {
+    background:
+        radial-gradient(circle at 8% 5%,
+            rgba(118, 39, 168, 0.22),
+            transparent 28%),
+        radial-gradient(circle at 92% 8%,
+            rgba(255, 106, 0, 0.13),
+            transparent 25%),
+        radial-gradient(circle at 50% 90%,
+            rgba(118, 39, 168, 0.12),
+            transparent 35%),
+        #08060a;
+
+    color: #f4eee7;
+}
+
+
+/* =========================================================
+   APP
+========================================================= */
+
+.app {
+    position: relative;
+
+    background:
+        radial-gradient(circle at 50% 0%,
+            rgba(118, 39, 168, 0.16),
+            transparent 32%),
+        linear-gradient(180deg,
+            #100b13 0%,
+            #08060a 100%);
+
+    box-shadow:
+        0 0 60px rgba(118, 39, 168, 0.10);
+}
+
+
+/* =========================================================
+   DECORACIÓN GENERAL
+========================================================= */
+
+.app::before {
+    content: "🕷️";
+
+    position: fixed;
+
+    top: 85px;
+    left: 12px;
+
+    z-index: 100;
+
+    font-size: 32px;
+
+    opacity: 0.20;
+
+    pointer-events: none;
+
+    filter:
+        drop-shadow(0 0 8px rgba(118, 39, 168, 0.60));
+
+    animation:
+        dlHalloweenFloat 4s ease-in-out infinite;
+}
+
+.app::after {
+    content: "🎃";
+
+    position: fixed;
+
+    right: 15px;
+    bottom: 95px;
+
+    z-index: 100;
+
+    font-size: 34px;
+
+    opacity: 0.20;
+
+    pointer-events: none;
+
+    filter:
+        drop-shadow(0 0 10px rgba(255, 106, 0, 0.55));
+
+    animation:
+        dlHalloweenFloat 5s ease-in-out infinite reverse;
+}
+
+
+/* =========================================================
+   TIENDA
+========================================================= */
+
+.tienda {
+    position: relative;
+}
+
+
+/* =========================================================
+   ENCABEZADO HALLOWEEN
+========================================================= */
+
+.tienda-header {
+    position: relative;
+
+    padding-top: 35px;
+    padding-bottom: 28px;
+
+    overflow: hidden;
+
+    border-bottom:
+        2px solid rgba(255, 106, 0, 0.40);
+
+    background:
+        radial-gradient(circle at center,
+            rgba(118, 39, 168, 0.20),
+            transparent 60%),
+        linear-gradient(180deg,
+            #100b13,
+            #08060a);
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.55),
+        0 0 30px rgba(118, 39, 168, 0.14);
+}
+
+
+/* TELARAÑA IZQUIERDA */
+
+.tienda-header::before {
+    content: "🕸️";
+
+    position: absolute;
+
+    top: 8px;
+    left: 20px;
+
+    font-size: 40px;
+
+    opacity: 0.35;
+
+    pointer-events: none;
+
+    filter:
+        drop-shadow(0 0 8px rgba(118, 39, 168, 0.55));
+
+    animation:
+        dlHalloweenFloat 4s ease-in-out infinite;
+}
+
+
+/* CALABAZA DERECHA */
+
+.tienda-header::after {
+    content: "🎃";
+
+    position: absolute;
+
+    top: 8px;
+    right: 20px;
+
+    font-size: 40px;
+
+    opacity: 0.40;
+
+    pointer-events: none;
+
+    filter:
+        drop-shadow(0 0 12px rgba(255, 106, 0, 0.55));
+
+    animation:
+        dlHalloweenPumpkin 3s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   TÍTULO
+========================================================= */
+
+.tienda-header h1 {
+    color: #f4eee7;
+
+    text-shadow:
+        0 0 5px rgba(255, 106, 0, 0.35),
+        0 0 15px rgba(255, 106, 0, 0.30),
+        0 0 30px rgba(118, 39, 168, 0.55);
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.tienda-header p {
+    color: var(--dl-halloween-orange);
+
+    text-shadow:
+        0 0 10px rgba(255, 106, 0, 0.35);
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   CATEGORÍAS
+========================================================= */
+
+.genero-btn {
+    background:
+        linear-gradient(135deg,
+            #151019,
+            #24102f);
+
+    border-color:
+        rgba(118, 39, 168, 0.45);
+
+    color: #aaa0aa;
+
+    box-shadow:
+        inset 0 0 12px rgba(118, 39, 168, 0.04);
+}
+
+.genero-btn:hover {
+    color: #fff;
+
+    border-color:
+        var(--dl-halloween-orange);
+
+    background:
+        linear-gradient(135deg,
+            #24112e,
+            #3b1457);
+
+    box-shadow:
+        0 0 14px rgba(255, 106, 0, 0.22),
+        0 0 25px rgba(118, 39, 168, 0.18);
+}
+
+.genero-btn.active {
+    color: #fff;
+
+    background:
+        linear-gradient(135deg,
+            #3b1457,
+            #7627a8);
+
+    border-color:
+        var(--dl-halloween-orange);
+
+    box-shadow:
+        0 0 12px rgba(118, 39, 168, 0.55),
+        0 0 22px rgba(255, 106, 0, 0.18);
+
+    text-shadow:
+        0 0 8px rgba(255, 255, 255, 0.30);
+}
+
+
+/* =========================================================
+   BUSCADOR
+========================================================= */
+
+.buscador-tienda input {
+    background:
+        linear-gradient(135deg,
+            #100b13,
+            #17101c);
+
+    border-color:
+        rgba(118, 39, 168, 0.45);
+
+    color: #f4eee7;
+
+    box-shadow:
+        inset 0 0 15px rgba(118, 39, 168, 0.04);
+}
+
+.buscador-tienda i {
+    color:
+        var(--dl-halloween-orange);
+}
+
+.buscador-tienda input::placeholder {
+    color: #756d78;
+}
+
+.buscador-tienda input:focus {
+    border-color:
+        var(--dl-halloween-orange);
+
+    box-shadow:
+        0 0 0 2px rgba(255, 106, 0, 0.10),
+        0 0 20px rgba(118, 39, 168, 0.20);
+}
+
+
+/* =========================================================
+   SELECT
+========================================================= */
+
+.tienda-controles select {
+    background:
+        linear-gradient(135deg,
+            #100b13,
+            #17101c);
+
+    border-color:
+        rgba(118, 39, 168, 0.45);
+
+    color: #f4eee7;
+}
+
+.tienda-controles select:focus {
+    border-color:
+        var(--dl-halloween-orange);
+
+    box-shadow:
+        0 0 12px rgba(255, 106, 0, 0.12);
+}
+
+
+/* =========================================================
+   TARJETAS
+========================================================= */
+
+.producto-card {
+    background:
+        radial-gradient(circle at top right,
+            rgba(118, 39, 168, 0.18),
+            transparent 45%),
+        radial-gradient(circle at bottom left,
+            rgba(255, 106, 0, 0.07),
+            transparent 38%),
+        #151019;
+
+    border-color:
+        rgba(255, 106, 0, 0.25);
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.40),
+        inset 0 0 20px rgba(118, 39, 168, 0.035);
+}
+
+
+/* CALAVERA */
+
+.producto-card::before {
+    content: "💀";
+
+    position: absolute;
+
+    top: 7px;
+    left: 9px;
+
+    z-index: 4;
+
+    font-size: 18px;
+
+    opacity: 0.14;
+
+    pointer-events: none;
+
+    filter:
+        drop-shadow(0 0 6px rgba(255, 106, 0, 0.30));
+}
+
+
+/* ARAÑA */
+
+.producto-card::after {
+    content: "🕷️";
+
+    position: absolute;
+
+    right: 8px;
+    bottom: 7px;
+
+    z-index: 4;
+
+    font-size: 18px;
+
+    opacity: 0.12;
+
+    pointer-events: none;
+
+    filter:
+        drop-shadow(0 0 6px rgba(118, 39, 168, 0.40));
+}
+
+
+.producto-card:hover {
+    border-color:
+        rgba(255, 106, 0, 0.75);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.60),
+        0 0 18px rgba(255, 106, 0, 0.18),
+        0 0 35px rgba(118, 39, 168, 0.18);
+}
+
+
+/* =========================================================
+   IMAGEN PRODUCTO
+========================================================= */
+
+.producto-imagen-container {
+    background:
+        radial-gradient(circle at center,
+            rgba(118, 39, 168, 0.28),
+            transparent 65%),
+        #0c080f;
+
+    border-bottom-color:
+        rgba(255, 106, 0, 0.20);
+}
+
+.producto-card:hover .producto-imagen {
+    filter:
+        brightness(0.90) saturate(1.15);
+
+    box-shadow:
+        inset 0 0 30px rgba(118, 39, 168, 0.20);
+}
+
+
+/* =========================================================
+   CORAZÓN
+========================================================= */
+
+.btn-favorito {
+    background:
+        rgba(8, 6, 10, 0.92);
+
+    color: #eee;
+
+    border:
+        1px solid rgba(255, 106, 0, 0.30);
+
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.btn-favorito:hover {
+    color:
+        var(--dl-halloween-orange);
+
+    background:
+        rgba(118, 39, 168, 0.30);
+
+    border-color:
+        var(--dl-halloween-orange);
+
+    box-shadow:
+        0 0 15px rgba(255, 106, 0, 0.25);
+}
+
+.btn-favorito.favorito-activo {
+    color: #ff3048;
+
+    border-color:
+        var(--dl-halloween-red);
+
+    background:
+        rgba(157, 23, 37, 0.18);
+
+    box-shadow:
+        0 0 15px rgba(157, 23, 37, 0.30);
+}
+
+
+/* =========================================================
+   TEXTO PRODUCTOS
+========================================================= */
+
+.producto-genero {
+    color:
+        var(--dl-halloween-orange);
+
+    text-shadow:
+        0 0 7px rgba(255, 106, 0, 0.20);
+}
+
+.producto-nombre {
+    color:
+        #f4eee7;
+}
+
+.producto-descripcion {
+    color:
+        #aaa0aa;
+}
+
+.producto-precio {
+    color:
+        var(--dl-halloween-orange-light);
+
+    text-shadow:
+        0 0 10px rgba(255, 106, 0, 0.20);
+}
+
+
+/* =========================================================
+   STOCK
+========================================================= */
+
+.producto-stock.disponible {
+    color: #75e89b;
+}
+
+.producto-stock.poco-stock {
+    color:
+        var(--dl-halloween-orange-light);
+}
+
+.producto-stock.agotado {
+    color:
+        #ff5265;
+}
+
+
+/* =========================================================
+   BOTÓN COMPRAR
+========================================================= */
+
+.btn-comprar {
+    background:
+        linear-gradient(135deg,
+            #050505,
+            #24102f);
+
+    border:
+        1px solid rgba(118, 39, 168, 0.35);
+}
+
+.btn-comprar:hover {
+    background:
+        linear-gradient(135deg,
+            var(--dl-halloween-orange),
+            #c74300);
+
+    color: #fff;
+
+    border-color:
+        var(--dl-halloween-orange);
+
+    box-shadow:
+        0 5px 15px rgba(255, 106, 0, 0.35),
+        0 0 22px rgba(118, 39, 168, 0.15);
+}
+
+.btn-comprar:active {
+    background:
+        linear-gradient(135deg,
+            var(--dl-halloween-orange),
+            #c74300);
+
+    color: #fff;
+}
+
+
+/* =========================================================
+   CLASES ANTIGUAS
+========================================================= */
+
+.producto-tienda {
+    background:
+        radial-gradient(circle at top right,
+            rgba(118, 39, 168, 0.17),
+            transparent 45%),
+        #151019;
+
+    border-color:
+        rgba(255, 106, 0, 0.25);
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.40);
+}
+
+.producto-tienda:hover {
+    border-color:
+        rgba(255, 106, 0, 0.72);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.60),
+        0 0 25px rgba(118, 39, 168, 0.20);
+}
+
+.producto-tienda-imagen {
+    background:
+        radial-gradient(circle,
+            rgba(118, 39, 168, 0.28),
+            transparent 65%),
+        #0c080f;
+}
+
+
+/* =========================================================
+   CORAZÓN ANTIGUO
+========================================================= */
+
+.producto-favorito {
+    background:
+        rgba(8, 6, 10, 0.92);
+
+    color: #eee;
+
+    border:
+        1px solid rgba(255, 106, 0, 0.30);
+}
+
+.producto-favorito:hover {
+    color:
+        var(--dl-halloween-orange);
+
+    border-color:
+        var(--dl-halloween-orange);
+
+    background:
+        rgba(118, 39, 168, 0.30);
+}
+
+.producto-favorito.favorito-activo {
+    color: #ff3048;
+}
+
+
+/* =========================================================
+   INFORMACIÓN ANTIGUA
+========================================================= */
+
+.producto-tienda-info {
+    color:
+        #f4eee7;
+}
+
+.producto-tienda-info h3 {
+    color:
+        #f4eee7;
+}
+
+.producto-tienda-precio,
+.producto-tienda-precio-final,
+.producto-tienda-precios {
+    color:
+        var(--dl-halloween-orange-light);
+}
+
+.producto-tienda-precio-anterior {
+    color:
+        #756c77;
+}
+
+.producto-tienda-descuento {
+    background:
+        linear-gradient(135deg,
+            #9d1725,
+            #650c17);
+
+    color: #fff;
+
+    border:
+        1px solid rgba(255, 82, 101, 0.35);
+
+    box-shadow:
+        0 0 10px rgba(157, 23, 37, 0.18);
+}
+
+
+/* =========================================================
+   BOTÓN ANTIGUO
+========================================================= */
+
+.btn-agregar-carrito {
+    background:
+        linear-gradient(135deg,
+            #050505,
+            #24102f);
+
+    border:
+        1px solid rgba(118, 39, 168, 0.35);
+}
+
+.btn-agregar-carrito:hover {
+    background:
+        linear-gradient(135deg,
+            var(--dl-halloween-orange),
+            #c74300);
+
+    color: #fff;
+
+    border-color:
+        var(--dl-halloween-orange);
+
+    box-shadow:
+        0 5px 15px rgba(255, 106, 0, 0.35);
+}
+
+.btn-agregar-carrito:active {
+    background:
+        linear-gradient(135deg,
+            var(--dl-halloween-orange),
+            #c74300);
+
+    color: #fff;
+}
+
+
+/* =========================================================
+   SIN RESULTADOS
+========================================================= */
+
+.sin-resultados {
+    color:
+        #aaa0aa;
+
+    background:
+        radial-gradient(circle,
+            rgba(118, 39, 168, 0.16),
+            transparent 65%),
+        #100b13;
+
+    border:
+        1px dashed rgba(255, 106, 0, 0.35);
+
+    border-radius: 14px;
+}
+
+.sin-resultados i {
+    color:
+        var(--dl-halloween-orange);
+
+    text-shadow:
+        0 0 15px rgba(255, 106, 0, 0.30);
+}
+
+.sin-resultados h3 {
+    color:
+        #f4eee7;
+}
+
+.sin-resultados p {
+    color:
+        #aaa0aa;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal-producto {
+    background:
+        radial-gradient(circle at center,
+            rgba(118, 39, 168, 0.18),
+            transparent 45%),
+        rgba(0, 0, 0, 0.88);
+
+    backdrop-filter:
+        blur(7px);
+}
+
+.modal-producto-contenido {
+    background:
+        radial-gradient(circle at top right,
+            rgba(118, 39, 168, 0.22),
+            transparent 45%),
+        radial-gradient(circle at bottom left,
+            rgba(255, 106, 0, 0.07),
+            transparent 40%),
+        linear-gradient(145deg,
+            #17101c,
+            #0c080f);
+
+    border:
+        1px solid rgba(255, 106, 0, 0.55);
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.80),
+        0 0 35px rgba(118, 39, 168, 0.30),
+        0 0 20px rgba(255, 106, 0, 0.10);
+}
+
+
+/* =========================================================
+   CERRAR MODAL
+========================================================= */
+
+.modal-cerrar {
+    background:
+        rgba(8, 6, 10, 0.94);
+
+    color: #fff;
+
+    border:
+        1px solid rgba(255, 106, 0, 0.35);
+
+    box-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.40);
+}
+
+.modal-cerrar:hover {
+    background:
+        var(--dl-halloween-red);
+
+    color: #fff;
+
+    border-color:
+        #ff5265;
+
+    box-shadow:
+        0 0 18px rgba(157, 23, 37, 0.35);
+}
+
+
+/* =========================================================
+   IMAGEN DEL MODAL
+========================================================= */
+
+.modal-producto-imagen {
+    background:
+        radial-gradient(circle at center,
+            rgba(118, 39, 168, 0.30),
+            transparent 65%),
+        #0b080e;
+}
+
+
+/* =========================================================
+   TEXTO MODAL
+========================================================= */
+
+.modal-producto-categoria {
+    color:
+        var(--dl-halloween-orange);
+
+    text-shadow:
+        0 0 8px rgba(255, 106, 0, 0.22);
+}
+
+.modal-producto-info h2 {
+    color:
+        #f4eee7;
+
+    text-shadow:
+        0 0 12px rgba(118, 39, 168, 0.28);
+}
+
+
+/* =========================================================
+   PRECIOS MODAL
+========================================================= */
+
+.modal-precio-original {
+    color:
+        #756c77;
+}
+
+.modal-precio-final {
+    color:
+        var(--dl-halloween-orange-light);
+
+    text-shadow:
+        0 0 13px rgba(255, 106, 0, 0.25);
+}
+
+.modal-descuento {
+    background:
+        linear-gradient(135deg,
+            #9d1725,
+            #650c17);
+
+    color: #fff;
+
+    border:
+        1px solid rgba(255, 82, 101, 0.35);
+}
+
+
+/* =========================================================
+   STOCK MODAL
+========================================================= */
+
+.modal-producto-stock {
+    color:
+        #75e89b;
+
+    background:
+        rgba(42, 180, 91, 0.08);
+
+    border:
+        1px solid rgba(42, 180, 91, 0.20);
+
+    border-radius: 8px;
+
+    padding: 8px 10px;
+}
+
+
+/* =========================================================
+   BOTÓN CARRITO MODAL
+========================================================= */
+
+.modal-btn-carrito {
+    background:
+        linear-gradient(135deg,
+            #3b1457,
+            #7627a8);
+
+    border:
+        1px solid rgba(255, 106, 0, 0.35);
+}
+
+.modal-btn-carrito:hover {
+    background:
+        linear-gradient(135deg,
+            var(--dl-halloween-orange),
+            #c74300);
+
+    color: #fff;
+
+    border-color:
+        var(--dl-halloween-orange);
+
+    box-shadow:
+        0 0 20px rgba(255, 106, 0, 0.35);
+}
+
+.modal-btn-carrito:active {
+    background:
+        linear-gradient(135deg,
+            var(--dl-halloween-orange),
+            #c74300);
+
+    color: #fff;
+}
+
+
+/* =========================================================
+   FAVORITO MODAL
+========================================================= */
+
+.modal-btn-favorito {
+    background:
+        rgba(118, 39, 168, 0.12);
+
+    color:
+        #f4eee7;
+
+    border:
+        1px solid rgba(118, 39, 168, 0.40);
+}
+
+.modal-btn-favorito:hover {
+    background:
+        rgba(255, 106, 0, 0.12);
+
+    color:
+        var(--dl-halloween-orange);
+
+    border-color:
+        var(--dl-halloween-orange);
+
+    box-shadow:
+        0 0 15px rgba(255, 106, 0, 0.15);
+}
+
+
+/* =========================================================
+   DESCRIPCIÓN MODAL
+========================================================= */
+
+.modal-producto-descripcion {
+    background:
+        linear-gradient(135deg,
+            rgba(118, 39, 168, 0.13),
+            rgba(8, 6, 10, 0.70));
+
+    border:
+        1px solid rgba(118, 39, 168, 0.30);
+
+    color:
+        #aaa0aa;
+
+    box-shadow:
+        inset 0 0 18px rgba(118, 39, 168, 0.04);
+}
+
+.modal-producto-descripcion-titulo {
+    color:
+        var(--dl-halloween-orange);
+
+    text-shadow:
+        0 0 8px rgba(255, 106, 0, 0.20);
+}
+
+.modal-producto-descripcion p {
+    color:
+        #aaa0aa;
+}
+
+.modal-producto-descripcion.sin-descripcion {
+    color:
+        #756c77;
+}
+
+
+/* =========================================================
+   BOTTOM NAV
+========================================================= */
+
+.bottom-nav {
+    background:
+        linear-gradient(180deg,
+            rgba(16, 11, 19, 0.98),
+            rgba(8, 6, 10, 0.99));
+
+    border-top:
+        1px solid rgba(255, 106, 0, 0.30);
+
+    box-shadow:
+        0 -5px 25px rgba(0, 0, 0, 0.60),
+        0 -2px 20px rgba(118, 39, 168, 0.12);
+}
+
+
+/* TELARAÑA EN MENÚ */
+
+.bottom-nav::before {
+    content: "🕸️";
+
+    position: absolute;
+
+    left: 12px;
+    bottom: 9px;
+
+    font-size: 20px;
+
+    opacity: 0.20;
+
+    pointer-events: none;
+
+    filter:
+        drop-shadow(0 0 6px rgba(118, 39, 168, 0.45));
+}
+
+
+/* CALABAZA EN MENÚ */
+
+.bottom-nav::after {
+    content: "🎃";
+
+    position: absolute;
+
+    right: 12px;
+    bottom: 8px;
+
+    font-size: 20px;
+
+    opacity: 0.20;
+
+    pointer-events: none;
+
+    filter:
+        drop-shadow(0 0 7px rgba(255, 106, 0, 0.40));
+}
+
+
+/* =========================================================
+   NAV ITEMS
+========================================================= */
+
+.nav-item {
+    color:
+        #8d8590;
+}
+
+.nav-item:hover {
+    color:
+        var(--dl-halloween-orange);
+
+    background:
+        rgba(118, 39, 168, 0.10);
+
+    text-shadow:
+        0 0 8px rgba(255, 106, 0, 0.25);
+}
+
+.nav-item.active {
+    color:
+        var(--dl-halloween-orange);
+
+    background:
+        linear-gradient(135deg,
+            rgba(118, 39, 168, 0.20),
+            rgba(255, 106, 0, 0.07));
+
+    text-shadow:
+        0 0 8px rgba(255, 106, 0, 0.40),
+        0 0 15px rgba(118, 39, 168, 0.25);
+}
+
+
+/* =========================================================
+   INDICADOR ACTIVO
+========================================================= */
+
+.nav-item.active::after {
+    background:
+        linear-gradient(90deg,
+            var(--dl-halloween-purple),
+            var(--dl-halloween-orange));
+
+    box-shadow:
+        0 0 10px rgba(255, 106, 0, 0.45);
+}
+
+
+/* =========================================================
+   CONTADOR CARRITO
+========================================================= */
+
+.nav-item.cart b {
+    background:
+        var(--dl-halloween-orange);
+
+    color:
+        #fff;
+
+    border:
+        2px solid #08060a;
+
+    box-shadow:
+        0 0 10px rgba(255, 106, 0, 0.40);
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+    width: 9px;
+}
+
+::-webkit-scrollbar-track {
+    background:
+        #08060a;
+}
+
+::-webkit-scrollbar-thumb {
+    background:
+        linear-gradient(180deg,
+            var(--dl-halloween-orange),
+            var(--dl-halloween-purple));
+
+    border-radius: 20px;
+
+    border:
+        2px solid #08060a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background:
+        linear-gradient(180deg,
+            var(--dl-halloween-orange-light),
+            #9b39d2);
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+a:focus-visible {
+    outline:
+        2px solid var(--dl-halloween-orange);
+
+    outline-offset:
+        3px;
+
+    box-shadow:
+        0 0 12px rgba(255, 106, 0, 0.25);
+}
+
+
+/* =========================================================
+   ANIMACIONES HALLOWEEN
+========================================================= */
+
+@keyframes dlHalloweenFloat {
+
+    0%,
+    100% {
+        transform:
+            translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform:
+            translateY(-8px) rotate(4deg);
+    }
+}
+
+
+@keyframes dlHalloweenPumpkin {
+
+    0%,
+    100% {
+        transform:
+            translateY(0) rotate(-3deg) scale(1);
+    }
+
+    50% {
+        transform:
+            translateY(-5px) rotate(3deg) scale(1.08);
+    }
+}
+
+
+/* =========================================================
+   EFECTO HALLOWEEN EN TARJETAS
+========================================================= */
+
+@keyframes dlHalloweenCardGlow {
+
+    0%,
+    100% {
+        box-shadow:
+            0 8px 25px rgba(0, 0, 0, 0.40);
+    }
+
+    50% {
+        box-shadow:
+            0 8px 28px rgba(118, 39, 168, 0.13),
+            0 0 12px rgba(255, 106, 0, 0.07);
+    }
+}
+
+
+/* =========================================================
+   EFECTO SUTIL EN PRODUCTOS
+========================================================= */
+
+.producto-card,
+.producto-tienda {
+    animation:
+        dlHalloweenCardGlow 5s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   EFECTO AL ABRIR MODAL
+========================================================= */
+
+.modal-producto.activo .modal-producto-contenido {
+    animation:
+        dlHalloweenModal 0.35s ease;
+}
+
+@keyframes dlHalloweenModal {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(20px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0) scale(1);
+    }
+}
+
+
+/* =========================================================
+   MODO TÁCTIL
+========================================================= */
+
+@media (hover: none) {
+
+    .producto-card,
+    .producto-tienda {
+        animation: none;
+    }
+
+    .producto-card:hover,
+    .producto-tienda:hover {
+        border-color:
+            rgba(255, 106, 0, 0.25);
+    }
+
+    .btn-comprar:hover,
+    .btn-agregar-carrito:hover,
+    .modal-btn-carrito:hover {
+        background:
+            linear-gradient(135deg,
+                #050505,
+                #24102f);
+
+        color: #fff;
+
+        box-shadow: none;
+    }
+}
+
+
+/* =========================================================
+   FINAL
+   🎃 🕷️ 🕸️ 💀
+   
+   ESTE BLOQUE VA DESPUÉS DE TODO TU CSS ORIGINAL.
+========================================================= */
