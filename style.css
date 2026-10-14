@@ -288,6 +288,17 @@ a {
     text-transform: uppercase;
 }
 
+.hero-text small {
+    display: block;
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+}
+
+
 /* =========================================================
    BOTONES DEL BANNER
 ========================================================= */
@@ -3134,1470 +3145,660 @@ body.modal-abierto {
 
 }
 
-
-/* Hallowen version */
-
+/* =========================================================
+   DL LUXURY — HALLOWEEN DARK EDITION 🎃
+   BLOQUE COMPLEMENTARIO PARA EL FINAL DEL CSS ORIGINAL
+   No reemplaza el CSS existente ni modifica el HTML/JS
+========================================================= */
 
 :root {
-    --halloween-black: #08060a;
-    --halloween-dark: #100b13;
-    --halloween-card: #151019;
-    --halloween-purple: #7627a8;
-    --halloween-purple-dark: #3b1457;
-    --halloween-orange: #ff6a00;
-    --halloween-orange-light: #ff8c1a;
-    --halloween-red: #9d1725;
-    --halloween-text: #f4eee7;
-    --halloween-muted: #aaa0aa;
+    --halloween-bg: #0b080e;
+    --halloween-surface: #171019;
+    --halloween-card: #201522;
+    --halloween-card-hover: #30182e;
+    --halloween-orange: #ff6900;
+    --halloween-red: #a50d29;
+    --halloween-purple: #70208b;
+    --halloween-text: #f8edf6;
+    --halloween-muted: #b9a8bb;
+    --halloween-gold: #d8a83e;
 }
 
+/* =========================================================
+   FONDO GENERAL
+========================================================= */
 
+html,
+body {
+    background-color: var(--halloween-bg) !important;
+    color: var(--halloween-text);
+}
 
 body {
-    background:
-        radial-gradient(circle at 10% 15%,
-            rgba(118, 39, 168, 0.12),
-            transparent 28%),
-        radial-gradient(circle at 90% 10%,
-            rgba(255, 106, 0, 0.10),
-            transparent 25%),
-        #08060a;
-    color: var(--halloween-text);
+    background-image:
+        radial-gradient(ellipse at 15% 5%, #39113d 0%, transparent 35%),
+        radial-gradient(ellipse at 95% 35%, #380b1c 0%, transparent 30%),
+        linear-gradient(180deg, #100912, #080609 75%) !important;
 }
 
 .app {
     background:
-        linear-gradient(180deg,
-            #100b13 0%,
-            #0d0910 55%,
-            #08060a 100%);
+        radial-gradient(ellipse at 0% 25%, #25102780, transparent 35%),
+        linear-gradient(180deg, #130d16, #0c090f 70%) !important;
+
+    color: var(--halloween-text) !important;
 }
 
-
+/* =========================================================
+   ENCABEZADO
+========================================================= */
 
 .hearder {
     background:
-        linear-gradient(90deg,
-            #070509,
-            #130b18,
-            #070509);
+        linear-gradient(105deg, #080609, #211020 55%, #10070c) !important;
 
-    border-bottom: 1px solid rgba(255, 106, 0, 0.35);
+    border-bottom: 1px solid #65213d !important;
 
     box-shadow:
-        0 4px 20px rgba(0, 0, 0, 0.55),
-        0 1px 0 rgba(118, 39, 168, 0.25);
+        0 8px 25px #0008,
+        0 2px 16px #7c10251c;
 }
 
+.menu-btn,
 .menu-btn i,
+.notificacion,
 .notificacion i {
-    color: #f5eee8;
+    color: #f8edf6 !important;
 }
 
 .menu-btn:hover,
 .notificacion:hover {
-    background: rgba(255, 106, 0, 0.12);
+    background: #35152d !important;
+    color: var(--halloween-orange) !important;
 }
 
 .notificacion span {
-    background: var(--halloween-orange);
-    border-color: #08060a;
-
-    box-shadow:
-        0 0 10px rgba(255, 106, 0, 0.75);
+    background: #ff3d21 !important;
+    border-color: #160b13 !important;
+    box-shadow: 0 0 10px #ff3d2180;
 }
 
-
 .boton-descargar-app {
-    background: #0d0910;
-    color: var(--halloween-orange-light);
-
-    border: 1px solid rgba(255, 106, 0, 0.35);
-
-    box-shadow:
-        0 0 12px rgba(255, 106, 0, 0.10);
+    background: #211021 !important;
+    color: #ff9a36 !important;
+    border-color: #743050 !important;
 }
 
 .boton-descargar-app:hover {
-    background: var(--halloween-orange);
-    color: #0b0709;
-
-    box-shadow:
-        0 0 18px rgba(255, 106, 0, 0.45);
+    background: #ff6900 !important;
+    color: #14090c !important;
 }
 
+/* =========================================================
+   BANNER PRINCIPAL
+========================================================= */
 
-.content {
-    background:
-        radial-gradient(circle at 50% 0%,
-            rgba(118, 39, 168, 0.08),
-            transparent 30%);
+.hero,
+.hero-slider,
+.hero-slide,
+.hero-silder,
+.hero-productos {
+    background-color: #160f19 !important;
 }
-
-
 
 .hero {
-    background-image:
-        linear-gradient(30deg,
-            transparent 48%,
-            rgba(255, 255, 255, 0.035) 49%,
-            transparent 50%),
-        linear-gradient(150deg,
-            transparent 48%,
-            rgba(255, 255, 255, 0.035) 49%,
-            transparent 50%),
-        radial-gradient(circle at 82% 50%,
-            rgba(255, 106, 0, 0.24),
-            transparent 22%),
-        radial-gradient(circle at 78% 35%,
-            rgba(118, 39, 168, 0.22),
-            transparent 30%),
-        linear-gradient(135deg,
-            #09070b 0%,
-            #160d1b 48%,
-            #0a070c 100%);
-
-    background-size:
-        110px 110px,
-        110px 110px,
-        auto,
-        auto,
-        auto;
-
-    border: 1px solid rgba(255, 106, 0, 0.42);
+    border: 1px solid #592344 !important;
 
     box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.45),
-        0 0 30px rgba(118, 39, 168, 0.13),
-        inset 0 0 35px rgba(0, 0, 0, 0.45);
-}
-
-
-
-.hero-slider {
-    background: transparent;
+        0 12px 30px #0008,
+        0 0 22px #a10c3020,
+        inset 0 0 35px #6c168b16;
 }
 
 .hero-slide,
 .hero-silder {
     background:
-        radial-gradient(circle at 80% 50%,
-            rgba(255, 106, 0, 0.16),
-            transparent 25%),
-        linear-gradient(135deg,
-            rgba(8, 6, 10, 0.97),
-            rgba(22, 13, 27, 0.96));
+        radial-gradient(ellipse at 90% 40%, #63206a35, transparent 45%),
+        linear-gradient(110deg, #100a13, #201020 70%, #160a12) !important;
 }
 
-
 .hero-text p {
-    color: var(--halloween-orange-light);
-
-    text-shadow:
-        0 0 12px rgba(255, 106, 0, 0.28);
+    color: #ff7929 !important;
+    letter-spacing: 2px;
 }
 
 .hero-text h1 {
-    color: #fff8f0;
+    color: #fff0f8 !important;
 
     text-shadow:
-        0 3px 0 #120b15,
-        0 0 18px rgba(255, 106, 0, 0.18);
+        0 2px 0 #590b25,
+        0 0 15px #c02b532c;
 }
 
 .hero-text h3 {
-    color: var(--halloween-orange);
-
-    text-shadow:
-        0 0 12px rgba(255, 106, 0, 0.35);
+    color: #ff7827 !important;
+    text-shadow: 0 0 12px #ff65002b;
 }
 
 .hero-text small {
-    color: #b9adb9;
+    color: #c6b4c8 !important;
 }
-
-
-
-.hero-text button,
-.hero-btn {
-    background:
-        linear-gradient(135deg,
-            #ff6a00,
-            #b93600);
-
-    color: #fff;
-
-    box-shadow:
-        0 6px 18px rgba(255, 106, 0, 0.20);
-}
-
-.hero-text button:hover,
-.hero-btn:hover {
-    background:
-        linear-gradient(135deg,
-            #ff8c1a,
-            #7627a8);
-
-    color: #fff;
-
-    box-shadow:
-        0 8px 22px rgba(255, 106, 0, 0.30);
-}
-
-
 
 .hero-productos {
-    background: transparent;
+    background: transparent !important;
 }
 
 .hero-productos img {
     background: transparent !important;
 
     filter:
-        drop-shadow(0 18px 18px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 18px rgba(255, 106, 0, 0.10));
+        drop-shadow(0 15px 20px #000a) drop-shadow(0 0 12px #ff4b0015);
 }
 
-
-
 .slider-dots span {
-    background: #594d5c;
+    background: #70536d !important;
 }
 
 .slider-dots span.active {
-    background: var(--halloween-orange);
-
-    box-shadow:
-        0 0 10px rgba(255, 106, 0, 0.60);
+    background: #ff6900 !important;
+    box-shadow: 0 0 12px #ff690080;
 }
 
+/* =========================================================
+   BOTONES DEL BANNER
+========================================================= */
 
+.hero-text button,
+.hero-btn {
+    background: linear-gradient(135deg, #9f102b, #e65308) !important;
+    color: #fff !important;
+
+    border: 1px solid #f17b342e !important;
+
+    box-shadow: 0 6px 18px #a3172929;
+}
+
+.hero-text button:hover,
+.hero-btn:hover {
+    background: linear-gradient(135deg, #ff6900, #b20e37) !important;
+    color: #fff !important;
+
+    box-shadow: 0 0 22px #ff510044;
+}
+
+/* =========================================================
+   TÍTULOS DE SECCIÓN
+========================================================= */
 
 .section-title h2,
-.ofertas-header h2 {
-    color: #fff4ea;
+.ofertas-header h2,
+.sin-resultados h3 {
+    color: #fff0f8 !important;
 }
 
 .section-title a,
+.ofertas-header a {
+    color: #ff8734 !important;
+}
+
+.section-title a:hover,
+.ofertas-header a:hover {
+    color: #ffc078 !important;
+}
+
 .ofertas-header span {
-    color: var(--halloween-orange);
+    color: #ff6900 !important;
 }
 
-.section-title a:hover {
-    color: var(--halloween-orange-light);
+.ofertas-header p {
+    color: var(--halloween-muted) !important;
 }
 
+/* =========================================================
+   CATEGORÍAS — CAMBIO REAL DE FONDO
+========================================================= */
 
 .category {
     background:
-        linear-gradient(145deg,
-            #17101b,
-            #0f0a13);
+        linear-gradient(145deg, #29172d, #151019 80%) !important;
 
-    border-color: #302236;
+    border-color: #422543 !important;
 
     box-shadow:
-        0 5px 15px rgba(0, 0, 0, 0.30),
-        inset 0 0 18px rgba(118, 39, 168, 0.05);
+        0 7px 18px #0005,
+        inset 0 1px #ffffff08;
 }
 
 .cat-image {
-    background:
-        radial-gradient(circle,
-            rgba(255, 106, 0, 0.12),
-            transparent 65%),
-        #100b13;
+    background: #211525 !important;
 }
 
 .category span {
-    color: #f3eae3;
+    color: #f7eaf7 !important;
 }
 
 .category span::after {
-    background:
-        linear-gradient(90deg,
-            var(--halloween-purple),
-            var(--halloween-orange));
+    background: linear-gradient(90deg, #a40d30, #ff6900) !important;
 }
 
 .category:hover,
 .category.active {
-    border-color: var(--halloween-orange);
+    background:
+        linear-gradient(145deg, #49204c, #21101e 80%) !important;
+
+    border-color: #a74471 !important;
 
     box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.38),
-        0 0 20px rgba(255, 106, 0, 0.14);
+        0 10px 24px #0007,
+        0 0 18px #a20d2925;
 }
 
-.category.active span::after {
-    background: var(--halloween-orange);
-}
-
-
+/* =========================================================
+   CONTENEDOR DE OFERTAS
+========================================================= */
 
 .ofertas-section {
     background:
-        linear-gradient(145deg,
-            #130d17,
-            #0d0910);
+        radial-gradient(ellipse at 100% 0%, #4216372b, transparent 45%),
+        linear-gradient(145deg, #1d1420, #100c13 85%) !important;
 
-    border: 1px solid rgba(118, 39, 168, 0.25);
+    border: 1px solid #3d253f !important;
 
-    box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.38),
-        inset 0 0 25px rgba(118, 39, 168, 0.035);
+    box-shadow: 0 12px 30px #0006;
 }
 
-.ofertas-header p {
-    color: #a99da8;
-}
-
-.ofertas-header a {
-    color: var(--halloween-orange);
-}
-
-.ofertas-header a:hover {
-    color: #fff;
-}
-
+/* =========================================================
+   TARJETAS DE OFERTAS
+========================================================= */
 
 .ofertas-container .oferta-card {
     background:
-        linear-gradient(145deg,
-            #18111d,
-            #100b14);
+        linear-gradient(155deg, #28172b, #171019 75%) !important;
 
-    border-color: #302236;
+    border-color: #432746 !important;
 
-    box-shadow:
-        0 5px 15px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 8px 22px #0006;
 }
 
 .ofertas-container .oferta-card:hover {
-    border-color: var(--halloween-orange);
+    background:
+        linear-gradient(155deg, #3b1b3f, #1c101d 80%) !important;
+
+    border-color: #9a3d61 !important;
 
     box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.45),
-        0 0 20px rgba(255, 106, 0, 0.12);
+        0 14px 28px #0008,
+        0 0 18px #9c1c3b20;
 }
 
 .oferta-imagen {
     background:
-        radial-gradient(circle at 50% 50%,
-            rgba(255, 106, 0, 0.08),
-            transparent 60%);
-}
-
-.oferta-descuento {
-    background:
-        linear-gradient(135deg,
-            #ff6a00,
-            #a72b00);
-
-    color: #fff;
-
-    box-shadow:
-        0 4px 12px rgba(255, 106, 0, 0.25);
-}
-
-.oferta-favorito {
-    background: rgba(15, 10, 18, 0.94);
-    color: #d9cbd9;
-
-    border: 1px solid rgba(255, 106, 0, 0.16);
-}
-
-.oferta-favorito:hover {
-    background: var(--halloween-orange);
-    color: #0b0709;
-}
-
-.oferta-favorito.favorito {
-    background: #171019;
-}
-
-.oferta-categoria {
-    color: var(--halloween-orange);
+        radial-gradient(ellipse, #38233b, #171019 75%) !important;
 }
 
 .oferta-info h3 {
-    color: #f4ece5;
+    color: #fff0f8 !important;
+}
+
+.oferta-categoria {
+    color: #ff8734 !important;
 }
 
 .oferta-precio-anterior,
 .precio-anterior {
-    color: #807580;
+    color: #a995a9 !important;
 }
 
 .oferta-precio-actual,
 .precio-actual {
-    color: #fff2e8;
+    color: #ff9a46 !important;
 }
 
+.oferta-descuento {
+    background: linear-gradient(135deg, #a20d2b, #e94b08) !important;
+    color: #fff !important;
+}
+
+/* =========================================================
+   FAVORITOS
+========================================================= */
+
+.oferta-favorito,
+.producto-favorito {
+    background: #211525 !important;
+    color: #f9eaf5 !important;
+
+    border: 1px solid #51334f !important;
+}
+
+.oferta-favorito:hover,
+.producto-favorito:hover {
+    background: #9f1533 !important;
+    color: #fff !important;
+}
+
+.oferta-favorito.favorito {
+    background: #30131f !important;
+    color: #ff4664 !important;
+}
+
+/* =========================================================
+   BOTONES DE COMPRA
+========================================================= */
+
 .oferta-card .btn-comprar,
-.btn-comprar {
-    background:
-        linear-gradient(135deg,
-            #ff6a00,
-            #a92e00);
-
-    color: #fff;
-
-    box-shadow:
-        0 5px 14px rgba(255, 106, 0, 0.14);
+.btn-comprar,
+.btn-agregar-carrito {
+    background: linear-gradient(120deg, #97112c, #df4808) !important;
+    color: #fff !important;
+    border: 1px solid #e6572940 !important;
 }
 
 .oferta-card .btn-comprar:hover,
-.btn-comprar:hover {
+.btn-comprar:hover,
+.btn-agregar-carrito:hover {
+    background: linear-gradient(120deg, #ff6900, #b50c36) !important;
+    color: #fff !important;
+
+    box-shadow: 0 7px 20px #ff4a0030;
+}
+
+/* =========================================================
+   TIENDA Y TARJETAS DE PRODUCTOS
+========================================================= */
+
+.producto-tienda {
     background:
-        linear-gradient(135deg,
-            #ff8c1a,
-            #7627a8);
+        linear-gradient(150deg, #26172a, #151019 78%) !important;
 
-    box-shadow:
-        0 7px 18px rgba(255, 106, 0, 0.28);
+    border-color: #402443 !important;
 }
 
-
-.bottom-nav {
+.producto-tienda:hover {
     background:
-        linear-gradient(90deg,
-            #070509,
-            #140b18,
-            #070509);
+        linear-gradient(150deg, #3a1b3e, #1b101e 80%) !important;
 
-    border-top-color: rgba(255, 106, 0, 0.28);
+    border-color: #944064 !important;
 
-    box-shadow:
-        0 -5px 25px rgba(0, 0, 0, 0.55),
-        0 -1px 12px rgba(118, 39, 168, 0.10);
+    box-shadow: 0 12px 28px #0008;
 }
 
-.nav-item,
-.nav-item i,
-.nav-item span {
-    color: #817783;
+.producto-tienda-imagen {
+    background:
+        radial-gradient(ellipse, #352238, #171019 75%) !important;
 }
 
-.nav-item.active,
-.nav-item.active i,
-.nav-item.active span {
-    color: var(--halloween-orange);
+.producto-tienda-info h3 {
+    color: #fff0f8 !important;
 }
 
-.nav-item.active::after {
-    background: var(--halloween-orange);
-
-    box-shadow:
-        0 0 10px rgba(255, 106, 0, 0.55);
+.producto-tienda-precio {
+    color: #ff9a46 !important;
 }
 
-.nav-item:hover,
-.nav-item:hover span {
-    color: #fff;
-}
-
-.nav-item:hover i {
-    color: var(--halloween-orange);
-}
-
-.nav-item.cart b {
-    background: var(--halloween-orange);
-    color: #10090d;
-    border-color: #08060a;
-}
-
-
+/* =========================================================
+   BUSCADOR Y FILTROS
+========================================================= */
 
 .buscador-tienda input,
 #filtroCategoria,
 #ordenarProductos {
-    background: #151019;
-    color: #eee5de;
-    border-color: #35283b;
+    background: #1b121f !important;
+    color: #f8edf6 !important;
+
+    border-color: #4b3150 !important;
 }
 
 .buscador-tienda input::placeholder {
-    color: #807580;
+    color: #a997ad !important;
+}
+
+.buscador-tienda i {
+    color: #ff8734 !important;
 }
 
 .buscador-tienda input:focus,
 #filtroCategoria:focus,
 #ordenarProductos:focus {
-    border-color: var(--halloween-orange);
-
-    box-shadow:
-        0 0 0 3px rgba(255, 106, 0, 0.10);
+    border-color: #b24bd0 !important;
+    box-shadow: 0 0 0 3px #a020f020 !important;
 }
 
-.buscador-tienda i {
-    color: #9c8e9e;
+#filtroCategoria option,
+#ordenarProductos option {
+    background: #1b121f;
+    color: #f8edf6;
 }
-
-
 
 .genero-btn {
-    background: #151019;
-    color: #c8bdc8;
-    border-color: #35283b;
+    background: #1b121f !important;
+    color: #e9dbea !important;
+    border-color: #49304b !important;
 }
 
+.genero-btn.active,
 .genero-btn:hover {
-    border-color: var(--halloween-orange);
-    color: var(--halloween-orange-light);
+    background: linear-gradient(120deg, #741747, #9f102b) !important;
+    color: #fff !important;
+    border-color: #bd4b55 !important;
 }
 
-.genero-btn.active {
-    background:
-        linear-gradient(135deg,
-            #ff6a00,
-            #7627a8);
-
-    color: #fff;
-    border-color: transparent;
-
-    box-shadow:
-        0 5px 15px rgba(118, 39, 168, 0.20);
-}
-
-
-
-.producto-tienda {
-    background:
-        linear-gradient(145deg,
-            #18111d,
-            #100b14);
-
-    border-color: #302236;
-
-    box-shadow:
-        0 5px 15px rgba(0, 0, 0, 0.28);
-}
-
-.producto-tienda:hover {
-    box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.45),
-        0 0 20px rgba(118, 39, 168, 0.12);
-
-    border-color: var(--halloween-orange);
-}
-
-.producto-tienda-imagen {
-    background:
-        radial-gradient(circle at 50% 50%,
-            rgba(255, 106, 0, 0.08),
-            transparent 65%),
-        #100b13;
-}
-
-.producto-favorito {
-    background: rgba(15, 10, 18, 0.94);
-    color: #d7ccd8;
-
-    border: 1px solid rgba(255, 106, 0, 0.16);
-}
-
-.producto-favorito:hover {
-    background: var(--halloween-orange);
-    color: #0b0709;
-}
-
-.producto-tienda-info h3 {
-    color: #f4ece5;
-}
-
-.producto-tienda-precio {
-    color: #fff1e7;
-}
-
-.btn-agregar-carrito {
-    background:
-        linear-gradient(135deg,
-            #ff6a00,
-            #a92e00);
-
-    color: #fff;
-}
-
-.btn-agregar-carrito:hover {
-    background:
-        linear-gradient(135deg,
-            #ff8c1a,
-            #7627a8);
-}
-
-
-
-.sin-resultados {
-    color: #8f8490;
-}
-
-.sin-resultados i {
-    color: #5c4e60;
-}
-
-.sin-resultados h3 {
-    color: #eee4dc;
-}
-
+/* =========================================================
+   MODAL DE PRODUCTO
+========================================================= */
 
 .modal-producto {
-    background: rgba(2, 1, 3, 0.82);
+    background: #050207dc !important;
 }
 
 .modal-producto-contenido {
-    background:
-        linear-gradient(145deg,
-            #17101b,
-            #0d0910);
-
-    border: 1px solid rgba(255, 106, 0, 0.30);
+    background: #1a111e !important;
+    border: 1px solid #56304f !important;
 
     box-shadow:
-        0 25px 70px rgba(0, 0, 0, 0.65),
-        0 0 35px rgba(118, 39, 168, 0.12);
-}
-
-.modal-cerrar {
-    background:
-        linear-gradient(135deg,
-            #ff6a00,
-            #a92e00);
-
-    color: #fff;
-}
-
-.modal-cerrar:hover {
-    background:
-        linear-gradient(135deg,
-            #ff8c1a,
-            #7627a8);
+        0 25px 70px #000c,
+        0 0 30px #a10c3020;
 }
 
 .modal-producto-imagen {
     background:
-        radial-gradient(circle at 50% 50%,
-            rgba(255, 106, 0, 0.10),
-            transparent 65%),
-        #100b13;
+        radial-gradient(ellipse, #38233b, #171019 75%) !important;
 }
 
 .modal-producto-info {
-    background:
-        linear-gradient(145deg,
-            #17101b,
-            #0d0910);
-}
-
-.modal-producto-categoria {
-    color: var(--halloween-orange);
+    background: #1a111e !important;
 }
 
 .modal-producto-info h2 {
-    color: #fff1e7;
+    color: #fff0f8 !important;
+}
+
+.modal-producto-categoria {
+    color: #ff8734 !important;
 }
 
 .modal-precio-original {
-    color: #807580;
+    color: #a995a9 !important;
 }
 
 .modal-precio-final {
-    color: #fff2e8;
-}
-
-.modal-descuento {
-    background:
-        linear-gradient(135deg,
-            #ff6a00,
-            #a92e00);
-
-    color: #fff;
+    color: #ff9a46 !important;
 }
 
 .modal-producto-stock {
-    color: #a79aa6;
+    color: #c7b5c9 !important;
 }
 
 .modal-producto-stock strong {
-    color: #f4ece5;
+    color: #ffb16c !important;
+}
+
+.modal-descuento {
+    background: linear-gradient(120deg, #a20d2b, #e65308) !important;
+    color: #fff !important;
+}
+
+.modal-cerrar {
+    background: #361326 !important;
+    color: #fff !important;
+}
+
+.modal-cerrar:hover {
+    background: #ff6900 !important;
+    color: #fff !important;
 }
 
 .modal-btn-carrito {
-    background:
-        linear-gradient(135deg,
-            #ff6a00,
-            #a92e00);
-
-    color: #fff;
+    background: linear-gradient(120deg, #97112c, #df4808) !important;
+    color: #fff !important;
 }
 
 .modal-btn-carrito:hover {
-    background:
-        linear-gradient(135deg,
-            #ff8c1a,
-            #7627a8);
+    background: linear-gradient(120deg, #ff6900, #b50c36) !important;
 }
 
 .modal-btn-favorito {
-    background: #151019;
-    color: #ddd3dc;
-    border-color: #3a2b40;
+    background: #26182b !important;
+    color: #f8edf6 !important;
+    border-color: #51334f !important;
 }
 
 .modal-btn-favorito:hover {
-    background:
-        linear-gradient(135deg,
-            #7627a8,
-            #ff6a00);
+    background: #4a1a3c !important;
+    color: #fff !important;
+    border-color: #9d4668 !important;
+}
 
+/* =========================================================
+   MENÚ INFERIOR
+========================================================= */
+
+.bottom-nav {
+    background:
+        linear-gradient(100deg, #080609, #211020, #0a070b) !important;
+
+    border-top: 1px solid #672443 !important;
+
+    box-shadow: 0 -8px 24px #0009;
+}
+
+.nav-item,
+.nav-item i,
+.nav-item span {
+    color: #a995ad !important;
+}
+
+.nav-item.active,
+.nav-item.active i,
+.nav-item.active span {
+    color: #ff8734 !important;
+}
+
+.nav-item.active::after {
+    background: linear-gradient(90deg, #a20d2b, #ff6900) !important;
+    box-shadow: 0 0 10px #ff690055;
+}
+
+.nav-item:hover,
+.nav-item:hover i,
+.nav-item:hover span {
+    color: #ffb16c !important;
+}
+
+.nav-item.cart b {
+    background: #ff6900 !important;
+    color: #160910 !important;
+    border-color: #100912 !important;
+}
+
+/* =========================================================
+   MENSAJES VACÍOS
+========================================================= */
+
+.sin-resultados {
+    color: #b9a8bb !important;
+}
+
+.sin-resultados h3 {
+    color: #fff0f8 !important;
+}
+
+.sin-resultados i {
+    color: #ff7929 !important;
+}
+
+/* =========================================================
+   ENLACES Y SELECCIÓN DE TEXTO
+========================================================= */
+
+a:hover {
+    color: #ff9a46;
+}
+
+::selection {
+    background: #70208b;
     color: #fff;
-    border-color: transparent;
-}
-
-
-
-.category,
-.oferta-card,
-.producto-tienda {
-    position: relative;
-}
-
-.category::after,
-.oferta-card::after,
-.producto-tienda::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    border-radius: inherit;
-
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 106, 0, 0.025);
-}
-
-
-@media (max-width: 600px) {
-
-    .hero {
-        border-color: rgba(255, 106, 0, 0.35);
-    }
-
-    .ofertas-section {
-        border-color: rgba(118, 39, 168, 0.22);
-    }
 }
 
 /* =========================================================
-   🎃 HALLOWEEN DECORATION PACK
-   CALABAZAS + TELARAÑAS + CALAVERAS + FANTASMAS
-   SOLO VISUAL - NO CAMBIA LA ESTRUCTURA
+   BARRA DE DESPLAZAMIENTO
 ========================================================= */
 
-/* =========================================================
-   🎃 CALABAZAS EN EL HERO
-========================================================= */
+::-webkit-scrollbar {
+    width: 9px;
+}
 
-.hero {
-    background-image:
-        /* ojos de calabaza */
-        radial-gradient(ellipse at 87% 42%,
-            #ffb52e 0 2.2%,
-            transparent 2.8%),
-        radial-gradient(ellipse at 94% 42%,
-            #ffb52e 0 2.2%,
-            transparent 2.8%),
+::-webkit-scrollbar-track {
+    background: #0b080e;
+}
 
-        /* boca de calabaza */
-        linear-gradient(170deg,
-            transparent 0 73%,
-            rgba(255, 181, 46, 0.95) 74% 76%,
-            transparent 77%),
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(#70208b, #a50d29, #ff6900);
+    border: 2px solid #0b080e;
+    border-radius: 10px;
+}
 
-        /* cuerpo de calabaza */
-        radial-gradient(ellipse at 90% 50%,
-            rgba(255, 106, 0, 0.52) 0 17%,
-            rgba(185, 59, 0, 0.30) 18% 23%,
-            transparent 32%),
-
-        /* rayas de calabaza */
-        radial-gradient(ellipse at 90% 50%,
-            transparent 0 12%,
-            rgba(55, 18, 5, 0.55) 13% 15%,
-            transparent 16% 20%,
-            rgba(55, 18, 5, 0.45) 21% 23%,
-            transparent 24% 32%),
-
-        /* brillo naranja */
-        radial-gradient(circle at 88% 48%,
-            rgba(255, 106, 0, 0.28),
-            transparent 30%),
-
-        /* brillo morado */
-        radial-gradient(circle at 75% 25%,
-            rgba(118, 39, 168, 0.24),
-            transparent 32%),
-
-        /* fondo */
-        linear-gradient(135deg,
-            #09070b 0%,
-            #160d1b 50%,
-            #08060a 100%);
-
-    background-size: auto;
+::-webkit-scrollbar-thumb:hover {
+    background: #ff6900;
 }
 
 /* =========================================================
-   🕸️ TELARAÑAS
+   EFECTO DE LUZ TENEBROSA EN EL BANNER
 ========================================================= */
-
-.hero,
-.ofertas-section {
-    background-repeat: no-repeat;
-}
-
-/* Telaraña visual en esquinas de tarjetas */
-.category,
-.oferta-card,
-.producto-tienda {
-    background-image:
-        linear-gradient(135deg,
-            transparent 0 88%,
-            rgba(220, 215, 225, 0.12) 89%,
-            transparent 90%),
-        linear-gradient(45deg,
-            transparent 0 91%,
-            rgba(220, 215, 225, 0.08) 92%,
-            transparent 93%);
-}
-
-/* =========================================================
-   🕷️ ARAÑITAS
-========================================================= */
-
-.ofertas-header h2,
-.section-title h2 {
-    text-shadow:
-        0 0 8px rgba(255, 106, 0, 0.22),
-        2px 2px 0 rgba(118, 39, 168, 0.18);
-}
-
-/* =========================================================
-   👻 FANTASMAS
-========================================================= */
-
-/* Fantasma visual mediante brillo blanco suave en zonas vacías */
-.hero {
-    box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.50),
-        0 0 35px rgba(118, 39, 168, 0.18),
-        0 0 55px rgba(255, 106, 0, 0.08),
-        inset 0 0 45px rgba(0, 0, 0, 0.50);
-}
-
-/* =========================================================
-   💀 CALAVERAS
-========================================================= */
-
-.producto-tienda:hover,
-.oferta-card:hover,
-.category:hover {
-    box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.50),
-        0 0 20px rgba(255, 106, 0, 0.18),
-        0 0 35px rgba(118, 39, 168, 0.12);
-}
-
-/* =========================================================
-   🕸️ EFECTO TELARAÑA EN FONDO
-========================================================= */
-
-.content {
-    background-image:
-        radial-gradient(circle at 4% 12%,
-            rgba(255, 255, 255, 0.055) 0 1px,
-            transparent 2px),
-        radial-gradient(circle at 96% 28%,
-            rgba(255, 255, 255, 0.045) 0 1px,
-            transparent 2px),
-        radial-gradient(circle at 12% 75%,
-            rgba(118, 39, 168, 0.08),
-            transparent 18%),
-        radial-gradient(circle at 88% 70%,
-            rgba(255, 106, 0, 0.07),
-            transparent 18%);
-}
-
-/* =========================================================
-   🎃 EFECTO CALABAZA EN OFERTAS
-========================================================= */
-
-.ofertas-section {
-    background-image:
-        radial-gradient(ellipse at 96% 15%,
-            rgba(255, 106, 0, 0.14),
-            transparent 13%),
-        radial-gradient(ellipse at 5% 85%,
-            rgba(118, 39, 168, 0.12),
-            transparent 16%),
-        linear-gradient(145deg,
-            #130d17,
-            #0d0910);
-}
-
-/* =========================================================
-   💀 GLOW MORADO + NARANJA EN PRODUCTOS
-========================================================= */
-
-.producto-tienda,
-.oferta-card,
-.category {
-    box-shadow:
-        0 5px 15px rgba(0, 0, 0, 0.38),
-        inset 0 0 20px rgba(118, 39, 168, 0.035);
-}
-
-.producto-tienda:hover,
-.oferta-card:hover,
-.category:hover {
-    border-color: var(--halloween-orange);
-
-    box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.50),
-        0 0 18px rgba(255, 106, 0, 0.18),
-        inset 0 0 18px rgba(118, 39, 168, 0.08);
-}
-
-/* =========================================================
-   🎃 BOTONES CON EFECTO TENEBROSO
-========================================================= */
-
-.btn-agregar-carrito,
-.btn-comprar,
-.modal-btn-carrito {
-    box-shadow:
-        0 5px 15px rgba(255, 106, 0, 0.20),
-        0 0 12px rgba(118, 39, 168, 0.10);
-}
-
-.btn-agregar-carrito:hover,
-.btn-comprar:hover,
-.modal-btn-carrito:hover {
-    box-shadow:
-        0 7px 20px rgba(255, 106, 0, 0.35),
-        0 0 20px rgba(118, 39, 168, 0.22);
-}
-
-/* =========================================================
-   🕸️ BORDES TENEBROSOS
-========================================================= */
-
-.category,
-.oferta-card,
-.producto-tienda {
-    border-color: rgba(118, 39, 168, 0.30);
-}
-
-.category:hover,
-.oferta-card:hover,
-.producto-tienda:hover {
-    border-color: rgba(255, 106, 0, 0.70);
-}
-
-/* =========================================================
-   🎃 TITULOS HALLOWEEN
-========================================================= */
-
-.hero-text h1,
-.section-title h2,
-.ofertas-header h2 {
-    text-shadow:
-        0 0 5px rgba(255, 106, 0, 0.18),
-        0 0 15px rgba(118, 39, 168, 0.14);
-}
-
-/* =========================================================
-   👻 NAVEGACIÓN CON AMBIENTE OSCURO
-========================================================= */
-
-.bottom-nav {
-    background:
-        radial-gradient(circle at 50% 0%,
-            rgba(118, 39, 168, 0.13),
-            transparent 35%),
-        linear-gradient(90deg,
-            #070509,
-            #140b18,
-            #070509);
-}
-
-/* =========================================================
-   💀 MODAL MÁS TENEBROSO
-========================================================= */
-
-.modal-producto-contenido {
-    box-shadow:
-        0 25px 70px rgba(0, 0, 0, 0.75),
-        0 0 35px rgba(118, 39, 168, 0.18),
-        0 0 60px rgba(255, 106, 0, 0.08);
-}
-
-/* =========================================================
-   🎃 GLOW FINAL
-========================================================= */
-
-.hero,
-.ofertas-section,
-.producto-tienda,
-.oferta-card,
-.category {
-    transition:
-        box-shadow 0.25s ease,
-        border-color 0.25s ease,
-        background-color 0.25s ease;
-}
-
-/* =========================================================
-   🎃💀👻 HALLOWEEN REAL - DECORACIONES VISIBLES
-   NO CAMBIA PRODUCTOS NI ESTRUCTURA
-========================================================= */
-
-/* El hero será el área donde aparecen las decoraciones */
-.hero {
-    position: relative !important;
-    overflow: hidden;
-}
-
-/* =========================================================
-   🎃 CALABAZA GRANDE
-========================================================= */
-
-.hero::before {
-    content: "🎃";
-    position: absolute;
-    right: 18px;
-    bottom: 8px;
-
-    font-size: 105px;
-    line-height: 1;
-
-    z-index: 2;
-    pointer-events: none;
-
-    filter:
-        drop-shadow(0 0 8px rgba(255, 106, 0, 0.90)) drop-shadow(0 0 25px rgba(255, 106, 0, 0.45));
-
-    opacity: 0.95;
-}
-
-/* =========================================================
-   👻 FANTASMA
-========================================================= */
-
-.hero::after {
-    content: "👻";
-    position: absolute;
-    left: 18px;
-    top: 18px;
-
-    font-size: 72px;
-    line-height: 1;
-
-    z-index: 2;
-    pointer-events: none;
-
-    filter:
-        drop-shadow(0 0 8px rgba(255, 255, 255, 0.60)) drop-shadow(0 0 20px rgba(118, 39, 168, 0.50));
-
-    opacity: 0.85;
-}
-
-/* =========================================================
-   💀 CALAVERAS EN LAS TARJETAS
-========================================================= */
-
-.category::before,
-.oferta-card::before,
-.producto-tienda::before {
-    content: "💀";
-
-    position: absolute;
-
-    right: 8px;
-    top: 7px;
-
-    font-size: 25px;
-    line-height: 1;
-
-    z-index: 5;
-    pointer-events: none;
-
-    opacity: 0.72;
-
-    filter:
-        drop-shadow(0 0 5px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 8px rgba(118, 39, 168, 0.50));
-}
-
-/* =========================================================
-   🕷️ ARAÑAS
-========================================================= */
-
-.category::after {
-    content: "🕷️";
-
-    position: absolute;
-
-    left: 7px;
-    bottom: 7px;
-
-    font-size: 21px;
-    line-height: 1;
-
-    z-index: 5;
-    pointer-events: none;
-
-    opacity: 0.75;
-
-    filter:
-        drop-shadow(0 0 5px rgba(118, 39, 168, 0.80));
-}
-
-/* =========================================================
-   🕸️ TELARAÑA EN OFERTAS
-========================================================= */
-
-.ofertas-section {
-    position: relative !important;
-    overflow: hidden;
-}
-
-.ofertas-section::before {
-    content: "🕸️";
-
-    position: absolute;
-
-    left: 8px;
-    top: 5px;
-
-    font-size: 58px;
-    line-height: 1;
-
-    z-index: 3;
-    pointer-events: none;
-
-    opacity: 0.65;
-
-    filter:
-        drop-shadow(0 0 7px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 14px rgba(118, 39, 168, 0.60));
-}
-
-/* =========================================================
-   🎃 CALABAZA EN OFERTAS
-========================================================= */
-
-.ofertas-section::after {
-    content: "🎃";
-
-    position: absolute;
-
-    right: 10px;
-    bottom: 5px;
-
-    font-size: 55px;
-    line-height: 1;
-
-    z-index: 3;
-    pointer-events: none;
-
-    opacity: 0.75;
-
-    filter:
-        drop-shadow(0 0 8px rgba(255, 106, 0, 0.80));
-}
-
-/* =========================================================
-   👻 FANTASMITAS EN PRODUCTOS
-========================================================= */
-
-.producto-tienda:nth-child(3n)::after {
-    content: "👻";
-
-    position: absolute;
-
-    left: 7px;
-    bottom: 7px;
-
-    font-size: 23px;
-    line-height: 1;
-
-    z-index: 5;
-    pointer-events: none;
-
-    opacity: 0.65;
-
-    filter:
-        drop-shadow(0 0 7px rgba(255, 255, 255, 0.55)) drop-shadow(0 0 10px rgba(118, 39, 168, 0.60));
-}
-
-/* =========================================================
-   💀 CALAVERA EN ALGUNOS PRODUCTOS
-========================================================= */
-
-.producto-tienda:nth-child(4n)::before {
-    content: "💀";
-
-    position: absolute;
-
-    right: 8px;
-    top: 7px;
-
-    font-size: 24px;
-    line-height: 1;
-
-    z-index: 5;
-    pointer-events: none;
-
-    opacity: 0.72;
-
-    filter:
-        drop-shadow(0 0 6px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 10px rgba(255, 106, 0, 0.45));
-}
-
-/* =========================================================
-   🕷️ ARAÑA EN PRODUCTOS
-========================================================= */
-
-.producto-tienda:nth-child(5n)::after {
-    content: "🕷️";
-
-    position: absolute;
-
-    left: 8px;
-    bottom: 8px;
-
-    font-size: 22px;
-    line-height: 1;
-
-    z-index: 5;
-    pointer-events: none;
-
-    opacity: 0.70;
-
-    filter:
-        drop-shadow(0 0 6px rgba(118, 39, 168, 0.75));
-}
-
-/* =========================================================
-   🎃 CALABAZA EN CATEGORÍAS
-========================================================= */
-
-.category:nth-child(2n)::before {
-    content: "🎃";
-
-    position: absolute;
-
-    right: 7px;
-    top: 7px;
-
-    font-size: 24px;
-    line-height: 1;
-
-    z-index: 5;
-    pointer-events: none;
-
-    opacity: 0.72;
-
-    filter:
-        drop-shadow(0 0 6px rgba(255, 106, 0, 0.75));
-}
-
-/* =========================================================
-   👻 FANTASMA EN CATEGORÍAS
-========================================================= */
-
-.category:nth-child(3n)::after {
-    content: "👻";
-
-    position: absolute;
-
-    left: 7px;
-    bottom: 7px;
-
-    font-size: 22px;
-    line-height: 1;
-
-    z-index: 5;
-    pointer-events: none;
-
-    opacity: 0.70;
-
-    filter:
-        drop-shadow(0 0 6px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 10px rgba(118, 39, 168, 0.55));
-}
-
-/* =========================================================
-   🕸️ TELARAÑA EN MODAL
-========================================================= */
-
-.modal-producto-contenido {
-    position: relative !important;
-    overflow: hidden;
-}
-
-.modal-producto-contenido::before {
-    content: "🕸️";
-
-    position: absolute;
-
-    right: 10px;
-    top: 5px;
-
-    font-size: 55px;
-    line-height: 1;
-
-    z-index: 10;
-    pointer-events: none;
-
-    opacity: 0.55;
-
-    filter:
-        drop-shadow(0 0 7px rgba(118, 39, 168, 0.65));
-}
-
-/* =========================================================
-   💀 MODAL - CALAVERA
-========================================================= */
-
-.modal-producto-contenido::after {
-    content: "💀";
-
-    position: absolute;
-
-    left: 10px;
-    bottom: 8px;
-
-    font-size: 38px;
-    line-height: 1;
-
-    z-index: 10;
-    pointer-events: none;
-
-    opacity: 0.55;
-
-    filter:
-        drop-shadow(0 0 8px rgba(255, 106, 0, 0.55));
-}
-
-/* =========================================================
-   🕷️ NAV INFERIOR
-========================================================= */
-
-.bottom-nav {
-    position: relative !important;
-}
-
-.bottom-nav::before {
-    content: "🕷️";
-
-    position: absolute;
-
-    left: 6px;
-    top: -13px;
-
-    font-size: 22px;
-    line-height: 1;
-
-    pointer-events: none;
-
-    opacity: 0.75;
-
-    filter:
-        drop-shadow(0 0 6px rgba(118, 39, 168, 0.75));
-}
-
-/* =========================================================
-   🎃 EFECTO DE BRILLO EN CALABAZAS
-========================================================= */
-
-.hero::before,
-.ofertas-section::after {
-    animation: halloweenGlow 2.8s ease-in-out infinite;
-}
 
 @keyframes halloweenGlow {
 
-    0% {
-        filter:
-            drop-shadow(0 0 6px rgba(255, 106, 0, 0.65)) drop-shadow(0 0 15px rgba(255, 106, 0, 0.25));
+    0%,
+    100% {
+        box-shadow:
+            0 12px 30px #0008,
+            0 0 18px #a10c3018;
     }
 
     50% {
-        filter:
-            drop-shadow(0 0 12px rgba(255, 106, 0, 1)) drop-shadow(0 0 30px rgba(255, 106, 0, 0.60));
+        box-shadow:
+            0 12px 30px #0008,
+            0 0 28px #ff51002e;
     }
+}
 
-    100% {
-        filter:
-            drop-shadow(0 0 6px rgba(255, 106, 0, 0.65)) drop-shadow(0 0 15px rgba(255, 106, 0, 0.25));
-    }
+.hero {
+    animation: halloweenGlow 6s ease-in-out infinite;
 }
 
 /* =========================================================
-   👻 FANTASMA CON BRILLO
+   ACCESIBILIDAD
 ========================================================= */
 
-.hero::after {
-    animation: ghostGlow 3.5s ease-in-out infinite;
-}
-
-@keyframes ghostGlow {
-
-    0% {
-        opacity: 0.65;
+@media (prefers-reduced-motion: reduce) {
+    .hero {
+        animation: none !important;
     }
 
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0.65;
-    }
-}
-
-/* =========================================================
-   📱 EN CELULAR: MÁS PEQUEÑOS
-========================================================= */
-
-@media (max-width: 600px) {
-
-    .hero::before {
-        font-size: 65px;
-        right: 8px;
-        bottom: 5px;
-    }
-
-    .hero::after {
-        font-size: 48px;
-        left: 8px;
-        top: 8px;
-    }
-
-    .ofertas-section::before {
-        font-size: 38px;
-    }
-
-    .ofertas-section::after {
-        font-size: 40px;
-    }
-
-    .category::before,
-    .oferta-card::before,
-    .producto-tienda::before {
-        font-size: 19px;
-    }
-
-    .category::after,
-    .producto-tienda:nth-child(3n)::after,
-    .producto-tienda:nth-child(5n)::after {
-        font-size: 18px;
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
     }
 }
