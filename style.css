@@ -4319,3 +4319,290 @@ body,
 .modal-btn-carrito:active {
     transform: scale(0.97);
 }
+
+
+/* =========================================================
+   DL LUXURY — HALLOWEEN PROMO PREMIUM
+   Negro profundo · Rojo sangre · Dorado metálico
+   Ubicación: debajo del menú y encima del slider
+========================================================= */
+
+/* CONTENEDOR PRINCIPAL */
+.halloween-logo-promo {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+
+    width: calc(100% - 30px);
+    max-width: 650px;
+    min-height: 76px;
+    margin: 15px auto 18px;
+    padding: 12px 18px;
+
+    box-sizing: border-box;
+
+    background:
+        radial-gradient(ellipse at 50% 120%,
+            rgba(139, 0, 0, 0.30),
+            transparent 65%),
+        linear-gradient(135deg,
+            #080808 0%,
+            #1a0809 45%,
+            #090707 100%);
+
+    border: 1px solid rgba(216, 181, 106, 0.85);
+    border-radius: 12px;
+
+    color: #f8e7c0;
+    font-family: 'Cinzel', Georgia, serif;
+    text-align: center;
+
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, 0.45),
+        0 0 12px rgba(130, 0, 0, 0.15),
+        inset 0 0 18px rgba(120, 0, 0, 0.10);
+
+    animation: halloweenEntrada 0.7s ease both;
+}
+
+/* BORDE INTERIOR DORADO */
+.halloween-logo-promo::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+
+    border: 1px solid rgba(216, 181, 106, 0.20);
+    border-radius: 8px;
+
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* BRILLO AMBIENTAL */
+.halloween-logo-promo::after {
+    content: "";
+    position: absolute;
+
+    top: -70%;
+    left: -45%;
+
+    width: 35%;
+    height: 240%;
+
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 230, 178, 0.10),
+            transparent);
+
+    transform: rotate(25deg);
+    animation: halloweenBrillo 6s ease-in-out infinite;
+
+    pointer-events: none;
+}
+
+/* ICONOS FANTASMA */
+.halloween-logo-promo .halloween-icon {
+    position: relative;
+    flex-shrink: 0;
+
+    color: #d8b56a;
+    font-size: 27px;
+
+    filter: drop-shadow(0 0 5px rgba(216, 181, 106, 0.25));
+
+    animation: halloweenFantasma 3s ease-in-out infinite;
+}
+
+/* COLUMNA DE TEXTO */
+.halloween-logo-promo .halloween-promo-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 1px;
+    min-width: 0;
+}
+
+/* TEXTO SUPERIOR */
+.halloween-logo-promo .halloween-promo-label {
+    color: #e8d5b0;
+
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    line-height: 1.4;
+}
+
+/* DESCUENTO DESTACADO */
+.halloween-logo-promo strong {
+    display: block;
+
+    color: #ff4545;
+
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: clamp(14px, 2.5vw, 21px);
+    font-weight: 900;
+    letter-spacing: 1.2px;
+    line-height: 1.35;
+    white-space: nowrap;
+
+    text-shadow:
+        0 0 5px rgba(255, 0, 0, 0.35),
+        0 0 15px rgba(180, 0, 0, 0.18);
+}
+
+/* TEXTO HALLOWEEN */
+.halloween-logo-promo .halloween-promo-subtitle {
+    color: #d8b56a;
+
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    line-height: 1.5;
+}
+
+/* ENTRADA SUAVE */
+@keyframes halloweenEntrada {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* REFLEJO DORADO */
+@keyframes halloweenBrillo {
+
+    0%,
+    65% {
+        left: -45%;
+    }
+
+    100% {
+        left: 130%;
+    }
+}
+
+/* FANTASMAS FLOTANDO */
+@keyframes halloweenFantasma {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+/* EFECTO AL PASAR EL CURSOR */
+@media (hover: hover) {
+    .halloween-logo-promo:hover {
+        border-color: #f3d28b;
+
+        box-shadow:
+            0 6px 22px rgba(0, 0, 0, 0.55),
+            0 0 18px rgba(180, 0, 0, 0.22),
+            inset 0 0 20px rgba(120, 0, 0, 0.15);
+    }
+}
+
+/* =========================================================
+   RESPONSIVE — TABLETS Y CELULARES
+========================================================= */
+
+@media (max-width: 600px) {
+    .halloween-logo-promo {
+        width: calc(100% - 22px);
+        min-height: 65px;
+
+        gap: 9px;
+        margin: 10px auto 13px;
+        padding: 10px 12px;
+
+        border-radius: 10px;
+    }
+
+    .halloween-logo-promo::before {
+        inset: 3px;
+        border-radius: 7px;
+    }
+
+    .halloween-logo-promo .halloween-icon {
+        font-size: 21px;
+    }
+
+    .halloween-logo-promo .halloween-promo-label {
+        font-size: 8px;
+        letter-spacing: 1.8px;
+    }
+
+    .halloween-logo-promo strong {
+        font-size: 15px;
+        letter-spacing: 0.5px;
+    }
+
+    .halloween-logo-promo .halloween-promo-subtitle {
+        font-size: 8px;
+        letter-spacing: 1.4px;
+    }
+}
+
+/* CELULARES PEQUEÑOS */
+@media (max-width: 380px) {
+    .halloween-logo-promo {
+        width: calc(100% - 16px);
+        min-height: 59px;
+
+        gap: 6px;
+        margin: 8px auto 11px;
+        padding: 8px 7px;
+    }
+
+    .halloween-logo-promo .halloween-icon {
+        font-size: 17px;
+    }
+
+    .halloween-logo-promo .halloween-promo-label {
+        font-size: 7px;
+        letter-spacing: 1.2px;
+    }
+
+    .halloween-logo-promo strong {
+        font-size: 13px;
+        letter-spacing: 0;
+    }
+
+    .halloween-logo-promo .halloween-promo-subtitle {
+        font-size: 7px;
+        letter-spacing: 1px;
+    }
+}
+
+/* ACCESIBILIDAD: REDUCIR ANIMACIONES */
+@media (prefers-reduced-motion: reduce) {
+
+    .halloween-logo-promo,
+    .halloween-logo-promo::after,
+    .halloween-logo-promo .halloween-icon {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* =========================================================
+   FIN — DL LUXURY HALLOWEEN PREMIUM
+========================================================= */
