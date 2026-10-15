@@ -3146,17 +3146,11 @@ body.modal-abierto {
 }
 
 
-
 /* =========================================================
    DL LUXURY — HALLOWEEN PREMIUM
    Diseño original negro y dorado conservado
    Fondos de Halloween + modal tenebroso
    Añadir al FINAL del style.css
-========================================================= */
-
-
-/* =========================================================
-   1. PALETA GENERAL
 ========================================================= */
 
 :root {
@@ -3187,33 +3181,26 @@ body {
     background: var(--halloween-negro);
 }
 
-
 /* =========================================================
-   2. SLIDER PRINCIPAL
-   Fondo: terror.jpeg
+   1. SLIDER PRINCIPAL
 ========================================================= */
 
 .hero {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-
     background-color: #1b100b;
-
     background-image:
         linear-gradient(90deg,
             rgba(10, 5, 4, 0.76) 0%,
             rgba(10, 5, 4, 0.43) 43%,
             rgba(10, 5, 4, 0.12) 100%),
         url("./terror.jpeg");
-
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-
     border: 1px solid rgba(216, 181, 106, 0.42);
     border-radius: 15px;
-
     box-shadow:
         0 8px 25px rgba(0, 0, 0, 0.48),
         inset 0 0 30px rgba(0, 0, 0, 0.25);
@@ -3239,9 +3226,7 @@ body {
 
 .hero-text h1 {
     color: #f5dfb4;
-    text-shadow:
-        0 3px 5px rgba(0, 0, 0, 0.95),
-        0 0 18px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 3px 5px rgba(0, 0, 0, .95), 0 0 18px rgba(0, 0, 0, .8);
 }
 
 .hero-text h3 {
@@ -3258,25 +3243,17 @@ body {
 .hero-text button {
     background: rgba(15, 10, 8, 0.92);
     color: var(--halloween-dorado-claro);
-
     border: 1px solid var(--halloween-dorado);
     border-radius: 8px;
-
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-
-    transition:
-        background 0.25s ease,
-        color 0.25s ease,
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .4);
+    transition: background .25s ease, color .25s ease, transform .25s ease, box-shadow .25s ease;
 }
 
 .hero-btn:hover,
 .hero-text button:hover {
     background: var(--halloween-dorado);
     color: #160e09;
-
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .45);
     transform: translateY(-2px);
 }
 
@@ -3287,57 +3264,44 @@ body {
 .hero-productos img {
     object-fit: contain;
     object-position: center;
-
     max-width: 100%;
     max-height: 100%;
-
-    filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.38));
+    filter: drop-shadow(0 10px 12px rgba(0, 0, 0, .38));
 }
 
 .slider-dots span {
-    background: rgba(240, 215, 160, 0.55);
+    background: rgba(240, 215, 160, .55);
 }
 
 .slider-dots span.active {
     background: var(--halloween-dorado);
 }
 
-
 /* =========================================================
-   3. CATEGORÍAS
-   Fondo: terro2.jpg
-   Encuadre inferior para mostrar más al payaso
+   2. CATEGORÍAS
 ========================================================= */
 
 .categorias-section {
     position: relative;
     isolation: isolate;
-
     margin-top: 20px;
     padding: 16px 4px 18px;
-
     background-color: #17100c;
-
     background-image:
         linear-gradient(180deg,
-            rgba(12, 8, 6, 0.20) 0%,
-            rgba(12, 8, 6, 0.35) 48%,
-            rgba(12, 8, 6, 0.62) 100%),
+            rgba(12, 8, 6, .20) 0%,
+            rgba(12, 8, 6, .35) 48%,
+            rgba(12, 8, 6, .62) 100%),
         url("./terror3.0.jpg");
-
     background-size: cover;
     background-position: center 100%;
     background-repeat: no-repeat;
-
     border-radius: 12px;
 }
 
 .section-title h2 {
     color: var(--halloween-dorado-claro);
-
-    text-shadow:
-        0 2px 5px rgba(0, 0, 0, 0.95),
-        0 0 12px rgba(0, 0, 0, 0.7);
+    text-shadow: 0 2px 5px rgba(0, 0, 0, .95), 0 0 12px rgba(0, 0, 0, .7);
 }
 
 .section-title a {
@@ -3356,41 +3320,23 @@ body {
 
 .category {
     position: relative;
-
-    background:
-        linear-gradient(145deg,
-            rgba(105, 76, 51, 0.96),
-            rgba(48, 31, 22, 0.97));
-
-    border: 1px solid rgba(231, 194, 125, 0.48);
+    background: linear-gradient(145deg, rgba(105, 76, 51, .96), rgba(48, 31, 22, .97));
+    border: 1px solid rgba(231, 194, 125, .48);
     border-radius: 12px;
-
-    box-shadow:
-        0 5px 13px rgba(0, 0, 0, 0.42),
-        inset 0 1px 0 rgba(255, 235, 194, 0.12);
-
-    transition:
-        transform 0.25s ease,
-        border-color 0.25s ease,
-        box-shadow 0.25s ease;
+    box-shadow: 0 5px 13px rgba(0, 0, 0, .42), inset 0 1px 0 rgba(255, 235, 194, .12);
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
 
 .category:hover {
     transform: translateY(-3px);
-
     border-color: var(--halloween-dorado);
-
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.5),
-        0 0 10px rgba(216, 181, 106, 0.12);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .5), 0 0 10px rgba(216, 181, 106, .12);
 }
 
 .cat-image {
     background: #f0e6d4;
-
-    border: 1px solid rgba(255, 226, 176, 0.3);
+    border: 1px solid rgba(255, 226, 176, .3);
     border-radius: 8px;
-
     overflow: hidden;
 }
 
@@ -3402,7 +3348,7 @@ body {
 
 .category span {
     color: #fff0d5;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, .8);
 }
 
 .category span::after {
@@ -3411,42 +3357,31 @@ body {
 
 .category.active {
     border-color: var(--halloween-dorado);
-
-    box-shadow:
-        0 0 0 1px rgba(216, 181, 106, 0.2),
-        0 7px 20px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 0 0 1px rgba(216, 181, 106, .2), 0 7px 20px rgba(0, 0, 0, .45);
 }
 
-
 /* =========================================================
-   4. OFERTAS ESPECIALES
-   Fondo: terror3.jpeg
+   3. OFERTAS ESPECIALES
 ========================================================= */
 
 .ofertas-section {
     position: relative;
     isolation: isolate;
-
     margin-top: 22px;
     padding: 18px 12px 22px;
-
     background-color: #17100d;
-
     background-image:
         linear-gradient(180deg,
-            rgba(13, 8, 6, 0.52) 0%,
-            rgba(13, 8, 6, 0.60) 55%,
-            rgba(13, 8, 6, 0.78) 100%),
+            rgba(13, 8, 6, .52) 0%,
+            rgba(13, 8, 6, .60) 55%,
+            rgba(13, 8, 6, .78) 100%),
         url("./terror3.jpeg");
-
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-
-    border: 1px solid rgba(216, 181, 106, 0.2);
+    border: 1px solid rgba(216, 181, 106, .2);
     border-radius: 15px;
-
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.38);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, .38);
 }
 
 .ofertas-header span {
@@ -3456,10 +3391,7 @@ body {
 
 .ofertas-header h2 {
     color: #f3dfbb;
-
-    text-shadow:
-        0 2px 6px rgba(0, 0, 0, 0.95),
-        0 0 12px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, .95), 0 0 12px rgba(0, 0, 0, .5);
 }
 
 .ofertas-header p {
@@ -3477,31 +3409,22 @@ body {
 }
 
 .ofertas-container .oferta-card {
-    background: rgba(27, 18, 13, 0.96);
-
-    border: 1px solid rgba(216, 181, 106, 0.38);
+    background: rgba(27, 18, 13, .96);
+    color: #fff0d8 !important;
+    border: 1px solid rgba(216, 181, 106, .38);
     border-radius: 13px;
-
-    box-shadow:
-        0 7px 18px rgba(0, 0, 0, 0.45),
-        inset 0 1px 0 rgba(255, 230, 190, 0.05);
-
-    transition:
-        transform 0.25s ease,
-        border-color 0.25s ease,
-        box-shadow 0.25s ease;
+    box-shadow: 0 7px 18px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 230, 190, .05);
+    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
 
 .ofertas-container .oferta-card:hover {
     transform: translateY(-3px);
-
     border-color: var(--halloween-dorado);
-
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.52);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .52);
 }
 
 .oferta-imagen {
-    background: rgba(15, 10, 8, 0.55);
+    background: rgba(15, 10, 8, .55);
 }
 
 .oferta-imagen img {
@@ -3512,15 +3435,13 @@ body {
 .oferta-descuento {
     background: #54251b;
     color: #ffe4ae;
-
-    border: 1px solid rgba(216, 181, 106, 0.45);
+    border: 1px solid rgba(216, 181, 106, .45);
 }
 
 .oferta-favorito {
     background: #e9d5b1;
     color: #21140e;
-
-    border: 1px solid rgba(216, 181, 106, 0.45);
+    border: 1px solid rgba(216, 181, 106, .45);
 }
 
 .oferta-favorito:hover {
@@ -3533,25 +3454,17 @@ body {
     background: #f3e4cf;
 }
 
-
 /* =========================================================
-   5. MODAL TENEBROSO — HALLOWEEN PREMIUM
-   No modifica JavaScript ni botones funcionales
+   4. MODALES GENERALES
 ========================================================= */
-
-/* Capa oscura que cubre la pantalla.
-   Se limita a contenedores habituales de modal. */
 
 .modal-overlay,
 .popup-overlay,
 .fondo-modal {
-    background: rgba(0, 0, 0, 0.86) !important;
-
+    background: rgba(0, 0, 0, .86) !important;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
 }
-
-/* Panel del modal */
 
 .modal-content,
 .modal-container,
@@ -3560,69 +3473,38 @@ body {
 .contenido-modal,
 .modal-box {
     position: relative;
-
     background:
-        radial-gradient(ellipse at top right,
-            rgba(139, 32, 28, 0.23),
-            transparent 48%),
-        linear-gradient(145deg,
-            #241511 0%,
-            #150c0a 58%,
-            #090605 100%) !important;
-
+        radial-gradient(ellipse at top right, rgba(139, 32, 28, .23), transparent 48%),
+        linear-gradient(145deg, #241511 0%, #150c0a 58%, #090605 100%) !important;
     color: var(--halloween-texto) !important;
-
-    border: 1px solid rgba(216, 181, 106, 0.58) !important;
+    border: 1px solid rgba(216, 181, 106, .58) !important;
     border-radius: 15px !important;
-
-    box-shadow:
-        0 25px 75px rgba(0, 0, 0, 0.9),
-        0 0 28px rgba(139, 32, 28, 0.28) !important;
-
+    box-shadow: 0 25px 75px rgba(0, 0, 0, .9), 0 0 28px rgba(139, 32, 28, .28) !important;
     overflow: hidden;
 }
-
-/* Línea superior dorada y roja */
 
 .modal-content::before,
 .popup-content::before,
 .contenido-modal::before,
 .modal-box::before {
     content: "";
-
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-
     height: 3px;
-
-    background: linear-gradient(90deg,
-            transparent,
-            #6e1714,
-            #d8b56a,
-            #8b201c,
-            transparent);
-
+    background: linear-gradient(90deg, transparent, #6e1714, #d8b56a, #8b201c, transparent);
     pointer-events: none;
     z-index: 2;
 }
 
-/* Cabecera */
-
 .modal-header,
 .popup-header,
 .modal-titulo {
-    background: linear-gradient(135deg,
-            rgba(73, 27, 21, 0.96),
-            rgba(22, 12, 9, 0.98)) !important;
-
+    background: linear-gradient(135deg, rgba(73, 27, 21, .96), rgba(22, 12, 9, .98)) !important;
     color: var(--halloween-dorado-claro) !important;
-
-    border-bottom: 1px solid rgba(216, 181, 106, 0.32) !important;
+    border-bottom: 1px solid rgba(216, 181, 106, .32) !important;
 }
-
-/* Títulos */
 
 .modal-content h1,
 .modal-content h2,
@@ -3637,17 +3519,11 @@ body {
 .contenido-modal h2,
 .contenido-modal h3 {
     color: var(--halloween-dorado-claro) !important;
-
     font-family: Georgia, "Times New Roman", serif;
     font-weight: 700;
     letter-spacing: 1px;
-
-    text-shadow:
-        0 2px 5px #000,
-        0 0 12px rgba(139, 32, 28, 0.42);
+    text-shadow: 0 2px 5px #000, 0 0 12px rgba(139, 32, 28, .42);
 }
-
-/* Texto */
 
 .modal-content p,
 .modal-content label,
@@ -3657,8 +3533,6 @@ body {
 .contenido-modal p {
     color: #e4d5c3;
 }
-
-/* Campos */
 
 .modal-content input,
 .modal-content select,
@@ -3671,10 +3545,8 @@ body {
 .contenido-modal textarea {
     background: #100a08 !important;
     color: #f2e4ca !important;
-
     border: 1px solid #594032 !important;
     border-radius: 8px !important;
-
     outline: none;
 }
 
@@ -3688,9 +3560,7 @@ body {
 .contenido-modal select:focus,
 .contenido-modal textarea:focus {
     border-color: var(--halloween-dorado) !important;
-
-    box-shadow:
-        0 0 0 3px rgba(216, 181, 106, 0.13) !important;
+    box-shadow: 0 0 0 3px rgba(216, 181, 106, .13) !important;
 }
 
 .modal-content input::placeholder,
@@ -3700,19 +3570,13 @@ body {
     color: #9f8978;
 }
 
-/* Botón principal */
-
 .modal-content button[type="submit"],
 .modal-content .btn-primary,
 .modal-content .btn-confirmar,
 .popup-content button[type="submit"],
 .popup-content .btn-primary {
-    background: linear-gradient(135deg,
-            #8b201c,
-            #4c100e) !important;
-
+    background: linear-gradient(135deg, #8b201c, #4c100e) !important;
     color: #fff0d5 !important;
-
     border: 1px solid #b65b4b !important;
     border-radius: 8px;
 }
@@ -3722,14 +3586,9 @@ body {
 .modal-content .btn-confirmar:hover,
 .popup-content button[type="submit"]:hover,
 .popup-content .btn-primary:hover {
-    background: linear-gradient(135deg,
-            #a52b24,
-            #681511) !important;
-
-    box-shadow: 0 0 16px rgba(139, 32, 28, 0.38);
+    background: linear-gradient(135deg, #a52b24, #681511) !important;
+    box-shadow: 0 0 16px rgba(139, 32, 28, .38);
 }
-
-/* Botones secundarios */
 
 .modal-content .btn-secondary,
 .modal-content .btn-cancelar,
@@ -3737,8 +3596,7 @@ body {
 .popup-content .btn-cancelar {
     background: #211713 !important;
     color: var(--halloween-dorado-claro) !important;
-
-    border: 1px solid rgba(216, 181, 106, 0.4) !important;
+    border: 1px solid rgba(216, 181, 106, .4) !important;
     border-radius: 8px;
 }
 
@@ -3749,15 +3607,13 @@ body {
     background: #382018 !important;
 }
 
-/* Botón de cierre */
-
 .modal-content .close,
 .modal-content .cerrar-modal,
 .modal-content .modal-close,
 .popup-content .close,
 .popup-content .cerrar-modal {
     color: var(--halloween-dorado-claro);
-    transition: color 0.2s ease, transform 0.2s ease;
+    transition: color .2s ease, transform .2s ease;
 }
 
 .modal-content .close:hover,
@@ -3769,28 +3625,22 @@ body {
     transform: scale(1.08);
 }
 
-/* Botón cerrar de Bootstrap */
-
 .modal-content .btn-close {
-    filter: invert(1) sepia(0.3);
-    opacity: 0.9;
+    filter: invert(1) sepia(.3);
+    opacity: .9;
 }
-
-/* Cuerpo y pie */
 
 .modal-body,
 .modal-footer,
 .popup-footer {
     color: var(--halloween-texto);
-    border-color: rgba(216, 181, 106, 0.22) !important;
+    border-color: rgba(216, 181, 106, .22) !important;
 }
 
 .modal-footer,
 .popup-footer {
-    background: rgba(0, 0, 0, 0.22);
+    background: rgba(0, 0, 0, .22);
 }
-
-/* Imágenes dentro del modal */
 
 .modal-content img,
 .popup-content img,
@@ -3798,14 +3648,13 @@ body {
     border-radius: 8px;
 }
 
-
 /* =========================================================
-   6. CABECERA Y CONTROLES EXISTENTES
+   5. CABECERA Y CONTROLES EXISTENTES
 ========================================================= */
 
 .hearder {
     background: #080605;
-    border-bottom: 1px solid rgba(216, 181, 106, 0.2);
+    border-bottom: 1px solid rgba(216, 181, 106, .2);
 }
 
 .menu-btn,
@@ -3823,9 +3672,281 @@ body {
     background: var(--halloween-negro);
 }
 
+/* =========================================================
+   6. MODAL DE OFERTA — SELECTORES REALES
+========================================================= */
+
+#modalOferta.modal-producto {
+    background: rgba(0, 0, 0, .94) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+#modalOferta .modal-producto-contenido {
+    background:
+        radial-gradient(circle at 80% 0%, rgba(115, 0, 0, .28), transparent 45%),
+        linear-gradient(145deg, #1b0b0b 0%, #100707 55%, #050303 100%) !important;
+    border: 1px solid rgba(216, 181, 106, .65) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 0 35px rgba(120, 0, 0, .30), 0 25px 80px rgba(0, 0, 0, .95) !important;
+}
+
+#modalOferta .modal-producto-imagen {
+    background: radial-gradient(ellipse at center, #241313 0%, #100808 65%, #050303 100%) !important;
+    border-right: 1px solid rgba(216, 181, 106, .18);
+}
+
+#modalOferta .modal-producto-imagen img {
+    background: transparent !important;
+    object-fit: contain !important;
+}
+
+#modalOferta .modal-producto-info {
+    background:
+        radial-gradient(circle at top right, rgba(115, 0, 0, .20), transparent 55%),
+        linear-gradient(160deg, #1b0b0b, #090505) !important;
+    color: #f1e5cc !important;
+}
+
+#modalOferta .modal-producto-categoria {
+    color: #d8b56a !important;
+    text-shadow: 0 0 12px rgba(139, 0, 0, .55);
+}
+
+#modalOferta .modal-producto-info h2 {
+    color: #f4e7d0 !important;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, .9);
+}
+
+#modalOferta .modal-precio-original {
+    color: #a99b91 !important;
+}
+
+#modalOferta .modal-precio-final {
+    color: #d8b56a !important;
+    text-shadow: 0 0 14px rgba(216, 181, 106, .18);
+}
+
+#modalOferta .modal-descuento {
+    background: linear-gradient(135deg, #8b1111, #380505) !important;
+    color: #fff0d0 !important;
+    border: 1px solid #a72c25 !important;
+}
+
+#modalOferta .modal-producto-stock {
+    color: #d8cbb8 !important;
+}
+
+#modalOferta .modal-producto-stock strong {
+    color: #d8b56a !important;
+}
+
+#modalOferta .modal-cerrar {
+    background: #210707 !important;
+    color: #f5e5c8 !important;
+    border: 1px solid #d8b56a !important;
+}
+
+#modalOferta .modal-cerrar:hover {
+    background: #8b1111 !important;
+    color: #fff !important;
+}
+
+#modalOferta .modal-btn-carrito {
+    background: linear-gradient(135deg, #831515, #320606) !important;
+    color: #fff0d0 !important;
+    border: 1px solid #d8b56a !important;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, .4);
+}
+
+#modalOferta .modal-btn-carrito:hover {
+    background: linear-gradient(135deg, #a51c1c, #570909) !important;
+}
+
+#modalOferta .modal-btn-favorito {
+    background: #100808 !important;
+    color: #d8b56a !important;
+    border: 1px solid rgba(216, 181, 106, .65) !important;
+}
+
+#modalOferta .modal-btn-favorito:hover {
+    background: #2b0b0b !important;
+}
+
+#modalOferta .modal-producto-info * {
+    scrollbar-color: #604020 #100808;
+}
 
 /* =========================================================
-   7. RESPONSIVE — TABLET
+   7. TIPOGRAFÍA DE TERROR DEL MODAL
+========================================================= */
+
+#modalOferta .modal-producto-info h2 {
+    font-family: 'UnifrakturMaguntia', serif !important;
+    font-size: 36px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    line-height: 1.25;
+    color: #e4c58b !important;
+    text-shadow: 0 0 5px rgba(139, 0, 0, .8), 0 0 18px rgba(120, 0, 0, .45);
+}
+
+#modalOferta .modal-producto-categoria {
+    font-family: 'Creepster', cursive !important;
+    font-size: 19px !important;
+    letter-spacing: 2px;
+    color: #a82424 !important;
+    text-shadow: 0 0 10px rgba(139, 0, 0, .55);
+}
+
+#modalOferta .modal-precio-original {
+    font-family: 'Cinzel', serif !important;
+    font-size: 15px !important;
+}
+
+#modalOferta .modal-precio-final {
+    font-family: 'Cinzel', serif !important;
+    font-size: 29px !important;
+    font-weight: 900 !important;
+    letter-spacing: 1px;
+    color: #e0bd76 !important;
+}
+
+#modalOferta .modal-descuento {
+    font-family: 'Cinzel', serif !important;
+    font-weight: 900 !important;
+    letter-spacing: 1px;
+}
+
+#modalOferta .modal-producto-stock {
+    font-family: 'Cinzel', serif !important;
+    font-size: 12px;
+    letter-spacing: .5px;
+}
+
+#modalOferta .modal-btn-carrito,
+#modalOferta .modal-btn-favorito,
+#modalOferta .modal-cerrar {
+    font-family: 'Cinzel', serif !important;
+    font-weight: 800 !important;
+    letter-spacing: .5px;
+}
+
+/* =====================================================
+   8. REFUERZO DE CONTRASTE Y LEGIBILIDAD
+===================================================== */
+
+body,
+.app,
+.content {
+    color: #f7ead5;
+}
+
+.content p,
+.content small,
+.content label,
+.content li {
+    color: #f0e1cd;
+}
+
+.section-title h2,
+.ofertas-header h2 {
+    color: #ffe6b2 !important;
+    text-shadow: 0 2px 5px #000, 0 0 12px rgba(139, 0, 0, .65) !important;
+}
+
+.hero-text h1 {
+    color: #fff0d0 !important;
+    text-shadow: 0 3px 7px #000, 0 0 18px rgba(120, 0, 0, .85) !important;
+}
+
+.hero-text h3,
+.hero-text p,
+.hero-text small {
+    color: #fff0d5 !important;
+    text-shadow: 0 2px 5px #000 !important;
+}
+
+.category span {
+    color: #fff4df !important;
+    text-shadow: 0 2px 5px #000, 0 0 5px rgba(0, 0, 0, .9) !important;
+}
+
+/* =====================================================
+   9. TEXTO DE OFERTAS FUERA DEL MODAL — CORRECCIÓN
+   Solo colores y legibilidad; no cambia la distribución.
+===================================================== */
+
+.ofertas-section .ofertas-container .oferta-card,
+.ofertas-section .ofertas-container .oferta-card * {
+    color: #fff0d8 !important;
+    -webkit-text-fill-color: #fff0d8 !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .85);
+}
+
+.ofertas-section .ofertas-container .oferta-card h1,
+.ofertas-section .ofertas-container .oferta-card h2,
+.ofertas-section .ofertas-container .oferta-card h3,
+.ofertas-section .ofertas-container .oferta-card h4,
+.ofertas-section .ofertas-container .oferta-card p,
+.ofertas-section .ofertas-container .oferta-card label,
+.ofertas-section .ofertas-container .oferta-card small {
+    color: #fff4e2 !important;
+    -webkit-text-fill-color: #fff4e2 !important;
+}
+
+/* Precio anterior */
+.ofertas-section .ofertas-container .oferta-card .precio-original,
+.ofertas-section .ofertas-container .oferta-card .precio-anterior,
+.ofertas-section .ofertas-container .oferta-card .modal-precio-original {
+    color: #d8c6b3 !important;
+    -webkit-text-fill-color: #d8c6b3 !important;
+    text-decoration: line-through;
+}
+
+/* Precio final */
+.ofertas-section .ofertas-container .oferta-card .precio-final,
+.ofertas-section .ofertas-container .oferta-card .precio-actual,
+.ofertas-section .ofertas-container .oferta-card .oferta-precio,
+.ofertas-section .ofertas-container .oferta-card .modal-precio-final {
+    color: #ffd477 !important;
+    -webkit-text-fill-color: #ffd477 !important;
+    font-weight: 800 !important;
+}
+
+/* Descuento */
+.ofertas-section .ofertas-container .oferta-card .oferta-descuento {
+    color: #fff4df !important;
+    -webkit-text-fill-color: #fff4df !important;
+    background: linear-gradient(135deg, #a20e18, #390306) !important;
+    text-shadow: 0 1px 3px #000 !important;
+}
+
+/* Botón de favorito: icono oscuro sobre fondo claro */
+.ofertas-section .ofertas-container .oferta-card .oferta-favorito,
+.ofertas-section .ofertas-container .oferta-card .oferta-favorito * {
+    color: #28120d !important;
+    -webkit-text-fill-color: #28120d !important;
+    text-shadow: none !important;
+}
+
+/* Encabezado de ofertas */
+.ofertas-header span,
+.ofertas-header h2,
+.ofertas-header p,
+.ofertas-header a {
+    color: #fff0d8 !important;
+    -webkit-text-fill-color: #fff0d8 !important;
+    text-shadow: 0 2px 4px #000 !important;
+}
+
+.ofertas-header a:hover {
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+}
+
+/* =========================================================
+   10. RESPONSIVE — TABLET
 ========================================================= */
 
 @media (max-width: 900px) {
@@ -3865,9 +3986,8 @@ body {
     }
 }
 
-
 /* =========================================================
-   8. RESPONSIVE — CELULARES
+   11. RESPONSIVE — CELULARES
 ========================================================= */
 
 @media (max-width: 600px) {
@@ -3877,11 +3997,9 @@ body {
 
     .hero {
         height: 190px;
-
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-
         border-radius: 12px;
     }
 
@@ -3904,7 +4022,7 @@ body {
     .hero-text h1 {
         font-size: clamp(21px, 6vw, 30px);
         line-height: 1;
-        letter-spacing: -0.5px;
+        letter-spacing: -.5px;
     }
 
     .hero-text h3 {
@@ -3933,13 +4051,10 @@ body {
     .hero-productos img {
         width: 100%;
         height: 100%;
-
         max-width: 100%;
         max-height: 100%;
-
         object-fit: contain;
         object-position: center;
-
         border-radius: 0 !important;
         background: transparent !important;
     }
@@ -3959,16 +4074,12 @@ body {
         height: 6px;
     }
 
-    /* Categorías: fondo ampliado y alineado abajo */
-
     .categorias-section {
         margin-top: 12px;
         padding: 10px 4px 12px;
-
         background-size: auto 135%;
         background-position: center bottom;
         background-repeat: no-repeat;
-
         border-radius: 10px;
     }
 
@@ -3995,7 +4106,6 @@ body {
         min-width: 0;
         height: 98px;
         flex: 0 0 calc((100% - 21px) / 4);
-
         padding: 5px 2px;
         border-radius: 9px;
     }
@@ -4004,7 +4114,6 @@ body {
         width: 100%;
         max-width: 65px;
         height: 58px;
-
         margin-bottom: 4px;
         border-radius: 6px;
     }
@@ -4013,10 +4122,8 @@ body {
     .category>img {
         width: 100% !important;
         height: 100% !important;
-
         max-width: 58px !important;
         max-height: 58px !important;
-
         object-fit: contain !important;
     }
 
@@ -4035,16 +4142,12 @@ body {
         margin-top: 4px;
     }
 
-    /* Ofertas */
-
     .ofertas-section {
         margin-top: 14px;
         padding: 12px 8px 18px;
-
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-
         border-radius: 12px;
     }
 
@@ -4089,7 +4192,6 @@ body {
     .oferta-descuento {
         top: 7px;
         left: 7px;
-
         min-height: 22px;
         padding: 4px 6px;
         font-size: 9px;
@@ -4098,7 +4200,6 @@ body {
     .oferta-favorito {
         top: 7px;
         right: 7px;
-
         width: 31px;
         height: 31px;
     }
@@ -4106,8 +4207,6 @@ body {
     .oferta-favorito i {
         font-size: 16px;
     }
-
-    /* Modal en móvil */
 
     .modal-content,
     .modal-container,
@@ -4118,11 +4217,32 @@ body {
         max-width: calc(100vw - 24px);
         border-radius: 12px !important;
     }
+
+    #modalOferta .modal-producto-contenido {
+        border-radius: 14px !important;
+        border-color: rgba(216, 181, 106, .55) !important;
+    }
+
+    #modalOferta .modal-producto-imagen {
+        border-right: none;
+        border-bottom: 1px solid rgba(216, 181, 106, .18);
+    }
+
+    #modalOferta .modal-producto-info h2 {
+        font-size: 29px !important;
+    }
+
+    #modalOferta .modal-producto-categoria {
+        font-size: 18px !important;
+    }
+
+    #modalOferta .modal-precio-final {
+        font-size: 25px !important;
+    }
 }
 
-
 /* =========================================================
-   9. CELULARES MUY ESTRECHOS
+   12. CELULARES MUY ESTRECHOS
 ========================================================= */
 
 @media (max-width: 360px) {
@@ -4151,236 +4271,51 @@ body {
     }
 }
 
-
 /* =========================================================
    FIN DEL TEMA HALLOWEEN PREMIUM
 ========================================================= */
 
-/* ==========================================
-   DL LUXURY — MODAL HALLOWEEN TENEBROSO
-   Selectores reales del modal de ofertas
-========================================== */
 
-#modalOferta.modal-producto {
-    background: rgba(0, 0, 0, 0.94) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-}
+/* BOTÓN AGREGAR AL CARRITO — HALLOWEEN DL LUXURY */
 
-/* Caja principal */
-#modalOferta .modal-producto-contenido {
-    background:
-        radial-gradient(circle at 80% 0%,
-            rgba(115, 0, 0, 0.28),
-            transparent 45%),
-        linear-gradient(145deg,
-            #1b0b0b 0%,
-            #100707 55%,
-            #050303 100%) !important;
+.modal-btn-carrito {
+    background: linear-gradient(135deg,
+            #d32626 0%,
+            #8b1010 55%,
+            #510707 100%) !important;
 
-    border: 1px solid rgba(216, 181, 106, 0.65) !important;
+    color: #ffffff !important;
+    border: 1px solid #f1c875 !important;
+    border-radius: 10px !important;
 
-    border-radius: 18px !important;
+    font-weight: 800 !important;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 
     box-shadow:
-        0 0 35px rgba(120, 0, 0, 0.30),
-        0 25px 80px rgba(0, 0, 0, 0.95) !important;
+        0 5px 15px rgba(0, 0, 0, 0.55),
+        0 0 12px rgba(211, 38, 38, 0.25);
+
+    transition: all 0.25s ease;
+    cursor: pointer;
 }
 
-/* Fondo de la imagen */
-#modalOferta .modal-producto-imagen {
-    background:
-        radial-gradient(ellipse at center,
-            #241313 0%,
-            #100808 65%,
-            #050303 100%) !important;
+.modal-btn-carrito:hover {
+    background: linear-gradient(135deg,
+            #ff3838,
+            #b51212 60%,
+            #710909) !important;
 
-    border-right: 1px solid rgba(216, 181, 106, 0.18);
+    color: #ffffff !important;
+    border-color: #ffe3a0 !important;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 20px rgba(0, 0, 0, 0.65),
+        0 0 20px rgba(255, 35, 35, 0.4);
 }
 
-/* Imagen del producto: conservar proporciones */
-#modalOferta .modal-producto-imagen img {
-    background: transparent !important;
-    object-fit: contain !important;
-}
-
-/* Panel de información */
-#modalOferta .modal-producto-info {
-    background:
-        radial-gradient(circle at top right,
-            rgba(115, 0, 0, 0.20),
-            transparent 55%),
-        linear-gradient(160deg,
-            #1b0b0b,
-            #090505) !important;
-
-    color: #f1e5cc !important;
-}
-
-/* Etiqueta de oferta */
-#modalOferta .modal-producto-categoria {
-    color: #d8b56a !important;
-    text-shadow: 0 0 12px rgba(139, 0, 0, 0.55);
-}
-
-/* Nombre del producto */
-#modalOferta .modal-producto-info h2 {
-    color: #f4e7d0 !important;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
-}
-
-/* Precio anterior */
-#modalOferta .modal-precio-original {
-    color: #a99b91 !important;
-}
-
-/* Precio con descuento */
-#modalOferta .modal-precio-final {
-    color: #d8b56a !important;
-    text-shadow: 0 0 14px rgba(216, 181, 106, 0.18);
-}
-
-/* Porcentaje de descuento */
-#modalOferta .modal-descuento {
-    background: linear-gradient(135deg, #8b1111, #380505) !important;
-    color: #fff0d0 !important;
-    border: 1px solid #a72c25 !important;
-}
-
-/* Stock disponible */
-#modalOferta .modal-producto-stock {
-    color: #d8cbb8 !important;
-}
-
-#modalOferta .modal-producto-stock strong {
-    color: #d8b56a !important;
-}
-
-/* Botón cerrar */
-#modalOferta .modal-cerrar {
-    background: #210707 !important;
-    color: #f5e5c8 !important;
-    border: 1px solid #d8b56a !important;
-}
-
-#modalOferta .modal-cerrar:hover {
-    background: #8b1111 !important;
-    color: #fff !important;
-}
-
-/* Botón carrito */
-#modalOferta .modal-btn-carrito {
-    background: linear-gradient(135deg, #831515, #320606) !important;
-    color: #fff0d0 !important;
-    border: 1px solid #d8b56a !important;
-    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.4);
-}
-
-#modalOferta .modal-btn-carrito:hover {
-    background: linear-gradient(135deg, #a51c1c, #570909) !important;
-}
-
-/* Botón favoritos */
-#modalOferta .modal-btn-favorito {
-    background: #100808 !important;
-    color: #d8b56a !important;
-    border: 1px solid rgba(216, 181, 106, 0.65) !important;
-}
-
-#modalOferta .modal-btn-favorito:hover {
-    background: #2b0b0b !important;
-}
-
-/* Evitar fondos blancos en elementos internos */
-#modalOferta .modal-producto-info * {
-    scrollbar-color: #604020 #100808;
-}
-
-/* Móvil */
-@media (max-width: 600px) {
-    #modalOferta .modal-producto-contenido {
-        border-radius: 14px !important;
-        border-color: rgba(216, 181, 106, 0.55) !important;
-    }
-
-    #modalOferta .modal-producto-imagen {
-        border-right: none;
-        border-bottom: 1px solid rgba(216, 181, 106, 0.18);
-    }
-}
-
-
-/* ==========================================
-   DL LUXURY — TIPOGRAFÍA DE TERROR
-========================================== */
-
-/* Nombre del producto: gótico oscuro */
-#modalOferta .modal-producto-info h2 {
-    font-family: 'UnifrakturMaguntia', serif !important;
-    font-size: 36px;
-    font-weight: 400;
-    letter-spacing: 1px;
-    line-height: 1.25;
-    color: #e4c58b !important;
-    text-shadow:
-        0 0 5px rgba(139, 0, 0, 0.8),
-        0 0 18px rgba(120, 0, 0, 0.45);
-}
-
-/* Etiqueta de oferta */
-#modalOferta .modal-producto-categoria {
-    font-family: 'Creepster', cursive !important;
-    font-size: 19px !important;
-    letter-spacing: 2px;
-    color: #a82424 !important;
-    text-shadow: 0 0 10px rgba(139, 0, 0, 0.55);
-}
-
-/* Precio original */
-#modalOferta .modal-precio-original {
-    font-family: 'Cinzel', serif !important;
-    font-size: 15px !important;
-}
-
-/* Precio de oferta */
-#modalOferta .modal-precio-final {
-    font-family: 'Cinzel', serif !important;
-    font-size: 29px !important;
-    font-weight: 900 !important;
-    letter-spacing: 1px;
-    color: #e0bd76 !important;
-}
-
-/* Descuento */
-#modalOferta .modal-descuento {
-    font-family: 'Cinzel', serif !important;
-    font-weight: 900 !important;
-    letter-spacing: 1px;
-}
-
-/* Stock */
-#modalOferta .modal-producto-stock {
-    font-family: 'Cinzel', serif !important;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-}
-
-/* Botones */
-#modalOferta .modal-btn-carrito,
-#modalOferta .modal-btn-favorito,
-#modalOferta .modal-cerrar {
-    font-family: 'Cinzel', serif !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.5px;
-}
-
-/* En pantallas pequeñas */
-@media (max-width: 600px) {
-    #modalOferta .modal-producto-info h2 {
-        font-size: 29px;
-    }
-
-    #modalOferta .modal-producto-categoria {
-        font-size: 17px !important;
-    }
+.modal-btn-carrito:active {
+    transform: scale(0.97);
 }
