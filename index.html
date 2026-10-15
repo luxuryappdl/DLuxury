@@ -27,15 +27,19 @@
     <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- HALLOWEEN: DECORACIÓN ESTÁTICA Y TUMBAS -->
     <style>
+        /* =====================================================
+           DL LUXURY — HALLOWEEN PREMIUM
+        ===================================================== */
+
         .halloween-decor {
             position: fixed;
             inset: 0;
             z-index: 8000;
             overflow: hidden;
             pointer-events: none;
-            isolation: isolate;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .halloween-decor *,
@@ -44,99 +48,176 @@
             box-sizing: border-box;
         }
 
-        /* LUNA SANGRIENTA */
-        .halloween-luna {
-            position: absolute;
-            top: 9%;
-            right: 8%;
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 35% 28%, #f8d7c9 0%, #c85a62 32%, #791127 68%, #260414 100%);
-            box-shadow: 0 0 14px rgba(255, 25, 55, .4), 0 0 38px rgba(130, 0, 35, .3);
-            opacity: .8;
-        }
+        /* =====================================================
+           CALABAZAS MÁS BRILLANTES
+        ===================================================== */
 
-        .halloween-luna::before,
-        .halloween-luna::after {
-            content: "";
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(54, 0, 18, .4);
-        }
-
-        .halloween-luna::before {
-            width: 16px;
-            height: 12px;
-            top: 19px;
-            left: 17px;
-        }
-
-        .halloween-luna::after {
-            width: 11px;
-            height: 11px;
-            right: 17px;
-            bottom: 18px;
-        }
-
-        /* NIEBLA ESTÁTICA */
-        .halloween-decor::before,
-        .halloween-decor::after {
-            content: "";
-            position: absolute;
-            left: -20%;
-            bottom: 0;
-            width: 140%;
-            height: 23%;
-            background:
-                radial-gradient(ellipse at 20% 70%, rgba(100, 0, 125, .17), transparent 56%),
-                radial-gradient(ellipse at 60% 55%, rgba(45, 0, 80, .2), transparent 60%),
-                radial-gradient(ellipse at 85% 75%, rgba(145, 0, 25, .13), transparent 50%);
-            filter: blur(16px);
-            opacity: .7;
-        }
-
-        .halloween-decor::after {
-            bottom: 10%;
-            opacity: .4;
-        }
-
-        /* CALABAZAS DEMONÍACAS */
         .halloween-pumpkin {
             position: absolute;
-            width: clamp(75px, 10vw, 125px);
+            width: clamp(100px, 13vw, 160px);
+            aspect-ratio: 1;
+            opacity: 1;
             filter:
-                drop-shadow(0 0 8px rgba(255, 0, 0, .85)) drop-shadow(0 0 18px rgba(190, 0, 0, .45)) drop-shadow(0 7px 10px rgba(0, 0, 0, .8));
+                brightness(1.12) saturate(1.3) drop-shadow(0 0 9px rgba(255, 106, 0, .95)) drop-shadow(0 0 20px rgba(255, 75, 0, .75)) drop-shadow(0 0 38px rgba(255, 125, 0, .5)) drop-shadow(0 12px 12px rgba(0, 0, 0, .6));
+            animation: calabaza-brillante 3s ease-in-out infinite;
         }
 
         .halloween-pumpkin svg {
-            display: block;
             width: 100%;
-            height: auto;
+            height: 100%;
             overflow: visible;
+            display: block;
         }
 
-        .halloween-pumpkin-left {
-            left: 5px;
-            top: 39%;
+        .pumpkin-left {
+            top: 37%;
+            left: 2px;
         }
 
-        .halloween-pumpkin-right {
-            right: 5px;
-            top: 64%;
-            width: clamp(65px, 8vw, 100px);
+        .pumpkin-right {
+            top: 65%;
+            right: 4px;
+            width: clamp(85px, 10vw, 125px);
+            animation-delay: -1.5s;
         }
 
-        /* BRUJA: UNA SOLA PASADA LENTA */
-        .halloween-witch {
+        @keyframes calabaza-brillante {
+
+            0%,
+            100% {
+                filter:
+                    brightness(1.12) saturate(1.3) drop-shadow(0 0 9px rgba(255, 106, 0, .9)) drop-shadow(0 0 20px rgba(255, 75, 0, .7)) drop-shadow(0 0 35px rgba(255, 125, 0, .4)) drop-shadow(0 12px 12px rgba(0, 0, 0, .6));
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                filter:
+                    brightness(1.3) saturate(1.5) drop-shadow(0 0 14px rgba(255, 190, 35, 1)) drop-shadow(0 0 30px rgba(255, 90, 0, .95)) drop-shadow(0 0 48px rgba(255, 115, 0, .7)) drop-shadow(0 12px 12px rgba(0, 0, 0, .6));
+                transform: translateY(-5px) scale(1.035);
+            }
+        }
+
+        /* FANTASMAS */
+
+        .halloween-ghost {
             position: absolute;
-            top: 22%;
-            left: -210px;
-            width: 150px;
-            height: 100px;
-            opacity: .85;
-            filter: drop-shadow(0 0 7px rgba(120, 0, 180, .6));
-            animation: halloween-witch-flight 32s linear 1 forwards;
+            width: 46px;
+            height: 58px;
+            opacity: .82;
+            filter: drop-shadow(0 0 8px rgba(160, 120, 255, .5));
+            animation: ghost-float 4s ease-in-out infinite;
+        }
+
+        .halloween-ghost svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .ghost-left {
+            top: 18%;
+            left: 5%;
+        }
+
+        .ghost-right {
+            top: 46%;
+            right: 5%;
+            width: 38px;
+            animation-delay: -2s;
+        }
+
+        @keyframes ghost-float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        /* MURCIÉLAGOS */
+
+        .halloween-bat {
+            position: absolute;
+            width: 40px;
+            height: 23px;
+            opacity: .9;
+            filter: drop-shadow(0 0 5px rgba(125, 0, 255, .6));
+            animation: bat-fly 3s ease-in-out infinite;
+        }
+
+        .halloween-bat svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .bat-one {
+            top: 31%;
+            left: 20%;
+        }
+
+        .bat-two {
+            top: 54%;
+            right: 18%;
+            width: 31px;
+            animation-delay: -1.5s;
+        }
+
+        @keyframes bat-fly {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(-5deg);
+            }
+
+            50% {
+                transform: translateY(-8px) rotate(5deg);
+            }
+        }
+
+        /* TELARAÑAS */
+
+        .halloween-web {
+            position: absolute;
+            top: 0;
+            width: 95px;
+            height: 95px;
+            opacity: .55;
+        }
+
+        .halloween-web svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .web-left {
+            left: 0;
+        }
+
+        .web-right {
+            right: 0;
+            transform: scaleX(-1);
+        }
+
+        /* =====================================================
+           BRUJA VOLANDO EN PRIMER PLANO
+        ===================================================== */
+
+        .halloween-witch {
+            position: fixed !important;
+            top: 23vh !important;
+            left: -190px;
+            width: 155px;
+            height: 105px;
+            opacity: 1;
+            visibility: visible;
+            z-index: 999999 !important;
+            pointer-events: none !important;
+            filter:
+                drop-shadow(0 0 7px rgba(175, 70, 255, .95)) drop-shadow(0 0 18px rgba(120, 20, 220, .75));
+            animation: bruja-volando-frente 18s linear infinite !important;
         }
 
         .halloween-witch svg {
@@ -145,113 +226,58 @@
             overflow: visible;
         }
 
-        /* FANTASMAS: CASI ESTÁTICOS */
-        .halloween-ghost {
-            position: absolute;
-            width: 48px;
-            height: 60px;
-            opacity: .78;
-            filter: drop-shadow(0 0 7px rgba(160, 120, 255, .45));
-        }
+        @keyframes bruja-volando-frente {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(-5deg);
+            }
 
-        .halloween-ghost svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
+            20% {
+                transform: translate3d(25vw, -25px, 0) rotate(3deg);
+            }
 
-        .halloween-ghost-one {
-            left: 5%;
-            top: 19%;
-        }
+            45% {
+                transform: translate3d(50vw, 12px, 0) rotate(-3deg);
+            }
 
-        .halloween-ghost-two {
-            right: 5%;
-            top: 46%;
-            width: 40px;
-        }
+            70% {
+                transform: translate3d(75vw, -22px, 0) rotate(4deg);
+            }
 
-        /* MURCIÉLAGOS ESTÁTICOS */
-        .halloween-bat {
-            position: absolute;
-            width: 40px;
-            height: 23px;
-            opacity: .9;
-            filter: drop-shadow(0 0 5px rgba(125, 0, 255, .6));
-        }
-
-        .halloween-bat svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .halloween-bat-one {
-            top: 32%;
-            left: 19%;
-        }
-
-        .halloween-bat-two {
-            top: 55%;
-            right: 17%;
-            width: 30px;
-        }
-
-        /* TELARAÑAS */
-        .halloween-web {
-            position: absolute;
-            top: 0;
-            width: 95px;
-            height: 95px;
-            opacity: .55;
-            filter: drop-shadow(0 0 4px rgba(140, 65, 200, .45));
-        }
-
-        .halloween-web-left {
-            left: 0;
-        }
-
-        .halloween-web-right {
-            right: 0;
-            transform: scaleX(-1);
-        }
-
-        .halloween-web svg {
-            width: 100%;
-            height: 100%;
+            100% {
+                transform: translate3d(calc(100vw + 250px), 0, 0) rotate(-4deg);
+            }
         }
 
         /* ZOMBIS */
+
         .halloween-zombie {
             position: absolute;
-            width: clamp(65px, 9vw, 105px);
-            height: auto;
-            opacity: .92;
+            width: clamp(58px, 8vw, 95px);
+            opacity: .9;
             filter: drop-shadow(0 0 7px rgba(40, 255, 60, .4));
         }
 
         .halloween-zombie svg {
             width: 100%;
             height: auto;
-            display: block;
-            overflow: visible;
         }
 
-        .halloween-zombie-left {
+        .zombie-left {
+            bottom: 16%;
             left: 2%;
-            bottom: 17%;
         }
 
-        .halloween-zombie-right {
-            right: 2%;
+        .zombie-right {
             bottom: 7%;
-            width: clamp(58px, 7vw, 85px);
+            right: 2%;
+            width: clamp(53px, 7vw, 78px);
         }
 
         /* CALAVERAS */
+
         .halloween-skull {
             position: absolute;
-            width: clamp(36px, 5vw, 57px);
-            height: auto;
+            width: clamp(33px, 4.5vw, 52px);
             opacity: .85;
             filter: drop-shadow(0 0 6px rgba(255, 25, 45, .5));
         }
@@ -262,30 +288,31 @@
             height: auto;
         }
 
-        .halloween-skull-one {
+        .skull-one {
             top: 68%;
-            left: 15%;
+            left: 14%;
         }
 
-        .halloween-skull-two {
-            top: 15%;
-            right: 22%;
-            width: clamp(30px, 4vw, 43px);
+        .skull-two {
+            top: 16%;
+            right: 21%;
+            width: 36px;
         }
 
-        .halloween-skull-three {
+        .skull-three {
             bottom: 25%;
-            right: 14%;
-            width: clamp(33px, 4.5vw, 50px);
+            right: 13%;
+            width: 40px;
         }
 
-        /* TUMBAS INFERNALES */
+        /* TUMBAS */
+
         .halloween-grave {
             position: absolute;
-            bottom: 0;
-            width: clamp(76px, 10vw, 125px);
-            height: clamp(115px, 15vw, 175px);
-            opacity: .86;
+            bottom: -2px;
+            width: clamp(70px, 9vw, 110px);
+            height: clamp(105px, 14vw, 155px);
+            opacity: .82;
             filter:
                 drop-shadow(0 0 7px rgba(120, 0, 25, .5)) drop-shadow(0 7px 12px rgba(0, 0, 0, .9));
         }
@@ -293,70 +320,42 @@
         .halloween-grave svg {
             width: 100%;
             height: 100%;
-            display: block;
-            overflow: visible;
         }
 
-        .halloween-grave-left {
-            left: 9%;
-            bottom: -2px;
+        .grave-left {
+            left: 8%;
         }
 
-        .halloween-grave-right {
-            right: 9%;
-            bottom: -2px;
-            width: clamp(70px, 9vw, 110px);
-            height: clamp(105px, 14vw, 155px);
+        .grave-right {
+            right: 8%;
+            width: clamp(65px, 8vw, 95px);
         }
 
-        .halloween-grave-center {
+        .grave-center {
             left: 50%;
-            bottom: -15px;
-            width: clamp(60px, 7vw, 85px);
-            height: clamp(90px, 12vw, 130px);
+            width: 65px;
+            height: 90px;
             transform: translateX(-50%);
-            opacity: .45;
+            opacity: .4;
         }
 
-        /* TIERRA DE CEMENTERIO */
+        /* SUELO */
+
         .halloween-ground {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 32px;
+            height: 28px;
             background: linear-gradient(180deg,
                     transparent,
-                    rgba(10, 4, 12, .65) 35%,
-                    rgba(4, 2, 5, .92));
+                    rgba(10, 4, 12, .7) 40%,
+                    rgba(4, 2, 5, .95));
             border-top: 1px solid rgba(110, 15, 35, .22);
         }
 
-        /* ANIMACIÓN ÚNICA DE LA BRUJA */
-        @keyframes halloween-witch-flight {
-            0% {
-                transform: translateX(0) translateY(0) rotate(-4deg);
-            }
-
-            45% {
-                transform: translateX(55vw) translateY(-12px) rotate(2deg);
-            }
-
-            100% {
-                transform: translateX(calc(100vw + 250px)) translateY(5px) rotate(-2deg);
-            }
-        }
-
-        /* RESPETAR PREFERENCIAS DE MOVIMIENTO */
-        @media (prefers-reduced-motion: reduce) {
-            .halloween-witch {
-                animation: none !important;
-                left: auto;
-                right: 12%;
-            }
-        }
-
         /* MÓVILES */
+
         @media (max-width: 600px) {
             .halloween-luna {
                 width: 48px;
@@ -365,42 +364,21 @@
                 right: 9%;
             }
 
-            .halloween-pumpkin-left {
-                left: 1px;
-                top: 42%;
-                width: 67px;
+            .pumpkin-left {
+                width: 86px;
+                left: -8px;
+                top: 43%;
             }
 
-            .halloween-pumpkin-right {
-                right: 1px;
+            .pumpkin-right {
+                width: 72px;
+                right: -5px;
                 top: 68%;
-                width: 58px;
             }
 
-            .halloween-ghost-one {
-                left: 3%;
-                top: 24%;
-                width: 38px;
-                height: 49px;
-            }
-
-            .halloween-ghost-two {
-                right: 3%;
-                top: 49%;
-                width: 33px;
-                height: 44px;
-            }
-
-            .halloween-bat-one {
-                left: 22%;
-                top: 34%;
-                width: 31px;
-            }
-
-            .halloween-bat-two {
-                right: 20%;
-                top: 57%;
-                width: 26px;
+            .halloween-ghost {
+                width: 34px;
+                height: 45px;
             }
 
             .halloween-web {
@@ -408,63 +386,43 @@
                 height: 58px;
             }
 
-            .halloween-zombie-left {
-                left: 0;
-                bottom: 14%;
-                width: 58px;
+            .halloween-witch {
+                width: 110px;
+                height: 75px;
+                top: 19vh !important;
             }
 
-            .halloween-zombie-right {
-                right: 0;
-                bottom: 7%;
+            .halloween-zombie {
                 width: 52px;
             }
 
-            .halloween-skull-one {
-                left: 12%;
-                top: 72%;
-                width: 32px;
+            .zombie-right {
+                width: 47px;
             }
 
-            .halloween-skull-two {
-                right: 20%;
-                top: 19%;
-                width: 28px;
+            .halloween-grave {
+                width: 62px;
+                height: 92px;
             }
 
-            .halloween-skull-three {
-                right: 12%;
-                bottom: 24%;
-                width: 31px;
-            }
-
-            .halloween-grave-left {
-                left: 5%;
-                width: 70px;
-                height: 105px;
-            }
-
-            .halloween-grave-right {
-                right: 5%;
-                width: 65px;
-                height: 96px;
-            }
-
-            .halloween-grave-center {
-                width: 48px;
-                height: 75px;
-                opacity: .32;
+            .grave-center {
+                width: 45px;
+                height: 70px;
+                opacity: .3;
             }
 
             .halloween-ground {
-                height: 22px;
+                height: 20px;
             }
         }
 
-        /* EVITAR QUE LA DECORACIÓN CUBRA CONTROLES */
-        .halloween-decor {
-            user-select: none;
-            -webkit-user-select: none;
+        @media (prefers-reduced-motion: reduce) {
+
+            .halloween-pumpkin,
+            .halloween-ghost,
+            .halloween-bat {
+                animation: none;
+            }
         }
     </style>
 </head>
@@ -472,64 +430,135 @@
 <body>
 
     <!-- DECORACIÓN HALLOWEEN -->
+
     <div class="halloween-decor" aria-hidden="true">
 
-        <!-- LUNA SANGRIENTA -->
         <div class="halloween-luna"></div>
 
         <!-- TELARAÑA IZQUIERDA -->
-        <div class="halloween-web halloween-web-left">
+        <div class="halloween-web web-left">
             <svg viewBox="0 0 100 100" fill="none">
                 <path d="M0 0 L100 100 M0 35 L65 0 M0 65 L35 0 M0 0 L100 0 M0 0 L0 100" stroke="#d6c7dc"
                     stroke-width="1.3" />
-                <path
-                    d="M0 20 Q22 23 24 0 M0 42 Q42 45 45 0 M0 64 Q62 65 65 0 M20 0 Q23 22 0 24 M42 0 Q45 42 0 45 M64 0 Q65 62 0 65"
-                    stroke="#d6c7dc" stroke-width="1" fill="none" />
+                <path d="M0 20 Q22 23 24 0 M0 42 Q42 45 45 0 M0 64 Q62 65 65 0" stroke="#d6c7dc" stroke-width="1"
+                    fill="none" />
             </svg>
         </div>
 
         <!-- TELARAÑA DERECHA -->
-        <div class="halloween-web halloween-web-right">
+        <div class="halloween-web web-right">
             <svg viewBox="0 0 100 100" fill="none">
                 <path d="M0 0 L100 100 M0 35 L65 0 M0 65 L35 0 M0 0 L100 0 M0 0 L0 100" stroke="#d6c7dc"
                     stroke-width="1.3" />
+                <path d="M0 20 Q22 23 24 0 M0 42 Q42 45 45 0 M0 64 Q62 65 65 0" stroke="#d6c7dc" stroke-width="1"
+                    fill="none" />
+            </svg>
+        </div>
+
+        <!-- CALABAZA IZQUIERDA -->
+        <div class="halloween-pumpkin pumpkin-left">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="pumpkinSkinA" cx="32%" cy="22%" r="78%">
+                        <stop offset="0%" stop-color="#fff0a0" />
+                        <stop offset="23%" stop-color="#ffbd35" />
+                        <stop offset="52%" stop-color="#ff790b" />
+                        <stop offset="78%" stop-color="#e84a00" />
+                        <stop offset="100%" stop-color="#792000" />
+                    </radialGradient>
+
+                    <linearGradient id="stemA" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#82b94b" />
+                        <stop offset="35%" stop-color="#397a28" />
+                        <stop offset="100%" stop-color="#153d19" />
+                    </linearGradient>
+
+                    <linearGradient id="eyeGlowA" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#fffde0" />
+                        <stop offset="50%" stop-color="#fff36a" />
+                        <stop offset="100%" stop-color="#ff8a0a" />
+                    </linearGradient>
+
+                    <filter id="pumpkinLightA" x="-60%" y="-60%" width="220%" height="220%">
+                        <feGaussianBlur stdDeviation="5" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <ellipse cx="101" cy="171" rx="69" ry="12" fill="#130a07" opacity=".5" />
+
+                <path d="M48 139 C27 151 22 170 7 165 C-3 160 9 150 20 155 C34 160 35 142 43 130" fill="none"
+                    stroke="#276b2d" stroke-width="5" stroke-linecap="round" />
+
+                <path d="M23 154 C2 136 2 120 7 112 C17 121 29 132 32 148Z" fill="#397e32" stroke="#174923"
+                    stroke-width="2" />
+
+                <path d="M89 43 C78 28 87 15 96 7 C100 19 106 22 104 39 L112 48 L87 53Z" fill="url(#stemA)"
+                    stroke="#285820" stroke-width="2" />
+
                 <path
-                    d="M0 20 Q22 23 24 0 M0 42 Q42 45 45 0 M0 64 Q62 65 65 0 M20 0 Q23 22 0 24 M42 0 Q45 42 0 45 M64 0 Q65 62 0 65"
-                    stroke="#d6c7dc" stroke-width="1" fill="none" />
+                    d="M101 37 C78 21 51 35 37 54 C17 79 24 120 43 143 C57 159 77 164 101 156 C125 165 146 154 161 136 C181 111 181 75 161 53 C146 35 123 24 101 37Z"
+                    fill="url(#pumpkinSkinA)" stroke="#a43c08" stroke-width="2.5" />
+
+                <path d="M101 39 C82 60 80 115 101 156" fill="none" stroke="#ffed9b" stroke-width="12" opacity=".35" />
+
+                <path d="M74 40 C52 64 52 119 72 151" fill="none" stroke="#ffb83d" stroke-width="15" opacity=".35" />
+
+                <path d="M128 39 C149 64 150 119 129 151" fill="none" stroke="#ffb83d" stroke-width="15"
+                    opacity=".35" />
+
+                <path d="M43 76 Q57 64 79 76 L66 96 Q57 101 49 90Z" fill="url(#eyeGlowA)"
+                    filter="url(#pumpkinLightA)" />
+
+                <path d="M124 76 Q146 64 159 76 L153 90 Q145 101 136 96Z" fill="url(#eyeGlowA)"
+                    filter="url(#pumpkinLightA)" />
+
+                <path
+                    d="M39 105 Q56 115 72 108 Q87 115 101 109 Q119 115 134 107 Q148 103 160 98 L151 123 Q130 143 101 142 Q69 145 47 127Z"
+                    fill="#5d1b00" />
+
+                <path
+                    d="M39 105 Q56 115 72 108 Q87 115 101 109 Q119 115 134 107 Q148 103 160 98 L151 123 Q130 143 101 142 Q69 145 47 127Z"
+                    fill="url(#eyeGlowA)" filter="url(#pumpkinLightA)" />
+
+                <path
+                    d="M59 115 L68 117 L62 126Z M82 116 L91 116 L86 128Z M112 115 L122 114 L117 127Z M137 110 L145 107 L139 119Z"
+                    fill="#9a3b00" />
+
+                <path d="M105 42 C116 28 128 30 134 37 C124 44 116 47 105 42Z" fill="#397e32" stroke="#174923"
+                    stroke-width="2" />
             </svg>
         </div>
 
-        <!-- CALABAZA DEMONÍACA IZQUIERDA -->
-        <div class="halloween-pumpkin halloween-pumpkin-left">
-            <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+        <!-- CALABAZA DERECHA -->
+        <div class="halloween-pumpkin pumpkin-right">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                    <radialGradient id="pumpkinA" cx="35%" cy="25%" r="80%">
-                        <stop offset="0%" stop-color="#ffb13b" />
-                        <stop offset="35%" stop-color="#ff5a00" />
-                        <stop offset="72%" stop-color="#a81700" />
-                        <stop offset="100%" stop-color="#260300" />
+                    <radialGradient id="pumpkinSkinB" cx="32%" cy="22%" r="78%">
+                        <stop offset="0%" stop-color="#fff0a0" />
+                        <stop offset="23%" stop-color="#ffbd35" />
+                        <stop offset="52%" stop-color="#ff790b" />
+                        <stop offset="78%" stop-color="#e84a00" />
+                        <stop offset="100%" stop-color="#792000" />
                     </radialGradient>
 
-                    <linearGradient id="hornA" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#89818e" />
-                        <stop offset="45%" stop-color="#201522" />
-                        <stop offset="100%" stop-color="#030204" />
+                    <linearGradient id="stemB" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#82b94b" />
+                        <stop offset="35%" stop-color="#397a28" />
+                        <stop offset="100%" stop-color="#153d19" />
                     </linearGradient>
 
-                    <linearGradient id="eyeA" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#fff6a0" />
-                        <stop offset="35%" stop-color="#ff3b00" />
-                        <stop offset="100%" stop-color="#c00000" />
+                    <linearGradient id="eyeGlowB" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#fffde0" />
+                        <stop offset="50%" stop-color="#fff36a" />
+                        <stop offset="100%" stop-color="#ff8a0a" />
                     </linearGradient>
 
-                    <linearGradient id="fireA" x1="0" y1="1" x2="0" y2="0">
-                        <stop offset="0%" stop-color="#9c0000" />
-                        <stop offset="55%" stop-color="#ff2600" />
-                        <stop offset="100%" stop-color="#ffb000" />
-                    </linearGradient>
-
-                    <filter id="glowA" x="-60%" y="-60%" width="220%" height="220%">
-                        <feGaussianBlur stdDeviation="4" result="blur" />
+                    <filter id="pumpkinLightB" x="-60%" y="-60%" width="220%" height="220%">
+                        <feGaussianBlur stdDeviation="5" result="blur" />
                         <feMerge>
                             <feMergeNode in="blur" />
                             <feMergeNode in="SourceGraphic" />
@@ -537,241 +566,59 @@
                     </filter>
                 </defs>
 
-                <!-- FUEGO INFERNAL DETRÁS DE LA CABEZA -->
-                <path d="M38 122
-                         Q18 108 27 87
-                         L15 69 L39 78
-                         L34 49 L55 68
-                         L66 29 L79 62
-                         L97 36 L98 67
-                         L127 47 L116 78
-                         L145 69 L128 96
-                         L139 114 L119 131Z" fill="url(#fireA)" opacity=".95" filter="url(#glowA)" />
+                <path d="M43 136 C23 150 18 166 5 159 C-2 154 9 146 18 151" fill="none" stroke="#276b2d"
+                    stroke-width="5" stroke-linecap="round" />
 
-                <!-- CUERNOS GRANDES Y RETORCIDOS -->
-                <path d="M47 50
-                         Q23 39 19 7
-                         Q35 18 44 24
-                         Q55 30 65 42
-                         L65 52Z" fill="url(#hornA)" stroke="#09050d" stroke-width="4" />
+                <path d="M88 43 C78 29 86 15 96 8 C101 19 106 24 104 39 L112 48 L88 53Z" fill="url(#stemB)"
+                    stroke="#285820" stroke-width="2" />
 
-                <path d="M113 50
-                         Q137 39 141 7
-                         Q125 18 116 24
-                         Q105 30 95 42
-                         L95 52Z" fill="url(#hornA)" stroke="#09050d" stroke-width="4" />
+                <path
+                    d="M101 37 C78 21 51 35 37 54 C17 79 24 120 43 143 C57 159 77 164 101 156 C125 165 146 154 161 136 C181 111 181 75 161 53 C146 35 123 24 101 37Z"
+                    fill="url(#pumpkinSkinB)" stroke="#a43c08" stroke-width="2.5" />
 
-                <!-- PUNTAS DE LOS CUERNOS -->
-                <path d="M19 7 L32 27 L27 20Z" fill="#d3cbd8" />
-                <path d="M141 7 L128 27 L133 20Z" fill="#d3cbd8" />
+                <path d="M101 39 C82 60 80 115 101 156" fill="none" stroke="#ffed9b" stroke-width="12" opacity=".35" />
 
-                <!-- TALLO OSCURO -->
-                <path d="M72 37
-                         Q60 15 81 10
-                         Q98 9 91 31
-                         L98 41Z" fill="#263416" stroke="#0b1007" stroke-width="4" />
+                <path d="M74 40 C52 64 52 119 72 151" fill="none" stroke="#ffb83d" stroke-width="13" opacity=".35" />
 
-                <!-- SILUETA DE LA CALABAZA -->
-                <path d="M80 37
-                         C57 23 35 35 25 55
-                         C9 83 21 120 43 136
-                         Q61 148 80 136
-                         Q99 148 117 136
-                         C139 120 151 83 135 55
-                         C125 35 103 23 80 37Z" fill="url(#pumpkinA)" stroke="#380500" stroke-width="5" />
+                <path d="M128 39 C149 64 150 119 129 151" fill="none" stroke="#ffb83d" stroke-width="13"
+                    opacity=".35" />
 
-                <!-- SURCOS PROFUNDOS -->
-                <path d="M80 40 Q61 77 80 136
-                         M57 37 Q36 77 50 130
-                         M103 37 Q124 77 110 130" fill="none" stroke="#721100" stroke-width="5" />
+                <path d="M43 76 Q57 64 79 76 L66 96 Q57 101 49 90Z" fill="url(#eyeGlowB)"
+                    filter="url(#pumpkinLightB)" />
 
-                <path d="M42 48 Q32 81 44 111
-                         M118 48 Q128 81 116 111" fill="none" stroke="#ff7115" stroke-width="2" opacity=".65" />
+                <path d="M124 76 Q146 64 159 76 L153 90 Q145 101 136 96Z" fill="url(#eyeGlowB)"
+                    filter="url(#pumpkinLightB)" />
 
-                <!-- CEJAS DEMONÍACAS -->
-                <path d="M24 51 L72 65 L66 79 L29 64Z
-                         M136 51 L88 65 L94 79 L131 64Z" fill="#160008" stroke="#390008" stroke-width="2" />
+                <path
+                    d="M39 105 Q56 115 72 108 Q87 115 101 109 Q119 115 134 107 Q148 103 160 98 L151 123 Q130 143 101 142 Q69 145 47 127Z"
+                    fill="#5d1b00" />
 
-                <!-- OJOS INFERNALES -->
-                <path d="M29 72 L69 77 L58 104 L42 95Z
-                         M131 72 L91 77 L102 104 L118 95Z" fill="url(#eyeA)" filter="url(#glowA)" />
+                <path
+                    d="M39 105 Q56 115 72 108 Q87 115 101 109 Q119 115 134 107 Q148 103 160 98 L151 123 Q130 143 101 142 Q69 145 47 127Z"
+                    fill="url(#eyeGlowB)" filter="url(#pumpkinLightB)" />
 
-                <!-- PUPILAS -->
-                <path d="M48 77 L54 96 L44 91Z
-                         M112 77 L106 96 L116 91Z" fill="#fffbd5" />
+                <path
+                    d="M59 115 L68 117 L62 126Z M82 116 L91 116 L86 128Z M112 115 L122 114 L117 127Z M137 110 L145 107 L139 119Z"
+                    fill="#9a3b00" />
 
-                <!-- NARIZ ANGULAR -->
-                <path d="M80 91 L68 108 L80 103 L92 108Z" fill="#250008" stroke="#6e1000" stroke-width="2" />
-
-                <!-- BOCA NEGRA CON SONRISA MALIGNA -->
-                <path d="M31 108
-                         L47 111 L60 105 L72 112
-                         L80 107 L90 112 L102 105
-                         L115 111 L129 106
-                         L119 130 L101 140
-                         L80 134 L59 140 L41 130Z" fill="#100006" stroke="#3c0008" stroke-width="3" />
-
-                <!-- COLMILLOS SUPERIORES -->
-                <path d="M41 109 L57 112 L53 130Z
-                         M64 111 L78 112 L73 132Z
-                         M91 112 L105 110 L97 131Z
-                         M109 111 L122 108 L113 127Z" fill="#fff0ce" stroke="#9e6e59" stroke-width="1.5" />
-
-                <!-- COLMILLOS INFERIORES -->
-                <path d="M55 136 L68 134 L64 121Z
-                         M91 134 L104 136 L96 120Z" fill="#fff0ce" stroke="#9e6e59" stroke-width="1.5" />
-
-                <!-- GRIETAS DE LA CARA -->
-                <path d="M26 87 L37 92 L29 101
-                         M134 87 L123 92 L131 101" stroke="#490600" stroke-width="3" fill="none" />
-
-                <!-- BRILLO INFERNAL -->
-                <path d="M35 119 Q43 133 55 136" fill="none" stroke="#ff6a00" stroke-width="2" opacity=".7" />
-            </svg>
-        </div>
-
-        <!-- CALABAZA DEMONÍACA DERECHA -->
-        <div class="halloween-pumpkin halloween-pumpkin-right">
-            <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <radialGradient id="pumpkinB" cx="35%" cy="25%" r="80%">
-                        <stop offset="0%" stop-color="#ffb13b" />
-                        <stop offset="35%" stop-color="#ff5a00" />
-                        <stop offset="72%" stop-color="#a81700" />
-                        <stop offset="100%" stop-color="#260300" />
-                    </radialGradient>
-
-                    <linearGradient id="hornB" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#89818e" />
-                        <stop offset="45%" stop-color="#201522" />
-                        <stop offset="100%" stop-color="#030204" />
-                    </linearGradient>
-
-                    <linearGradient id="eyeB" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#fff6a0" />
-                        <stop offset="35%" stop-color="#ff3b00" />
-                        <stop offset="100%" stop-color="#c00000" />
-                    </linearGradient>
-
-                    <linearGradient id="fireB" x1="0" y1="1" x2="0" y2="0">
-                        <stop offset="0%" stop-color="#9c0000" />
-                        <stop offset="55%" stop-color="#ff2600" />
-                        <stop offset="100%" stop-color="#ffb000" />
-                    </linearGradient>
-
-                    <filter id="glowB" x="-60%" y="-60%" width="220%" height="220%">
-                        <feGaussianBlur stdDeviation="4" result="blur" />
-                        <feMerge>
-                            <feMergeNode in="blur" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-                </defs>
-
-                <!-- FUEGO INFERNAL -->
-                <path d="M38 122
-                         Q18 108 27 87
-                         L15 69 L39 78
-                         L34 49 L55 68
-                         L66 29 L79 62
-                         L97 36 L98 67
-                         L127 47 L116 78
-                         L145 69 L128 96
-                         L139 114 L119 131Z" fill="url(#fireB)" opacity=".95" filter="url(#glowB)" />
-
-                <!-- CUERNOS -->
-                <path d="M47 50
-                         Q23 39 19 7
-                         Q35 18 44 24
-                         Q55 30 65 42
-                         L65 52Z" fill="url(#hornB)" stroke="#09050d" stroke-width="4" />
-
-                <path d="M113 50
-                         Q137 39 141 7
-                         Q125 18 116 24
-                         Q105 30 95 42
-                         L95 52Z" fill="url(#hornB)" stroke="#09050d" stroke-width="4" />
-
-                <path d="M19 7 L32 27 L27 20Z" fill="#d3cbd8" />
-                <path d="M141 7 L128 27 L133 20Z" fill="#d3cbd8" />
-
-                <!-- TALLO -->
-                <path d="M72 37
-                         Q60 15 81 10
-                         Q98 9 91 31
-                         L98 41Z" fill="#263416" stroke="#0b1007" stroke-width="4" />
-
-                <!-- CABEZA -->
-                <path d="M80 37
-                         C57 23 35 35 25 55
-                         C9 83 21 120 43 136
-                         Q61 148 80 136
-                         Q99 148 117 136
-                         C139 120 151 83 135 55
-                         C125 35 103 23 80 37Z" fill="url(#pumpkinB)" stroke="#380500" stroke-width="5" />
-
-                <!-- SURCOS -->
-                <path d="M80 40 Q61 77 80 136
-                         M57 37 Q36 77 50 130
-                         M103 37 Q124 77 110 130" fill="none" stroke="#721100" stroke-width="5" />
-
-                <path d="M42 48 Q32 81 44 111
-                         M118 48 Q128 81 116 111" fill="none" stroke="#ff7115" stroke-width="2" opacity=".65" />
-
-                <!-- CEJAS -->
-                <path d="M24 51 L72 65 L66 79 L29 64Z
-                         M136 51 L88 65 L94 79 L131 64Z" fill="#160008" stroke="#390008" stroke-width="2" />
-
-                <!-- OJOS ROJOS -->
-                <path d="M29 72 L69 77 L58 104 L42 95Z
-                         M131 72 L91 77 L102 104 L118 95Z" fill="url(#eyeB)" filter="url(#glowB)" />
-
-                <!-- PUPILAS -->
-                <path d="M48 77 L54 96 L44 91Z
-                         M112 77 L106 96 L116 91Z" fill="#fffbd5" />
-
-                <!-- NARIZ -->
-                <path d="M80 91 L68 108 L80 103 L92 108Z" fill="#250008" stroke="#6e1000" stroke-width="2" />
-
-                <!-- BOCA -->
-                <path d="M31 108
-                         L47 111 L60 105 L72 112
-                         L80 107 L90 112 L102 105
-                         L115 111 L129 106
-                         L119 130 L101 140
-                         L80 134 L59 140 L41 130Z" fill="#100006" stroke="#3c0008" stroke-width="3" />
-
-                <!-- COLMILLOS -->
-                <path d="M41 109 L57 112 L53 130Z
-                         M64 111 L78 112 L73 132Z
-                         M91 112 L105 110 L97 131Z
-                         M109 111 L122 108 L113 127Z" fill="#fff0ce" stroke="#9e6e59" stroke-width="1.5" />
-
-                <path d="M55 136 L68 134 L64 121Z
-                         M91 134 L104 136 L96 120Z" fill="#fff0ce" stroke="#9e6e59" stroke-width="1.5" />
-
-                <!-- GRIETAS -->
-                <path d="M26 87 L37 92 L29 101
-                         M134 87 L123 92 L131 101" stroke="#490600" stroke-width="3" fill="none" />
-
-                <path d="M35 119 Q43 133 55 136" fill="none" stroke="#ff6a00" stroke-width="2" opacity=".7" />
+                <path d="M105 42 C116 28 128 30 134 37 C124 44 116 47 105 42Z" fill="#397e32" stroke="#174923"
+                    stroke-width="2" />
             </svg>
         </div>
 
         <!-- FANTASMA IZQUIERDO -->
-        <div class="halloween-ghost halloween-ghost-one">
+        <div class="halloween-ghost ghost-left">
             <svg viewBox="0 0 70 85">
                 <path d="M10 77 L10 35 C10 17 22 5 36 5 C51 5 61 18 61 35 L61 77 L48 69 L37 79 L25 69Z" fill="#e9e7ef"
                     stroke="#a5a0b8" stroke-width="2" />
                 <ellipse cx="26" cy="37" rx="4" ry="7" fill="#1c1428" />
                 <ellipse cx="46" cy="37" rx="4" ry="7" fill="#1c1428" />
                 <ellipse cx="36" cy="51" rx="6" ry="8" fill="#1c1428" />
-                <path d="M17 23 Q26 14 33 18" stroke="#fff" stroke-width="3" opacity=".7" fill="none" />
             </svg>
         </div>
 
         <!-- FANTASMA DERECHO -->
-        <div class="halloween-ghost halloween-ghost-two">
+        <div class="halloween-ghost ghost-right">
             <svg viewBox="0 0 70 85">
                 <path d="M10 77 L10 35 C10 17 22 5 36 5 C51 5 61 18 61 35 L61 77 L48 69 L37 79 L25 69Z" fill="#e9e7ef"
                     stroke="#a5a0b8" stroke-width="2" />
@@ -781,8 +628,8 @@
             </svg>
         </div>
 
-        <!-- MURCIÉLAGO IZQUIERDO -->
-        <div class="halloween-bat halloween-bat-one">
+        <!-- MURCIÉLAGOS -->
+        <div class="halloween-bat bat-one">
             <svg viewBox="0 0 80 40">
                 <path d="M40 17 L32 8 L28 20 L8 7 L14 26 L3 31 L27 33 L40 24 L53 33 L77 31 L66 26 L72 7 L52 20 L48 8Z"
                     fill="#171020" stroke="#4d315f" stroke-width="1.5" />
@@ -791,8 +638,7 @@
             </svg>
         </div>
 
-        <!-- MURCIÉLAGO DERECHO -->
-        <div class="halloween-bat halloween-bat-two">
+        <div class="halloween-bat bat-two">
             <svg viewBox="0 0 80 40">
                 <path d="M40 17 L32 8 L28 20 L8 7 L14 26 L3 31 L27 33 L40 24 L53 33 L77 31 L66 26 L72 7 L52 20 L48 8Z"
                     fill="#171020" stroke="#4d315f" stroke-width="1.5" />
@@ -801,22 +647,13 @@
             </svg>
         </div>
 
-        <!-- BRUJA EN SU ESCOBA -->
-        <div class="halloween-witch">
+        <!-- BRUJA: SE MOVERÁ AL BODY PARA QUEDAR DELANTE -->
+        <div class="halloween-witch" id="halloweenWitch">
             <svg viewBox="0 0 200 130">
-                <defs>
-                    <linearGradient id="witchCape" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#7036a0" />
-                        <stop offset="100%" stop-color="#1a0d2b" />
-                    </linearGradient>
-                </defs>
-                <g transform="rotate(-8 100 82)">
-                    <path d="M42 90 L166 69" stroke="#8a542c" stroke-width="5" stroke-linecap="round" />
-                    <path d="M163 68 Q180 58 194 67 Q185 77 197 84 Q179 87 164 75Z" fill="#b57a37" stroke="#6f411d"
-                        stroke-width="2" />
-                    <path d="M170 68 L187 82 M177 65 L193 76 M167 74 L186 86" stroke="#5d371c" stroke-width="1.5" />
-                </g>
-                <path d="M83 43 Q65 52 72 72 L54 85 Q85 91 104 74 L126 78 Q117 57 104 43Z" fill="url(#witchCape)"
+                <path d="M42 90 L166 69" stroke="#8a542c" stroke-width="5" stroke-linecap="round" />
+                <path d="M163 68 Q180 58 194 67 Q185 77 197 84 Q179 87 164 75Z" fill="#b57a37" stroke="#6f411d"
+                    stroke-width="2" />
+                <path d="M83 43 Q65 52 72 72 L54 85 Q85 91 104 74 L126 78 Q117 57 104 43Z" fill="#39204f"
                     stroke="#241133" stroke-width="2" />
                 <path d="M84 43 L106 44 L116 70 L91 75 L80 58Z" fill="#241133" />
                 <circle cx="92" cy="32" r="13" fill="#b77b5b" />
@@ -826,7 +663,6 @@
                 <path d="M96 31 L103 33" stroke="#ffb52e" stroke-width="3" stroke-linecap="round" />
                 <path d="M105 49 L128 61 L143 59" fill="none" stroke="#b77b5b" stroke-width="5"
                     stroke-linecap="round" />
-                <circle cx="144" cy="59" r="4" fill="#b77b5b" />
                 <path d="M85 68 L76 83 L88 87 M101 72 L113 83 L124 82" fill="none" stroke="#21102f" stroke-width="6"
                     stroke-linecap="round" />
                 <path d="M29 38 L32 46 L40 49 L32 52 L29 60 L26 52 L18 49 L26 46Z" fill="#d6a8ff" />
@@ -834,202 +670,53 @@
             </svg>
         </div>
 
-        <!-- ZOMBI IZQUIERDO -->
-        <div class="halloween-zombie halloween-zombie-left">
-            <svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="zombieSkinA" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#a5bd70" />
-                        <stop offset="55%" stop-color="#566b37" />
-                        <stop offset="100%" stop-color="#26321e" />
-                    </linearGradient>
-                    <filter id="zombieGlowA">
-                        <feGaussianBlur stdDeviation="2.5" result="b" />
-                        <feMerge>
-                            <feMergeNode in="b" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-                </defs>
-                <path d="M43 91 L39 115 L23 132 L28 145 L92 145 L98 131 L79 113 L76 89Z" fill="#242a24" stroke="#101510"
-                    stroke-width="3" />
-                <path d="M43 98 L60 110 L78 97 L80 126 L40 126Z" fill="#4b5435" stroke="#252b1c" stroke-width="2" />
-                <path d="M42 100 L20 105 L10 92 L5 96 L12 115 L34 119 L47 112Z" fill="url(#zombieSkinA)"
-                    stroke="#26321e" stroke-width="3" />
-                <path d="M77 100 L96 96 L104 81 L110 84 L108 104 L87 116 L73 112Z" fill="url(#zombieSkinA)"
-                    stroke="#26321e" stroke-width="3" />
-                <path d="M33 30 Q34 8 61 9 Q89 10 89 38 L84 71 L69 91 L48 85 L32 65Z" fill="url(#zombieSkinA)"
-                    stroke="#26321e" stroke-width="3" />
-                <path d="M33 34 L25 21 L42 25 L43 12 L56 22 L69 10 L74 24 L89 19 L88 38 L79 33 L65 28 L48 32Z"
-                    fill="#171a15" stroke="#0b0d0a" stroke-width="3" />
-                <path d="M35 44 L44 48 L39 56Z" fill="#4c0913" />
-                <path d="M78 45 L72 57 L82 60" fill="none" stroke="#52111a" stroke-width="4" />
-                <path d="M43 67 L51 70 L47 77" fill="none" stroke="#9b2225" stroke-width="3" />
-                <path d="M38 42 L55 45 L51 56 L39 53Z" fill="#14220c" />
-                <path d="M64 44 L81 40 L79 53 L67 56Z" fill="#14220c" />
-                <ellipse cx="47" cy="49" rx="4" ry="5" fill="#8cff47" filter="url(#zombieGlowA)" />
-                <ellipse cx="73" cy="48" rx="4" ry="5" fill="#8cff47" filter="url(#zombieGlowA)" />
-                <path d="M42 64 Q59 70 79 61 L75 78 L60 83 L47 76Z" fill="#17090b" stroke="#3b1716" stroke-width="3" />
-                <path d="M47 65 L55 67 L53 74Z M63 66 L72 64 L69 72Z" fill="#e8dfba" />
-                <path d="M55 81 L58 90 L61 82" fill="#8c1018" />
-                <path d="M28 59 L38 63 M30 65 L40 69" stroke="#222b18" stroke-width="2" />
-            </svg>
-        </div>
 
-        <!-- ZOMBI DERECHO -->
-        <div class="halloween-zombie halloween-zombie-right">
-            <svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="zombieSkinB" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#9dbb75" />
-                        <stop offset="55%" stop-color="#52653b" />
-                        <stop offset="100%" stop-color="#202b1d" />
-                    </linearGradient>
-                    <filter id="zombieGlowB">
-                        <feGaussianBlur stdDeviation="2.5" result="b" />
-                        <feMerge>
-                            <feMergeNode in="b" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-                </defs>
-                <path d="M43 91 L39 115 L23 132 L28 145 L92 145 L98 131 L79 113 L76 89Z" fill="#29251e" stroke="#101510"
-                    stroke-width="3" />
-                <path d="M43 98 L60 110 L78 97 L80 126 L40 126Z" fill="#66503c" stroke="#252b1c" stroke-width="2" />
-                <path d="M42 100 L20 105 L10 92 L5 96 L12 115 L34 119 L47 112Z" fill="url(#zombieSkinB)"
-                    stroke="#26321e" stroke-width="3" />
-                <path d="M77 100 L96 96 L104 81 L110 84 L108 104 L87 116 L73 112Z" fill="url(#zombieSkinB)"
-                    stroke="#26321e" stroke-width="3" />
-                <path d="M33 30 Q34 8 61 9 Q89 10 89 38 L84 71 L69 91 L48 85 L32 65Z" fill="url(#zombieSkinB)"
-                    stroke="#26321e" stroke-width="3" />
-                <path d="M33 34 L25 21 L42 25 L43 12 L56 22 L69 10 L74 24 L89 19 L88 38 L79 33 L65 28 L48 32Z"
-                    fill="#171a15" stroke="#0b0d0a" stroke-width="3" />
-                <path d="M35 44 L44 48 L39 56Z" fill="#4c0913" />
-                <path d="M78 45 L72 57 L82 60" fill="none" stroke="#52111a" stroke-width="4" />
-                <path d="M38 42 L55 45 L51 56 L39 53Z" fill="#14220c" />
-                <path d="M64 44 L81 40 L79 53 L67 56Z" fill="#14220c" />
-                <ellipse cx="47" cy="49" rx="4" ry="5" fill="#8cff47" filter="url(#zombieGlowB)" />
-                <ellipse cx="73" cy="48" rx="4" ry="5" fill="#8cff47" filter="url(#zombieGlowB)" />
-                <path d="M42 64 Q59 70 79 61 L75 78 L60 83 L47 76Z" fill="#17090b" stroke="#3b1716" stroke-width="3" />
-                <path d="M47 65 L55 67 L53 74Z M63 66 L72 64 L69 72Z" fill="#e8dfba" />
-                <path d="M55 81 L58 90 L61 82" fill="#8c1018" />
-            </svg>
-        </div>
 
-        <!-- CALAVERA IZQUIERDA -->
-        <div class="halloween-skull halloween-skull-one">
-            <svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <filter id="skullGlowA">
-                        <feGaussianBlur stdDeviation="2.5" result="b" />
-                        <feMerge>
-                            <feMergeNode in="b" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-                </defs>
+        <!-- CALAVERA -->
+        <div class="halloween-skull skull-one">
+            <svg viewBox="0 0 100 110">
                 <path
                     d="M50 7 C24 7 12 25 14 48 C15 62 23 72 33 77 L34 95 L66 95 L67 77 C77 72 85 62 86 48 C88 25 76 7 50 7Z"
                     fill="#e8dfc8" stroke="#8d7a69" stroke-width="3" />
-                <path d="M23 43 Q27 29 40 38 L38 52 L27 57Z M77 43 Q73 29 60 38 L62 52 L73 57Z" fill="#170b19"
-                    filter="url(#skullGlowA)" />
-                <path d="M43 57 L50 47 L57 57 L50 66Z" fill="#26131e" />
-                <path d="M36 78 L36 91 M45 79 L45 94 M55 79 L55 94 M64 78 L64 91" stroke="#3b2930" stroke-width="3" />
-                <path d="M31 20 L43 26 L38 31Z M69 20 L57 26 L62 31Z" fill="#fff7e1" opacity=".75" />
-                <path d="M15 58 L25 66 M85 58 L75 66" stroke="#7c101b" stroke-width="3" />
-            </svg>
-        </div>
-
-        <!-- CALAVERA DERECHA -->
-        <div class="halloween-skull halloween-skull-two">
-            <svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M50 7 C24 7 12 25 14 48 C15 62 23 72 33 77 L34 95 L66 95 L67 77 C77 72 85 62 86 48 C88 25 76 7 50 7Z"
-                    fill="#e8dfc8" stroke="#8d7a69" stroke-width="3" />
-                <path d="M23 43 Q27 29 40 38 L38 52 L27 57Z M77 43 Q73 29 60 38 L62 52 L73 57Z" fill="#20091c" />
-                <path d="M43 57 L50 47 L57 57 L50 66Z" fill="#26131e" />
-                <path d="M36 78 L36 91 M45 79 L45 94 M55 79 L55 94 M64 78 L64 91" stroke="#3b2930" stroke-width="3" />
-                <path d="M15 58 L25 66 M85 58 L75 66" stroke="#7c101b" stroke-width="3" />
-            </svg>
-        </div>
-
-        <!-- CALAVERA INFERIOR -->
-        <div class="halloween-skull halloween-skull-three">
-            <svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M50 7 C24 7 12 25 14 48 C15 62 23 72 33 77 L34 95 L66 95 L67 77 C77 72 85 62 86 48 C88 25 76 7 50 7Z"
-                    fill="#e8dfc8" stroke="#8d7a69" stroke-width="3" />
-                <path d="M23 43 Q27 29 40 38 L38 52 L27 57Z M77 43 Q73 29 60 38 L62 52 L73 57Z" fill="#20091c" />
+                <path d="M23 43 Q27 29 40 38 L38 52 L27 57Z M77 43 Q73 29 60 38 L62 52 L73 57Z" fill="#170b19" />
                 <path d="M43 57 L50 47 L57 57 L50 66Z" fill="#26131e" />
                 <path d="M36 78 L36 91 M45 79 L45 94 M55 79 L55 94 M64 78 L64 91" stroke="#3b2930" stroke-width="3" />
             </svg>
         </div>
 
-        <!-- TUMBA IZQUIERDA -->
-        <div class="halloween-grave halloween-grave-left">
-            <svg viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="graveStoneA" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#55505e" />
-                        <stop offset="55%" stop-color="#28232f" />
-                        <stop offset="100%" stop-color="#100b16" />
-                    </linearGradient>
-                </defs>
-                <path d="M17 174 L22 53 Q23 15 60 10 Q97 15 98 53 L103 174Z" fill="url(#graveStoneA)" stroke="#75677d"
+        <!-- TUMBAS -->
+        <div class="halloween-grave grave-left">
+            <svg viewBox="0 0 120 180">
+                <path d="M17 174 L22 53 Q23 15 60 10 Q97 15 98 53 L103 174Z" fill="#28232f" stroke="#75677d"
                     stroke-width="3" />
-                <path d="M30 56 Q31 28 60 25 Q88 28 90 56" fill="none" stroke="#93869a" stroke-width="2" opacity=".5" />
                 <path d="M60 42 L60 76 M45 53 L75 53" stroke="#a9a0b2" stroke-width="7" stroke-linecap="round" />
                 <path d="M60 43 L60 75 M45 54 L75 54" stroke="#201723" stroke-width="3" stroke-linecap="round" />
                 <text x="60" y="100" text-anchor="middle" fill="#c8b9c9" font-size="12" font-family="serif"
                     letter-spacing="2">R.I.P.</text>
-                <path d="M35 114 L46 120 L40 131 L48 141 M81 105 L74 118 L82 126 L76 137 M28 153 L42 148" fill="none"
-                    stroke="#17111d" stroke-width="3" />
-                <path d="M13 174 L107 174" stroke="#b12b42" stroke-width="3" opacity=".8" />
-                <path d="M27 166 L17 159 M93 165 L103 155" stroke="#4b7440" stroke-width="3" />
+                <path d="M35 114 L46 120 L40 131 L48 141 M81 105 L74 118 L82 126 L76 137" fill="none" stroke="#17111d"
+                    stroke-width="3" />
+                <path d="M13 174 L107 174" stroke="#b12b42" stroke-width="3" />
             </svg>
         </div>
 
-        <!-- TUMBA DERECHA -->
-        <div class="halloween-grave halloween-grave-right">
-            <svg viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="graveStoneB" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#514554" />
-                        <stop offset="55%" stop-color="#29202f" />
-                        <stop offset="100%" stop-color="#0c0811" />
-                    </linearGradient>
-                </defs>
-                <path d="M17 174 L22 53 Q23 15 60 10 Q97 15 98 53 L103 174Z" fill="url(#graveStoneB)" stroke="#79647e"
+        <div class="halloween-grave grave-right">
+            <svg viewBox="0 0 120 180">
+                <path d="M17 174 L22 53 Q23 15 60 10 Q97 15 98 53 L103 174Z" fill="#29202f" stroke="#79647e"
                     stroke-width="3" />
-                <path d="M30 56 Q31 28 60 25 Q88 28 90 56" fill="none" stroke="#93869a" stroke-width="2" opacity=".5" />
                 <path d="M60 42 L60 76 M45 53 L75 53" stroke="#c02b45" stroke-width="7" stroke-linecap="round" />
                 <path d="M60 43 L60 75 M45 54 L75 54" stroke="#201723" stroke-width="3" stroke-linecap="round" />
                 <text x="60" y="100" text-anchor="middle" fill="#c8b9c9" font-size="12" font-family="serif"
                     letter-spacing="2">R.I.P.</text>
-                <path d="M35 114 L46 120 L40 131 L48 141 M81 105 L74 118 L82 126 L76 137 M28 153 L42 148" fill="none"
-                    stroke="#17111d" stroke-width="3" />
-                <path d="M13 174 L107 174" stroke="#b12b42" stroke-width="3" opacity=".8" />
-                <path d="M27 166 L17 159 M93 165 L103 155" stroke="#4b7440" stroke-width="3" />
+                <path d="M35 114 L46 120 L40 131 L48 141 M81 105 L74 118 L82 126" fill="none" stroke="#17111d"
+                    stroke-width="3" />
+                <path d="M13 174 L107 174" stroke="#b12b42" stroke-width="3" />
             </svg>
         </div>
 
-        <!-- TUMBA CENTRAL DEL FONDO -->
-        <div class="halloween-grave halloween-grave-center">
-            <svg viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
-                <path d="M17 174 L22 53 Q23 15 60 10 Q97 15 98 53 L103 174Z" fill="#211a29" stroke="#55435d"
-                    stroke-width="3" />
-                <path d="M60 42 L60 76 M45 53 L75 53" stroke="#87768d" stroke-width="6" stroke-linecap="round" />
-                <text x="60" y="101" text-anchor="middle" fill="#a79aad" font-size="12"
-                    font-family="serif">R.I.P.</text>
-                <path d="M35 114 L46 120 L40 131 L48 141 M81 105 L74 118 L82 126" fill="none" stroke="#0d0911"
-                    stroke-width="3" />
-            </svg>
-        </div>
-
-        <!-- SUELO DEL CEMENTERIO -->
+        <div class="halloween-niebla"></div>
         <div class="halloween-ground"></div>
-
     </div>
+
 
     <!-- APP ORIGINAL -->
     <div class="app">
