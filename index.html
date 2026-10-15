@@ -2,968 +2,705 @@
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>DL Luxury | Halloween</title>
+    <title>Inicio</title>
 
-    <!-- PWA -->
+
+    <!-- =====================================================
+         PWA - DL LUXURY VENTAS
+    ====================================================== -->
+
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#10050d">
+
+    <meta name="theme-color" content="#000000">
+
     <meta name="mobile-web-app-capable" content="yes">
+
     <meta name="apple-mobile-web-app-capable" content="yes">
+
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
     <meta name="apple-mobile-web-app-title" content="DL Luxury">
 
-    <!-- ICONOS -->
+
+    <!-- =====================================================
+         ICONOS DE LA APP
+    ====================================================== -->
+
     <link rel="icon" type="image/png" sizes="512x512" href="./icono1.png">
+
     <link rel="icon" type="image/png" sizes="192x192" href="./icono2.png">
+
     <link rel="apple-touch-icon" sizes="192x192" href="./icono2.png">
+
+
+    <!-- =====================================================
+         ICONO DEL SITIO
+    ====================================================== -->
+
     <link rel="icon" type="image/png" href="./imglogo.png">
 
-    <!-- CSS ORIGINAL -->
+
+    <!-- =====================================================
+         CSS
+    ====================================================== -->
+
     <link rel="stylesheet" href="./style.css">
 
-    <!-- FONT AWESOME -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Creepster&family=UnifrakturMaguntia&family=Cinzel:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+
+
+    <!-- =====================================================
+         FONT AWESOME
+    ====================================================== -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <style>
-        /* =====================================================
-           DL LUXURY — HALLOWEEN PREMIUM
-        ===================================================== */
-
-        .halloween-decor {
-            position: fixed;
-            inset: 0;
-            z-index: 8000;
-            overflow: hidden;
-            pointer-events: none;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        .halloween-decor *,
-        .halloween-decor *::before,
-        .halloween-decor *::after {
-            box-sizing: border-box;
-        }
-
-        /* =====================================================
-           CALABAZAS MÁS BRILLANTES
-        ===================================================== */
-
-        .halloween-pumpkin {
-            position: absolute;
-            width: clamp(100px, 13vw, 160px);
-            aspect-ratio: 1;
-            opacity: 1;
-            filter:
-                brightness(1.12) saturate(1.3) drop-shadow(0 0 9px rgba(255, 106, 0, .95)) drop-shadow(0 0 20px rgba(255, 75, 0, .75)) drop-shadow(0 0 38px rgba(255, 125, 0, .5)) drop-shadow(0 12px 12px rgba(0, 0, 0, .6));
-            animation: calabaza-brillante 3s ease-in-out infinite;
-        }
-
-        .halloween-pumpkin svg {
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-            display: block;
-        }
-
-        .pumpkin-left {
-            top: 37%;
-            left: 2px;
-        }
-
-        .pumpkin-right {
-            top: 65%;
-            right: 4px;
-            width: clamp(85px, 10vw, 125px);
-            animation-delay: -1.5s;
-        }
-
-        @keyframes calabaza-brillante {
-
-            0%,
-            100% {
-                filter:
-                    brightness(1.12) saturate(1.3) drop-shadow(0 0 9px rgba(255, 106, 0, .9)) drop-shadow(0 0 20px rgba(255, 75, 0, .7)) drop-shadow(0 0 35px rgba(255, 125, 0, .4)) drop-shadow(0 12px 12px rgba(0, 0, 0, .6));
-                transform: translateY(0) scale(1);
-            }
-
-            50% {
-                filter:
-                    brightness(1.3) saturate(1.5) drop-shadow(0 0 14px rgba(255, 190, 35, 1)) drop-shadow(0 0 30px rgba(255, 90, 0, .95)) drop-shadow(0 0 48px rgba(255, 115, 0, .7)) drop-shadow(0 12px 12px rgba(0, 0, 0, .6));
-                transform: translateY(-5px) scale(1.035);
-            }
-        }
-
-        /* FANTASMAS */
-
-        .halloween-ghost {
-            position: absolute;
-            width: 46px;
-            height: 58px;
-            opacity: .82;
-            filter: drop-shadow(0 0 8px rgba(160, 120, 255, .5));
-            animation: ghost-float 4s ease-in-out infinite;
-        }
-
-        .halloween-ghost svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .ghost-left {
-            top: 18%;
-            left: 5%;
-        }
-
-        .ghost-right {
-            top: 46%;
-            right: 5%;
-            width: 38px;
-            animation-delay: -2s;
-        }
-
-        @keyframes ghost-float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-12px);
-            }
-        }
-
-        /* MURCIÉLAGOS */
-
-        .halloween-bat {
-            position: absolute;
-            width: 40px;
-            height: 23px;
-            opacity: .9;
-            filter: drop-shadow(0 0 5px rgba(125, 0, 255, .6));
-            animation: bat-fly 3s ease-in-out infinite;
-        }
-
-        .halloween-bat svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .bat-one {
-            top: 31%;
-            left: 20%;
-        }
-
-        .bat-two {
-            top: 54%;
-            right: 18%;
-            width: 31px;
-            animation-delay: -1.5s;
-        }
-
-        @keyframes bat-fly {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(-5deg);
-            }
-
-            50% {
-                transform: translateY(-8px) rotate(5deg);
-            }
-        }
-
-        /* TELARAÑAS */
-
-        .halloween-web {
-            position: absolute;
-            top: 0;
-            width: 95px;
-            height: 95px;
-            opacity: .55;
-        }
-
-        .halloween-web svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .web-left {
-            left: 0;
-        }
-
-        .web-right {
-            right: 0;
-            transform: scaleX(-1);
-        }
-
-        /* =====================================================
-           BRUJA VOLANDO EN PRIMER PLANO
-        ===================================================== */
-
-        .halloween-witch {
-            position: fixed !important;
-            top: 23vh !important;
-            left: -190px;
-            width: 155px;
-            height: 105px;
-            opacity: 1;
-            visibility: visible;
-            z-index: 999999 !important;
-            pointer-events: none !important;
-            filter:
-                drop-shadow(0 0 7px rgba(175, 70, 255, .95)) drop-shadow(0 0 18px rgba(120, 20, 220, .75));
-            animation: bruja-volando-frente 18s linear infinite !important;
-        }
-
-        .halloween-witch svg {
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-        }
-
-        @keyframes bruja-volando-frente {
-            0% {
-                transform: translate3d(0, 0, 0) rotate(-5deg);
-            }
-
-            20% {
-                transform: translate3d(25vw, -25px, 0) rotate(3deg);
-            }
-
-            45% {
-                transform: translate3d(50vw, 12px, 0) rotate(-3deg);
-            }
-
-            70% {
-                transform: translate3d(75vw, -22px, 0) rotate(4deg);
-            }
-
-            100% {
-                transform: translate3d(calc(100vw + 250px), 0, 0) rotate(-4deg);
-            }
-        }
-
-        /* ZOMBIS */
-
-        .halloween-zombie {
-            position: absolute;
-            width: clamp(58px, 8vw, 95px);
-            opacity: .9;
-            filter: drop-shadow(0 0 7px rgba(40, 255, 60, .4));
-        }
-
-        .halloween-zombie svg {
-            width: 100%;
-            height: auto;
-        }
-
-        .zombie-left {
-            bottom: 16%;
-            left: 2%;
-        }
-
-        .zombie-right {
-            bottom: 7%;
-            right: 2%;
-            width: clamp(53px, 7vw, 78px);
-        }
-
-        /* CALAVERAS */
-
-        .halloween-skull {
-            position: absolute;
-            width: clamp(33px, 4.5vw, 52px);
-            opacity: .85;
-            filter: drop-shadow(0 0 6px rgba(255, 25, 45, .5));
-        }
-
-        .halloween-skull svg {
-            display: block;
-            width: 100%;
-            height: auto;
-        }
-
-        .skull-one {
-            top: 68%;
-            left: 14%;
-        }
-
-        .skull-two {
-            top: 16%;
-            right: 21%;
-            width: 36px;
-        }
-
-        .skull-three {
-            bottom: 25%;
-            right: 13%;
-            width: 40px;
-        }
-
-        /* TUMBAS */
-
-        .halloween-grave {
-            position: absolute;
-            bottom: -2px;
-            width: clamp(70px, 9vw, 110px);
-            height: clamp(105px, 14vw, 155px);
-            opacity: .82;
-            filter:
-                drop-shadow(0 0 7px rgba(120, 0, 25, .5)) drop-shadow(0 7px 12px rgba(0, 0, 0, .9));
-        }
-
-        .halloween-grave svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .grave-left {
-            left: 8%;
-        }
-
-        .grave-right {
-            right: 8%;
-            width: clamp(65px, 8vw, 95px);
-        }
-
-        .grave-center {
-            left: 50%;
-            width: 65px;
-            height: 90px;
-            transform: translateX(-50%);
-            opacity: .4;
-        }
-
-        /* SUELO */
-
-        .halloween-ground {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 28px;
-            background: linear-gradient(180deg,
-                    transparent,
-                    rgba(10, 4, 12, .7) 40%,
-                    rgba(4, 2, 5, .95));
-            border-top: 1px solid rgba(110, 15, 35, .22);
-        }
-
-        /* MÓVILES */
-
-        @media (max-width: 600px) {
-            .halloween-luna {
-                width: 48px;
-                height: 48px;
-                top: 12%;
-                right: 9%;
-            }
-
-            .pumpkin-left {
-                width: 86px;
-                left: -8px;
-                top: 43%;
-            }
-
-            .pumpkin-right {
-                width: 72px;
-                right: -5px;
-                top: 68%;
-            }
-
-            .halloween-ghost {
-                width: 34px;
-                height: 45px;
-            }
-
-            .halloween-web {
-                width: 58px;
-                height: 58px;
-            }
-
-            .halloween-witch {
-                width: 110px;
-                height: 75px;
-                top: 19vh !important;
-            }
-
-            .halloween-zombie {
-                width: 52px;
-            }
-
-            .zombie-right {
-                width: 47px;
-            }
-
-            .halloween-grave {
-                width: 62px;
-                height: 92px;
-            }
-
-            .grave-center {
-                width: 45px;
-                height: 70px;
-                opacity: .3;
-            }
-
-            .halloween-ground {
-                height: 20px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-
-            .halloween-pumpkin,
-            .halloween-ghost,
-            .halloween-bat {
-                animation: none;
-            }
-        }
-    </style>
 </head>
+
 
 <body>
 
-    <!-- DECORACIÓN HALLOWEEN -->
 
-    <div class="halloween-decor" aria-hidden="true">
-
-        <div class="halloween-luna"></div>
-
-        <!-- TELARAÑA IZQUIERDA -->
-        <div class="halloween-web web-left">
-            <svg viewBox="0 0 100 100" fill="none">
-                <path d="M0 0 L100 100 M0 35 L65 0 M0 65 L35 0 M0 0 L100 0 M0 0 L0 100" stroke="#d6c7dc"
-                    stroke-width="1.3" />
-                <path d="M0 20 Q22 23 24 0 M0 42 Q42 45 45 0 M0 64 Q62 65 65 0" stroke="#d6c7dc" stroke-width="1"
-                    fill="none" />
-            </svg>
-        </div>
-
-        <!-- TELARAÑA DERECHA -->
-        <div class="halloween-web web-right">
-            <svg viewBox="0 0 100 100" fill="none">
-                <path d="M0 0 L100 100 M0 35 L65 0 M0 65 L35 0 M0 0 L100 0 M0 0 L0 100" stroke="#d6c7dc"
-                    stroke-width="1.3" />
-                <path d="M0 20 Q22 23 24 0 M0 42 Q42 45 45 0 M0 64 Q62 65 65 0" stroke="#d6c7dc" stroke-width="1"
-                    fill="none" />
-            </svg>
-        </div>
-
-        <!-- CALABAZA IZQUIERDA -->
-        <div class="halloween-pumpkin pumpkin-left">
-            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <radialGradient id="pumpkinSkinA" cx="32%" cy="22%" r="78%">
-                        <stop offset="0%" stop-color="#fff0a0" />
-                        <stop offset="23%" stop-color="#ffbd35" />
-                        <stop offset="52%" stop-color="#ff790b" />
-                        <stop offset="78%" stop-color="#e84a00" />
-                        <stop offset="100%" stop-color="#792000" />
-                    </radialGradient>
-
-                    <linearGradient id="stemA" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#82b94b" />
-                        <stop offset="35%" stop-color="#397a28" />
-                        <stop offset="100%" stop-color="#153d19" />
-                    </linearGradient>
-
-                    <linearGradient id="eyeGlowA" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#fffde0" />
-                        <stop offset="50%" stop-color="#fff36a" />
-                        <stop offset="100%" stop-color="#ff8a0a" />
-                    </linearGradient>
-
-                    <filter id="pumpkinLightA" x="-60%" y="-60%" width="220%" height="220%">
-                        <feGaussianBlur stdDeviation="5" result="blur" />
-                        <feMerge>
-                            <feMergeNode in="blur" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-                </defs>
-
-                <ellipse cx="101" cy="171" rx="69" ry="12" fill="#130a07" opacity=".5" />
-
-                <path d="M48 139 C27 151 22 170 7 165 C-3 160 9 150 20 155 C34 160 35 142 43 130" fill="none"
-                    stroke="#276b2d" stroke-width="5" stroke-linecap="round" />
-
-                <path d="M23 154 C2 136 2 120 7 112 C17 121 29 132 32 148Z" fill="#397e32" stroke="#174923"
-                    stroke-width="2" />
-
-                <path d="M89 43 C78 28 87 15 96 7 C100 19 106 22 104 39 L112 48 L87 53Z" fill="url(#stemA)"
-                    stroke="#285820" stroke-width="2" />
-
-                <path
-                    d="M101 37 C78 21 51 35 37 54 C17 79 24 120 43 143 C57 159 77 164 101 156 C125 165 146 154 161 136 C181 111 181 75 161 53 C146 35 123 24 101 37Z"
-                    fill="url(#pumpkinSkinA)" stroke="#a43c08" stroke-width="2.5" />
-
-                <path d="M101 39 C82 60 80 115 101 156" fill="none" stroke="#ffed9b" stroke-width="12" opacity=".35" />
-
-                <path d="M74 40 C52 64 52 119 72 151" fill="none" stroke="#ffb83d" stroke-width="15" opacity=".35" />
-
-                <path d="M128 39 C149 64 150 119 129 151" fill="none" stroke="#ffb83d" stroke-width="15"
-                    opacity=".35" />
-
-                <path d="M43 76 Q57 64 79 76 L66 96 Q57 101 49 90Z" fill="url(#eyeGlowA)"
-                    filter="url(#pumpkinLightA)" />
-
-                <path d="M124 76 Q146 64 159 76 L153 90 Q145 101 136 96Z" fill="url(#eyeGlowA)"
-                    filter="url(#pumpkinLightA)" />
-
-                <path
-                    d="M39 105 Q56 115 72 108 Q87 115 101 109 Q119 115 134 107 Q148 103 160 98 L151 123 Q130 143 101 142 Q69 145 47 127Z"
-                    fill="#5d1b00" />
-
-                <path
-                    d="M39 105 Q56 115 72 108 Q87 115 101 109 Q119 115 134 107 Q148 103 160 98 L151 123 Q130 143 101 142 Q69 145 47 127Z"
-                    fill="url(#eyeGlowA)" filter="url(#pumpkinLightA)" />
-
-                <path
-                    d="M59 115 L68 117 L62 126Z M82 116 L91 116 L86 128Z M112 115 L122 114 L117 127Z M137 110 L145 107 L139 119Z"
-                    fill="#9a3b00" />
-
-                <path d="M105 42 C116 28 128 30 134 37 C124 44 116 47 105 42Z" fill="#397e32" stroke="#174923"
-                    stroke-width="2" />
-            </svg>
-        </div>
-
-        <!-- CALABAZA DERECHA -->
-        <div class="halloween-pumpkin pumpkin-right">
-            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <radialGradient id="pumpkinSkinB" cx="32%" cy="22%" r="78%">
-                        <stop offset="0%" stop-color="#fff0a0" />
-                        <stop offset="23%" stop-color="#ffbd35" />
-                        <stop offset="52%" stop-color="#ff790b" />
-                        <stop offset="78%" stop-color="#e84a00" />
-                        <stop offset="100%" stop-color="#792000" />
-                    </radialGradient>
-
-                    <linearGradient id="stemB" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#82b94b" />
-                        <stop offset="35%" stop-color="#397a28" />
-                        <stop offset="100%" stop-color="#153d19" />
-                    </linearGradient>
-
-                    <linearGradient id="eyeGlowB" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#fffde0" />
-                        <stop offset="50%" stop-color="#fff36a" />
-                        <stop offset="100%" stop-color="#ff8a0a" />
-                    </linearGradient>
-
-                    <filter id="pumpkinLightB" x="-60%" y="-60%" width="220%" height="220%">
-                        <feGaussianBlur stdDeviation="5" result="blur" />
-                        <feMerge>
-                            <feMergeNode in="blur" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-                </defs>
-
-                <path d="M43 136 C23 150 18 166 5 159 C-2 154 9 146 18 151" fill="none" stroke="#276b2d"
-                    stroke-width="5" stroke-linecap="round" />
-
-                <path d="M88 43 C78 29 86 15 96 8 C101 19 106 24 104 39 L112 48 L88 53Z" fill="url(#stemB)"
-                    stroke="#285820" stroke-width="2" />
-
-                <path
-                    d="M101 37 C78 21 51 35 37 54 C17 79 24 120 43 143 C57 159 77 164 101 156 C125 165 146 154 161 136 C181 111 181 75 161 53 C146 35 123 24 101 37Z"
-                    fill="url(#pumpkinSkinB)" stroke="#a43c08" stroke-width="2.5" />
-
-                <path d="M101 39 C82 60 80 115 101 156" fill="none" stroke="#ffed9b" stroke-width="12" opacity=".35" />
-
-                <path d="M74 40 C52 64 52 119 72 151" fill="none" stroke="#ffb83d" stroke-width="13" opacity=".35" />
-
-                <path d="M128 39 C149 64 150 119 129 151" fill="none" stroke="#ffb83d" stroke-width="13"
-                    opacity=".35" />
-
-                <path d="M43 76 Q57 64 79 76 L66 96 Q57 101 49 90Z" fill="url(#eyeGlowB)"
-                    filter="url(#pumpkinLightB)" />
-
-                <path d="M124 76 Q146 64 159 76 L153 90 Q145 101 136 96Z" fill="url(#eyeGlowB)"
-                    filter="url(#pumpkinLightB)" />
-
-                <path
-                    d="M39 105 Q56 115 72 108 Q87 115 101 109 Q119 115 134 107 Q148 103 160 98 L151 123 Q130 143 101 142 Q69 145 47 127Z"
-                    fill="#5d1b00" />
-
-                <path
-                    d="M39 105 Q56 115 72 108 Q87 115 101 109 Q119 115 134 107 Q148 103 160 98 L151 123 Q130 143 101 142 Q69 145 47 127Z"
-                    fill="url(#eyeGlowB)" filter="url(#pumpkinLightB)" />
-
-                <path
-                    d="M59 115 L68 117 L62 126Z M82 116 L91 116 L86 128Z M112 115 L122 114 L117 127Z M137 110 L145 107 L139 119Z"
-                    fill="#9a3b00" />
-
-                <path d="M105 42 C116 28 128 30 134 37 C124 44 116 47 105 42Z" fill="#397e32" stroke="#174923"
-                    stroke-width="2" />
-            </svg>
-        </div>
-
-        <!-- FANTASMA IZQUIERDO -->
-        <div class="halloween-ghost ghost-left">
-            <svg viewBox="0 0 70 85">
-                <path d="M10 77 L10 35 C10 17 22 5 36 5 C51 5 61 18 61 35 L61 77 L48 69 L37 79 L25 69Z" fill="#e9e7ef"
-                    stroke="#a5a0b8" stroke-width="2" />
-                <ellipse cx="26" cy="37" rx="4" ry="7" fill="#1c1428" />
-                <ellipse cx="46" cy="37" rx="4" ry="7" fill="#1c1428" />
-                <ellipse cx="36" cy="51" rx="6" ry="8" fill="#1c1428" />
-            </svg>
-        </div>
-
-        <!-- FANTASMA DERECHO -->
-        <div class="halloween-ghost ghost-right">
-            <svg viewBox="0 0 70 85">
-                <path d="M10 77 L10 35 C10 17 22 5 36 5 C51 5 61 18 61 35 L61 77 L48 69 L37 79 L25 69Z" fill="#e9e7ef"
-                    stroke="#a5a0b8" stroke-width="2" />
-                <ellipse cx="26" cy="37" rx="4" ry="7" fill="#1c1428" />
-                <ellipse cx="46" cy="37" rx="4" ry="7" fill="#1c1428" />
-                <ellipse cx="36" cy="51" rx="6" ry="8" fill="#1c1428" />
-            </svg>
-        </div>
-
-        <!-- MURCIÉLAGOS -->
-        <div class="halloween-bat bat-one">
-            <svg viewBox="0 0 80 40">
-                <path d="M40 17 L32 8 L28 20 L8 7 L14 26 L3 31 L27 33 L40 24 L53 33 L77 31 L66 26 L72 7 L52 20 L48 8Z"
-                    fill="#171020" stroke="#4d315f" stroke-width="1.5" />
-                <circle cx="36" cy="18" r="1.8" fill="#ff4b26" />
-                <circle cx="44" cy="18" r="1.8" fill="#ff4b26" />
-            </svg>
-        </div>
-
-        <div class="halloween-bat bat-two">
-            <svg viewBox="0 0 80 40">
-                <path d="M40 17 L32 8 L28 20 L8 7 L14 26 L3 31 L27 33 L40 24 L53 33 L77 31 L66 26 L72 7 L52 20 L48 8Z"
-                    fill="#171020" stroke="#4d315f" stroke-width="1.5" />
-                <circle cx="36" cy="18" r="1.8" fill="#ff4b26" />
-                <circle cx="44" cy="18" r="1.8" fill="#ff4b26" />
-            </svg>
-        </div>
-
-        <!-- BRUJA: SE MOVERÁ AL BODY PARA QUEDAR DELANTE -->
-        <div class="halloween-witch" id="halloweenWitch">
-            <svg viewBox="0 0 200 130">
-                <path d="M42 90 L166 69" stroke="#8a542c" stroke-width="5" stroke-linecap="round" />
-                <path d="M163 68 Q180 58 194 67 Q185 77 197 84 Q179 87 164 75Z" fill="#b57a37" stroke="#6f411d"
-                    stroke-width="2" />
-                <path d="M83 43 Q65 52 72 72 L54 85 Q85 91 104 74 L126 78 Q117 57 104 43Z" fill="#39204f"
-                    stroke="#241133" stroke-width="2" />
-                <path d="M84 43 L106 44 L116 70 L91 75 L80 58Z" fill="#241133" />
-                <circle cx="92" cy="32" r="13" fill="#b77b5b" />
-                <path d="M102 33 L114 38 L103 40Z" fill="#b77b5b" />
-                <path d="M70 25 L95 1 L109 27Z" fill="#21102f" stroke="#4d286a" stroke-width="2" />
-                <path d="M64 27 Q88 20 116 29 Q92 35 64 27Z" fill="#12091d" stroke="#4d286a" stroke-width="2" />
-                <path d="M96 31 L103 33" stroke="#ffb52e" stroke-width="3" stroke-linecap="round" />
-                <path d="M105 49 L128 61 L143 59" fill="none" stroke="#b77b5b" stroke-width="5"
-                    stroke-linecap="round" />
-                <path d="M85 68 L76 83 L88 87 M101 72 L113 83 L124 82" fill="none" stroke="#21102f" stroke-width="6"
-                    stroke-linecap="round" />
-                <path d="M29 38 L32 46 L40 49 L32 52 L29 60 L26 52 L18 49 L26 46Z" fill="#d6a8ff" />
-                <path d="M151 32 L153 38 L159 40 L153 42 L151 48 L149 42 L143 40 L149 38Z" fill="#ff9c28" />
-            </svg>
-        </div>
-
-
-
-        <!-- CALAVERA -->
-        <div class="halloween-skull skull-one">
-            <svg viewBox="0 0 100 110">
-                <path
-                    d="M50 7 C24 7 12 25 14 48 C15 62 23 72 33 77 L34 95 L66 95 L67 77 C77 72 85 62 86 48 C88 25 76 7 50 7Z"
-                    fill="#e8dfc8" stroke="#8d7a69" stroke-width="3" />
-                <path d="M23 43 Q27 29 40 38 L38 52 L27 57Z M77 43 Q73 29 60 38 L62 52 L73 57Z" fill="#170b19" />
-                <path d="M43 57 L50 47 L57 57 L50 66Z" fill="#26131e" />
-                <path d="M36 78 L36 91 M45 79 L45 94 M55 79 L55 94 M64 78 L64 91" stroke="#3b2930" stroke-width="3" />
-            </svg>
-        </div>
-
-        <!-- TUMBAS -->
-        <div class="halloween-grave grave-left">
-            <svg viewBox="0 0 120 180">
-                <path d="M17 174 L22 53 Q23 15 60 10 Q97 15 98 53 L103 174Z" fill="#28232f" stroke="#75677d"
-                    stroke-width="3" />
-                <path d="M60 42 L60 76 M45 53 L75 53" stroke="#a9a0b2" stroke-width="7" stroke-linecap="round" />
-                <path d="M60 43 L60 75 M45 54 L75 54" stroke="#201723" stroke-width="3" stroke-linecap="round" />
-                <text x="60" y="100" text-anchor="middle" fill="#c8b9c9" font-size="12" font-family="serif"
-                    letter-spacing="2">R.I.P.</text>
-                <path d="M35 114 L46 120 L40 131 L48 141 M81 105 L74 118 L82 126 L76 137" fill="none" stroke="#17111d"
-                    stroke-width="3" />
-                <path d="M13 174 L107 174" stroke="#b12b42" stroke-width="3" />
-            </svg>
-        </div>
-
-        <div class="halloween-grave grave-right">
-            <svg viewBox="0 0 120 180">
-                <path d="M17 174 L22 53 Q23 15 60 10 Q97 15 98 53 L103 174Z" fill="#29202f" stroke="#79647e"
-                    stroke-width="3" />
-                <path d="M60 42 L60 76 M45 53 L75 53" stroke="#c02b45" stroke-width="7" stroke-linecap="round" />
-                <path d="M60 43 L60 75 M45 54 L75 54" stroke="#201723" stroke-width="3" stroke-linecap="round" />
-                <text x="60" y="100" text-anchor="middle" fill="#c8b9c9" font-size="12" font-family="serif"
-                    letter-spacing="2">R.I.P.</text>
-                <path d="M35 114 L46 120 L40 131 L48 141 M81 105 L74 118 L82 126" fill="none" stroke="#17111d"
-                    stroke-width="3" />
-                <path d="M13 174 L107 174" stroke="#b12b42" stroke-width="3" />
-            </svg>
-        </div>
-
-        <div class="halloween-niebla"></div>
-        <div class="halloween-ground"></div>
-    </div>
-
-
-    <!-- APP ORIGINAL -->
     <div class="app">
+
+
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
 
         <header class="hearder">
 
+
+            <!-- =================================================
+                 MENÚ
+            ================================================== -->
+
             <button class="menu-btn" type="button">
+
                 <i></i>
+
             </button>
+
+
+
+            <!-- =================================================
+                 BOTÓN DESCARGAR APLICACIÓN
+            ================================================== -->
 
             <button class="boton-descargar-app" id="botonDescargarApp" type="button" title="Descargar aplicación"
                 aria-label="Descargar aplicación">
+
                 <i class="fa-solid fa-download"></i>
+
             </button>
 
+
+
+            <!-- =================================================
+                 LOGO
+            ================================================== -->
+
             <div class="logo">
+
                 <img src="./imglogo.png" alt="Drip Luxury">
+
             </div>
 
+
+
+            <!-- =================================================
+                 NOTIFICACIONES
+            ================================================== -->
+
             <button class="notificacion" type="button">
+
                 <i class="fa-regular fa-bell"></i>
+
                 <span></span>
+
             </button>
 
         </header>
 
+
+
+        <!-- =====================================================
+             CONTENIDO PRINCIPAL
+        ====================================================== -->
+
         <main class="content">
 
-            <!-- BANNER / HERO -->
+
+            <!-- =================================================
+                 BANNER / HERO
+            ================================================== -->
+
             <section class="hero">
+
                 <div class="hero-slider">
 
+
+                    <!-- PRODUCTO 1 -->
+
                     <div class="hero-silder active">
+
                         <div class="hero-text">
+
                             <p>Obtén</p>
+
                             <h1>Playeras</h1>
+
                             <h3>100% Originales</h3>
-                            <small>En productos<br>seleccionados</small>
-                            <a href="./playeras.html" class="hero-btn">Comprar Ahora</a>
+
+                            <small>
+                                En productos<br>
+                                seleccionados
+                            </small>
+
+                            <a href="./playeras.html" class="hero-btn">
+
+                                Comprar Ahora
+
+                            </a>
+
                         </div>
+
+
                         <div class="hero-productos">
+
                             <img src="./imgplayera.jpeg" alt="Playeras">
+
                         </div>
+
                     </div>
 
+
+
+                    <!-- PRODUCTO 2 -->
+
                     <div class="hero-silder">
+
                         <div class="hero-text">
+
                             <p>Obtén</p>
+
                             <h1>Gorras</h1>
+
                             <h3>100% Originales</h3>
-                            <small>En productos<br>seleccionados</small>
-                            <a href="./gorras.html" class="hero-btn">Comprar Ahora</a>
+
+                            <small>
+                                En productos<br>
+                                seleccionados
+                            </small>
+
+                            <a href="./gorras.html" class="hero-btn">
+
+                                Comprar Ahora
+
+                            </a>
+
                         </div>
+
+
                         <div class="hero-productos">
+
                             <img src="./imggorras.jpeg" alt="Gorras">
+
                         </div>
+
                     </div>
 
+
+
+                    <!-- PRODUCTO 3 -->
+
                     <div class="hero-silder">
+
                         <div class="hero-text">
+
                             <p>Obtén</p>
+
                             <h1>Hoodies</h1>
+
                             <h3>100% Originales</h3>
-                            <small>En productos<br>seleccionados</small>
-                            <a href="./hoodies.html" class="hero-btn">Comprar Ahora</a>
+
+                            <small>
+                                En productos<br>
+                                seleccionados
+                            </small>
+
+                            <a href="./hoodies.html" class="hero-btn">
+
+                                Comprar Ahora
+
+                            </a>
+
                         </div>
+
+
                         <div class="hero-productos">
+
                             <img src="./hoodieimg.jpeg" alt="Hoodies">
+
                         </div>
+
                     </div>
 
+
+
+                    <!-- PRODUCTO 4 -->
+
                     <div class="hero-silder">
+
                         <div class="hero-text">
+
                             <p>Obtén</p>
+
                             <h1>Perfumes</h1>
+
                             <h3>100% Originales</h3>
-                            <small>En productos<br>seleccionados</small>
-                            <a href="./perfumes.html" class="hero-btn">Comprar Ahora</a>
+
+                            <small>
+                                En productos<br>
+                                seleccionados
+                            </small>
+
+                            <a href="./perfumes.html" class="hero-btn">
+
+                                Comprar Ahora
+
+                            </a>
+
                         </div>
+
+
                         <div class="hero-productos">
+
                             <img src="./imgperfumes.jpeg" alt="Perfumes">
+
                         </div>
+
                     </div>
 
+
+
+                    <!-- PRODUCTO 5 -->
+
                     <div class="hero-silder">
+
                         <div class="hero-text">
+
                             <p>Obtén</p>
+
                             <h1>Accesorios biker</h1>
+
                             <h3></h3>
-                            <small>En productos<br>seleccionados</small>
-                            <a href="./accesorios.html" class="hero-btn">Comprar Ahora</a>
+
+                            <small>
+                                En productos<br>
+                                seleccionados
+                            </small>
+
+                            <a href="./accesorios.html" class="hero-btn">
+
+                                Comprar Ahora
+
+                            </a>
+
                         </div>
+
+
                         <div class="hero-productos">
+
                             <img src="./accesoriosimg.jpeg" alt="Accesorios de moto">
+
                         </div>
+
                     </div>
 
                 </div>
+
+
+
+                <!-- =================================================
+                     PUNTITOS DEL SLIDER
+                ================================================== -->
 
                 <div class="slider-dots">
+
                     <span class="active"></span>
+
                     <span></span>
+
                     <span></span>
+
                     <span></span>
+
                     <span></span>
+
                 </div>
+
             </section>
 
-            <!-- CATEGORÍAS -->
+
+
+            <!-- =================================================
+                 CATEGORÍAS
+            ================================================== -->
+
             <section class="categorias-section">
+
                 <div class="section-title">
+
                     <h2>Categorías</h2>
-                    <a href="./tienda.html">Ver todas</a>
+
+                    <a href="./tienda.html">
+
+                        Ver todas
+
+                    </a>
+
                 </div>
+
 
                 <div class="categories">
 
+
+                    <!-- PLAYERAS -->
+
                     <a href="./playeras.html" class="category">
+
                         <div class="cat-icon">
+
                             <img src="./imgplayera.jpeg" alt="Playera">
+
                         </div>
-                        <span>Playeras</span>
+
+                        <span>
+                            Playeras
+                        </span>
+
                     </a>
+
+
+
+                    <!-- GORRAS -->
 
                     <a href="./gorras.html" class="category">
+
                         <div class="cat-icon">
+
                             <img src="./gorra-img.jpeg" alt="Gorras">
+
                         </div>
-                        <span>Gorras</span>
+
+                        <span>
+                            Gorras
+                        </span>
+
                     </a>
+
+
+
+                    <!-- HOODIES -->
 
                     <a href="./hoodies.html" class="category">
+
                         <div class="cat-icon">
+
                             <img src="./hoodieimg.jpeg" alt="Hoodie">
+
                         </div>
-                        <span>Hoodies</span>
+
+                        <span>
+                            Hoodies
+                        </span>
+
                     </a>
+
+
+
+                    <!-- PERFUMES -->
 
                     <a href="./perfumes.html" class="category">
+
                         <div class="cat-icon">
+
                             <img src="./img-perfumeb.jpeg" alt="Perfumes">
+
                         </div>
-                        <span>Perfumes</span>
+
+                        <span>
+                            Perfumes
+                        </span>
+
                     </a>
 
+
+
+                    <!-- ACCESORIOS -->
+
                     <a href="./accesorios.html" class="category">
+
                         <div class="cat-icon">
+
                             <img src="./biker-img.jpeg" alt="Accesorios">
+
                         </div>
-                        <span>Accesorios<br>biker</span>
+
+                        <span>
+                            Accesorios<br>
+                            biker
+                        </span>
+
                     </a>
 
                 </div>
+
             </section>
 
-            <!-- OFERTAS -->
+
+
+            <!-- =================================================
+                 OFERTAS DESTACADAS
+            ================================================== -->
+
             <div class="products">
+
                 <section class="ofertas-section">
 
+
                     <div class="ofertas-header">
+
                         <div>
-                            <span>OFERTAS ESPECIALES</span>
-                            <h2>Ofertas Destacadas</h2>
-                            <p>Encuentra productos a precios especiales.</p>
+
+                            <span>
+                                OFERTAS ESPECIALES
+                            </span>
+
+                            <h2>
+                                Ofertas Destacadas
+                            </h2>
+
+                            <p>
+                                Encuentra productos a precios especiales.
+                            </p>
+
                         </div>
 
-                        <a href="./descuentos.html">Ver todas</a>
+
+                        <a href="./descuentos.html">
+
+                            Ver todas
+
+                        </a>
+
                     </div>
 
-                    <div class="ofertas-container" id="ofertasContainer"></div>
+
+                    <div class="ofertas-container" id="ofertasContainer">
+
+                    </div>
 
                 </section>
+
             </div>
 
         </main>
 
-        <!-- NAVEGACIÓN INFERIOR -->
+
+
+        <!-- =====================================================
+             NAVEGACIÓN INFERIOR
+        ====================================================== -->
+
         <nav class="bottom-nav">
 
+
+            <!-- INICIO -->
+
             <a href="./index.html" class="nav-item active">
+
                 <i class="fa-solid fa-house"></i>
-                <span>Inicio</span>
+
+                <span>
+                    Inicio
+                </span>
+
             </a>
+
+
+
+            <!-- TIENDA -->
 
             <a href="./tienda.html" class="nav-item">
+
                 <i class="fa-solid fa-bag-shopping"></i>
-                <span>Tienda</span>
+
+                <span>
+                    Tienda
+                </span>
+
             </a>
+
+
+
+            <!-- FAVORITOS -->
 
             <a href="./favorito.html" class="nav-item">
+
                 <i class="fa-regular fa-heart"></i>
-                <span>Favoritos</span>
+
+                <span>
+                    Favoritos
+                </span>
+
             </a>
+
+
+
+            <!-- CARRITO -->
 
             <a href="./carrito.html" class="nav-item cart">
+
                 <i class="fa-solid fa-cart-shopping"></i>
+
                 <b>0</b>
-                <span>Carrito</span>
+
+                <span>
+                    Carrito
+                </span>
+
             </a>
 
+
+
+            <!-- PERFIL -->
+
             <a href="./perfil.html" class="nav-item">
+
                 <i class="fa-regular fa-user"></i>
-                <span>Perfil</span>
+
+                <span>
+                    Perfil
+                </span>
+
             </a>
 
         </nav>
 
     </div>
 
-    <!-- MODAL DE OFERTA -->
+
+
+    <!-- =========================================================
+         MODAL DE OFERTA
+    ========================================================== -->
+
     <div class="modal-producto" id="modalOferta">
 
         <div class="modal-producto-contenido">
 
+
+            <!-- CERRAR -->
+
             <button class="modal-cerrar" id="cerrarModalOferta" type="button" aria-label="Cerrar">
+
                 <i class="fa-solid fa-xmark"></i>
+
             </button>
 
+
+            <!-- IMAGEN -->
+
             <div class="modal-producto-imagen">
+
                 <img id="modalOfertaImagen" src="" alt="Producto">
+
             </div>
+
+
+            <!-- INFORMACIÓN -->
 
             <div class="modal-producto-info">
 
-                <span class="modal-producto-categoria">Oferta especial</span>
+                <span class="modal-producto-categoria">
+                    Oferta especial
+                </span>
 
-                <h2 id="modalOfertaNombre">Producto</h2>
+
+                <h2 id="modalOfertaNombre">
+                    Producto
+                </h2>
+
+
+                <!-- PRECIOS -->
 
                 <div class="modal-producto-precios">
-                    <span class="modal-precio-original" id="modalOfertaPrecioOriginal">Q0.00</span>
-                    <span class="modal-precio-final" id="modalOfertaPrecio">Q0.00</span>
-                    <span class="modal-descuento" id="modalOfertaDescuento">-0%</span>
+
+                    <span class="modal-precio-original" id="modalOfertaPrecioOriginal">
+
+                        Q0.00
+
+                    </span>
+
+
+                    <span class="modal-precio-final" id="modalOfertaPrecio">
+
+                        Q0.00
+
+                    </span>
+
+
+                    <span class="modal-descuento" id="modalOfertaDescuento">
+
+                        -0%
+
+                    </span>
+
                 </div>
 
+
+                <!-- STOCK -->
+
                 <p class="modal-producto-stock">
+
                     Stock disponible:
-                    <strong id="modalOfertaStock">0</strong>
+
+                    <strong id="modalOfertaStock">
+                        0
+                    </strong>
+
                 </p>
 
+
+                <!-- CARRITO -->
+
                 <button class="modal-btn-carrito" id="modalOfertaComprar" type="button">
+
                     <i class="fa-solid fa-cart-shopping"></i>
+
                     Carrito de compras
+
                 </button>
 
+
+                <!-- FAVORITO -->
+
                 <button class="modal-btn-favorito" id="modalOfertaFavorito" type="button">
+
                     <i class="fa-regular fa-heart"></i>
+
                     Favorito
+
                 </button>
 
             </div>
@@ -972,97 +709,216 @@
 
     </div>
 
-    <!-- SUPABASE -->
+
+
+    <!-- =========================================================
+         SUPABASE
+    ========================================================== -->
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- JAVASCRIPT PRINCIPAL -->
+
+
+    <!-- =========================================================
+         JAVASCRIPT PRINCIPAL
+    ========================================================== -->
+
     <script src="./script.js"></script>
 
-    <!-- SLIDER -->
+
+
+    <!-- =========================================================
+         SLIDER
+    ========================================================== -->
+
     <script src="./slider.js"></script>
 
-    <!-- PWA - INSTALACIÓN -->
+
+
+    <!-- =========================================================
+         PWA - INSTALACIÓN
+    ========================================================== -->
+
     <script>
+
         let deferredPrompt = null;
 
+
         const botonDescargarApp =
-            document.getElementById("botonDescargarApp");
+            document.getElementById(
+                "botonDescargarApp"
+            );
 
-        window.addEventListener("beforeinstallprompt", function (event) {
-            event.preventDefault();
-            deferredPrompt = event;
 
-            if (botonDescargarApp) {
-                botonDescargarApp.style.display = "flex";
+
+        /* =====================================================
+           DETECTAR INSTALACIÓN
+        ===================================================== */
+
+        window.addEventListener(
+            "beforeinstallprompt",
+            function (event) {
+
+                event.preventDefault();
+
+                deferredPrompt = event;
+
+
+                if (botonDescargarApp) {
+
+                    botonDescargarApp.style.display =
+                        "flex";
+
+                }
+
             }
-        });
+        );
+
+
+
+        /* =====================================================
+           BOTÓN DESCARGAR
+        ===================================================== */
 
         if (botonDescargarApp) {
-            botonDescargarApp.addEventListener("click", async function () {
 
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
+            botonDescargarApp.addEventListener(
+                "click",
+                async function () {
 
-                    const resultado = await deferredPrompt.userChoice;
 
-                    console.log(
-                        "Resultado de instalación:",
-                        resultado.outcome
-                    );
+                    /* =============================================
+                       ANDROID / CHROME / EDGE
+                    ============================================= */
 
-                    deferredPrompt = null;
-                    return;
-                }
+                    if (deferredPrompt) {
 
-                const esIPhone =
-                    /iPhone|iPad|iPod/i.test(navigator.userAgent);
+                        deferredPrompt.prompt();
 
-                if (esIPhone) {
-                    alert(
-                        "Para instalar DL Luxury:\n\n" +
-                        "1. Pulsa el botón Compartir de Safari.\n\n" +
-                        "2. Selecciona «Añadir a pantalla de inicio».\n\n" +
-                        "3. Pulsa «Añadir»."
-                    );
-                    return;
-                }
 
-                if (
-                    window.matchMedia("(display-mode: standalone)").matches
-                ) {
-                    alert("DL Luxury ya está instalada.");
-                    return;
-                }
+                        const resultado =
+                            await deferredPrompt.userChoice;
 
-                alert(
-                    "La opción de instalación todavía " +
-                    "no está disponible.\n\n" +
-                    "Abre DL Luxury desde Chrome o Edge " +
-                    "y vuelve a intentarlo."
-                );
-            });
-        }
 
-        /* SERVICE WORKER */
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", function () {
-                navigator.serviceWorker
-                    .register("./service-worker.js")
-                    .then(function (registration) {
                         console.log(
-                            "DL Luxury Ventas PWA activada correctamente",
-                            registration
+                            "Resultado de instalación:",
+                            resultado.outcome
                         );
-                    })
-                    .catch(function (error) {
-                        console.error(
-                            "Error al activar la PWA:",
-                            error
+
+
+                        deferredPrompt = null;
+
+                        return;
+
+                    }
+
+
+
+                    /* =============================================
+                       IPHONE / IPAD
+                    ============================================= */
+
+                    const esIPhone =
+                        /iPhone|iPad|iPod/i.test(
+                            navigator.userAgent
                         );
-                    });
-            });
+
+
+                    if (esIPhone) {
+
+                        alert(
+                            "Para instalar DL Luxury:\n\n" +
+
+                            "1. Pulsa el botón Compartir de Safari.\n\n" +
+
+                            "2. Selecciona «Añadir a pantalla de inicio».\n\n" +
+
+                            "3. Pulsa «Añadir»."
+                        );
+
+                        return;
+
+                    }
+
+
+
+                    /* =============================================
+                       SI YA ESTÁ INSTALADA
+                    ============================================= */
+
+                    if (
+                        window.matchMedia(
+                            "(display-mode: standalone)"
+                        ).matches
+                    ) {
+
+                        alert(
+                            "DL Luxury ya está instalada."
+                        );
+
+                        return;
+
+                    }
+
+
+
+                    /* =============================================
+                       NO DISPONIBLE
+                    ============================================= */
+
+                    alert(
+                        "La opción de instalación todavía " +
+                        "no está disponible.\n\n" +
+
+                        "Abre DL Luxury desde Chrome o Edge " +
+                        "y vuelve a intentarlo."
+                    );
+
+                }
+            );
+
         }
+
+
+
+        /* =====================================================
+           SERVICE WORKER
+        ===================================================== */
+
+        if ("serviceWorker" in navigator) {
+
+            window.addEventListener(
+                "load",
+                function () {
+
+                    navigator.serviceWorker
+                        .register("./service-worker.js")
+
+                        .then(function (registration) {
+
+                            console.log(
+                                "DL Luxury Ventas PWA activada correctamente",
+                                registration
+                            );
+
+                        })
+
+                        .catch(function (error) {
+
+                            console.error(
+                                "Error al activar la PWA:",
+                                error
+                            );
+
+                        });
+
+                }
+            );
+
+        }
+
     </script>
+
 
 </body>
 
