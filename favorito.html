@@ -2,70 +2,786 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>DL Luxury - Favoritos</title>
 
-    <!-- CSS -->
+    <meta name="theme-color" content="#10050d">
+
+    <!-- CSS ORIGINAL -->
     <link rel="stylesheet" href="favoritos.css">
-
-
 
     <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- HALLOWEEN PREMIUM -->
+    <style>
+        .halloween-decor {
+            position: fixed;
+            inset: 0;
+            z-index: 8000;
+            overflow: hidden;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .halloween-decor *,
+        .halloween-decor *::before,
+        .halloween-decor *::after {
+            box-sizing: border-box;
+        }
+
+        /* LUNA SANGRIENTA */
+        .halloween-luna {
+            position: absolute;
+            top: 10%;
+            right: 8%;
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 35% 28%,
+                    #ffe1d0 0%,
+                    #d95761 30%,
+                    #811329 66%,
+                    #260414 100%);
+            box-shadow:
+                0 0 18px rgba(255, 25, 55, .55),
+                0 0 45px rgba(130, 0, 35, .4);
+            opacity: .85;
+        }
+
+        .halloween-luna::before,
+        .halloween-luna::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(54, 0, 18, .45);
+        }
+
+        .halloween-luna::before {
+            width: 16px;
+            height: 12px;
+            top: 19px;
+            left: 17px;
+        }
+
+        .halloween-luna::after {
+            width: 11px;
+            height: 11px;
+            right: 17px;
+            bottom: 18px;
+        }
+
+        /* NIEBLA */
+        .halloween-niebla {
+            position: absolute;
+            left: -15%;
+            bottom: 0;
+            width: 130%;
+            height: 25%;
+            background:
+                radial-gradient(ellipse at 20% 70%, rgba(100, 0, 125, .17), transparent 56%),
+                radial-gradient(ellipse at 60% 55%, rgba(45, 0, 80, .2), transparent 60%),
+                radial-gradient(ellipse at 85% 75%, rgba(145, 0, 25, .15), transparent 50%);
+            filter: blur(15px);
+            opacity: .8;
+        }
+
+        /* CALABAZAS DEMONÍACAS */
+        .halloween-pumpkin {
+            position: absolute;
+            width: clamp(70px, 9vw, 115px);
+            filter:
+                drop-shadow(0 0 9px rgba(255, 25, 0, .7)) drop-shadow(0 7px 12px rgba(0, 0, 0, .9));
+        }
+
+        .halloween-pumpkin svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .pumpkin-left {
+            top: 39%;
+            left: 3px;
+        }
+
+        .pumpkin-right {
+            top: 65%;
+            right: 3px;
+            width: clamp(60px, 7vw, 92px);
+        }
+
+        /* FANTASMAS */
+        .halloween-ghost {
+            position: absolute;
+            width: 46px;
+            height: 58px;
+            opacity: .82;
+            filter: drop-shadow(0 0 8px rgba(160, 120, 255, .5));
+        }
+
+        .halloween-ghost svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .ghost-left {
+            top: 18%;
+            left: 5%;
+        }
+
+        .ghost-right {
+            top: 46%;
+            right: 5%;
+            width: 38px;
+        }
+
+        /* MURCIÉLAGOS */
+        .halloween-bat {
+            position: absolute;
+            width: 40px;
+            height: 23px;
+            opacity: .9;
+            filter: drop-shadow(0 0 5px rgba(125, 0, 255, .6));
+        }
+
+        .halloween-bat svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .bat-one {
+            top: 31%;
+            left: 20%;
+        }
+
+        .bat-two {
+            top: 54%;
+            right: 18%;
+            width: 31px;
+        }
+
+        /* TELARAÑAS */
+        .halloween-web {
+            position: absolute;
+            top: 0;
+            width: 95px;
+            height: 95px;
+            opacity: .55;
+        }
+
+        .halloween-web svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .web-left {
+            left: 0;
+        }
+
+        .web-right {
+            right: 0;
+            transform: scaleX(-1);
+        }
+
+        /* BRUJA VOLANDO */
+        .halloween-witch {
+            position: absolute;
+            top: 24%;
+            left: -180px;
+            width: 145px;
+            height: 95px;
+            opacity: .9;
+            filter: drop-shadow(0 0 8px rgba(120, 0, 180, .6));
+            animation: halloween-flight 30s linear 1 forwards;
+        }
+
+        .halloween-witch svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        @keyframes halloween-flight {
+            0% {
+                transform: translateX(0) translateY(0) rotate(-4deg);
+            }
+
+            45% {
+                transform: translateX(55vw) translateY(-12px) rotate(2deg);
+            }
+
+            100% {
+                transform: translateX(calc(100vw + 220px)) translateY(5px) rotate(-2deg);
+            }
+        }
+
+        /* ZOMBIS */
+        .halloween-zombie {
+            position: absolute;
+            width: clamp(58px, 8vw, 95px);
+            opacity: .9;
+            filter: drop-shadow(0 0 7px rgba(40, 255, 60, .4));
+        }
+
+        .halloween-zombie svg {
+            width: 100%;
+            height: auto;
+        }
+
+        .zombie-left {
+            bottom: 16%;
+            left: 2%;
+        }
+
+        .zombie-right {
+            bottom: 7%;
+            right: 2%;
+            width: clamp(53px, 7vw, 78px);
+        }
+
+        /* CALAVERAS */
+        .halloween-skull {
+            position: absolute;
+            width: clamp(33px, 4.5vw, 52px);
+            opacity: .85;
+            filter: drop-shadow(0 0 6px rgba(255, 25, 45, .5));
+        }
+
+        .halloween-skull svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .skull-one {
+            top: 68%;
+            left: 14%;
+        }
+
+        .skull-two {
+            top: 16%;
+            right: 21%;
+            width: 36px;
+        }
+
+        .skull-three {
+            bottom: 25%;
+            right: 13%;
+            width: 40px;
+        }
+
+        /* TUMBAS */
+        .halloween-grave {
+            position: absolute;
+            bottom: -2px;
+            width: clamp(70px, 9vw, 110px);
+            height: clamp(105px, 14vw, 155px);
+            opacity: .82;
+            filter:
+                drop-shadow(0 0 7px rgba(120, 0, 25, .5)) drop-shadow(0 7px 12px rgba(0, 0, 0, .9));
+        }
+
+        .halloween-grave svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .grave-left {
+            left: 8%;
+        }
+
+        .grave-right {
+            right: 8%;
+            width: clamp(65px, 8vw, 95px);
+        }
+
+        .grave-center {
+            left: 50%;
+            width: 65px;
+            height: 90px;
+            transform: translateX(-50%);
+            opacity: .4;
+        }
+
+        /* SUELO OSCURO */
+        .halloween-ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 28px;
+            background: linear-gradient(180deg,
+                    transparent,
+                    rgba(10, 4, 12, .7) 40%,
+                    rgba(4, 2, 5, .95));
+            border-top: 1px solid rgba(110, 15, 35, .22);
+        }
+
+        /* MÓVILES */
+        @media (max-width: 600px) {
+            .halloween-luna {
+                width: 48px;
+                height: 48px;
+                top: 12%;
+                right: 9%;
+            }
+
+            .pumpkin-left {
+                width: 58px;
+                left: 0;
+                top: 43%;
+            }
+
+            .pumpkin-right {
+                width: 53px;
+                right: 0;
+                top: 68%;
+            }
+
+            .halloween-ghost {
+                width: 34px;
+                height: 45px;
+            }
+
+            .halloween-web {
+                width: 58px;
+                height: 58px;
+            }
+
+            .halloween-witch {
+                width: 110px;
+                height: 75px;
+            }
+
+            .halloween-zombie {
+                width: 52px;
+            }
+
+            .zombie-right {
+                width: 47px;
+            }
+
+            .halloween-grave {
+                width: 62px;
+                height: 92px;
+            }
+
+            .grave-center {
+                width: 45px;
+                height: 70px;
+                opacity: .3;
+            }
+
+            .halloween-ground {
+                height: 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .halloween-witch {
+                animation: none;
+                left: auto;
+                right: 12%;
+            }
+        }
+    </style>
 
 </head>
 
 <body>
 
+    <!-- =====================================================
+         DECORACIÓN HALLOWEEN
+    ====================================================== -->
+
+    <div class="halloween-decor" aria-hidden="true">
+
+        <!-- LUNA SANGRIENTA -->
+        <div class="halloween-luna"></div>
+
+        <!-- TELARAÑA IZQUIERDA -->
+        <div class="halloween-web web-left">
+            <svg viewBox="0 0 100 100" fill="none">
+                <path d="M0 0 L100 100 M0 35 L65 0 M0 65 L35 0 M0 0 L100 0 M0 0 L0 100" stroke="#d6c7dc"
+                    stroke-width="1.3" />
+                <path d="M0 20 Q22 23 24 0 M0 42 Q42 45 45 0 M0 64 Q62 65 65 0" stroke="#d6c7dc" stroke-width="1"
+                    fill="none" />
+            </svg>
+        </div>
+
+        <!-- TELARAÑA DERECHA -->
+        <div class="halloween-web web-right">
+            <svg viewBox="0 0 100 100" fill="none">
+                <path d="M0 0 L100 100 M0 35 L65 0 M0 65 L35 0 M0 0 L100 0 M0 0 L0 100" stroke="#d6c7dc"
+                    stroke-width="1.3" />
+                <path d="M0 20 Q22 23 24 0 M0 42 Q42 45 45 0 M0 64 Q62 65 65 0" stroke="#d6c7dc" stroke-width="1"
+                    fill="none" />
+            </svg>
+        </div>
+
+        <!-- CALABAZA DEMONÍACA IZQUIERDA -->
+        <div class="halloween-pumpkin pumpkin-left">
+            <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="pumpkinA" cx="35%" cy="25%" r="80%">
+                        <stop offset="0%" stop-color="#ffb13b" />
+                        <stop offset="35%" stop-color="#ff5a00" />
+                        <stop offset="72%" stop-color="#a81700" />
+                        <stop offset="100%" stop-color="#260300" />
+                    </radialGradient>
+
+                    <linearGradient id="hornA" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#77717d" />
+                        <stop offset="45%" stop-color="#201522" />
+                        <stop offset="100%" stop-color="#030204" />
+                    </linearGradient>
+
+                    <linearGradient id="eyeA" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#fff6a0" />
+                        <stop offset="35%" stop-color="#ff3b00" />
+                        <stop offset="100%" stop-color="#c00000" />
+                    </linearGradient>
+
+                    <filter id="glowA" x="-60%" y="-60%" width="220%" height="220%">
+                        <feGaussianBlur stdDeviation="4" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <path d="M47 48 Q20 36 22 4 Q42 22 66 30 L68 49Z" fill="url(#hornA)" stroke="#080309"
+                    stroke-width="4" />
+                <path d="M111 48 Q140 34 139 4 Q120 23 96 30 L94 49Z" fill="url(#hornA)" stroke="#080309"
+                    stroke-width="4" />
+                <path d="M73 35 Q61 15 82 10 Q99 9 91 32 L98 40Z" fill="#263416" stroke="#0b1007" stroke-width="4" />
+
+                <path
+                    d="M80 37 C57 23 35 35 25 55 C9 83 21 120 43 136 Q61 148 80 136 Q99 148 117 136 C139 120 151 83 135 55 C125 35 103 23 80 37Z"
+                    fill="url(#pumpkinA)" stroke="#380500" stroke-width="5" />
+
+                <path d="M80 40 Q61 77 80 136 M57 37 Q36 77 50 130 M103 37 Q124 77 110 130" fill="none" stroke="#721100"
+                    stroke-width="5" />
+
+                <path d="M25 52 L72 67 L65 79 L29 64Z M135 52 L88 67 L95 79 L131 64Z" fill="#160008" stroke="#390008"
+                    stroke-width="2" />
+
+                <path d="M31 72 L68 79 L58 103 L43 94Z M129 72 L92 79 L102 103 L117 94Z" fill="url(#eyeA)"
+                    filter="url(#glowA)" />
+
+                <path d="M43 75 L54 96 L45 91Z M117 75 L106 96 L115 91Z" fill="#fffbd5" />
+
+                <path d="M80 94 L69 108 L80 104 L91 108Z" fill="#250008" />
+
+                <path
+                    d="M33 108 L49 111 L61 105 L72 112 L80 107 L90 112 L101 105 L113 111 L127 106 L119 130 L101 140 L80 134 L59 140 L41 130Z"
+                    fill="#130008" stroke="#3c0008" stroke-width="3" />
+
+                <path
+                    d="M43 110 L58 112 L54 128Z M65 111 L78 112 L73 130Z M91 112 L104 111 L97 130Z M108 111 L120 108 L112 126Z"
+                    fill="#fff0ce" stroke="#9e6e59" stroke-width="1.5" />
+
+                <path d="M57 137 L68 135 L65 122Z M91 135 L103 135 L96 121Z" fill="#fff0ce" stroke="#9e6e59"
+                    stroke-width="1.5" />
+
+                <path d="M27 88 L37 92 L29 101 M133 88 L123 92 L131 101" stroke="#490600" stroke-width="3"
+                    fill="none" />
+            </svg>
+        </div>
+
+        <!-- CALABAZA DEMONÍACA DERECHA -->
+        <div class="halloween-pumpkin pumpkin-right">
+            <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="pumpkinB" cx="35%" cy="25%" r="80%">
+                        <stop offset="0%" stop-color="#ffb13b" />
+                        <stop offset="35%" stop-color="#ff5a00" />
+                        <stop offset="72%" stop-color="#a81700" />
+                        <stop offset="100%" stop-color="#260300" />
+                    </radialGradient>
+
+                    <linearGradient id="hornB" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#77717d" />
+                        <stop offset="45%" stop-color="#201522" />
+                        <stop offset="100%" stop-color="#030204" />
+                    </linearGradient>
+
+                    <linearGradient id="eyeB" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#fff6a0" />
+                        <stop offset="35%" stop-color="#ff3b00" />
+                        <stop offset="100%" stop-color="#c00000" />
+                    </linearGradient>
+
+                    <filter id="glowB" x="-60%" y="-60%" width="220%" height="220%">
+                        <feGaussianBlur stdDeviation="4" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <path d="M47 48 Q20 36 22 4 Q42 22 66 30 L68 49Z" fill="url(#hornB)" stroke="#080309"
+                    stroke-width="4" />
+                <path d="M111 48 Q140 34 139 4 Q120 23 96 30 L94 49Z" fill="url(#hornB)" stroke="#080309"
+                    stroke-width="4" />
+                <path d="M73 35 Q61 15 82 10 Q99 9 91 32 L98 40Z" fill="#263416" stroke="#0b1007" stroke-width="4" />
+
+                <path
+                    d="M80 37 C57 23 35 35 25 55 C9 83 21 120 43 136 Q61 148 80 136 Q99 148 117 136 C139 120 151 83 135 55 C125 35 103 23 80 37Z"
+                    fill="url(#pumpkinB)" stroke="#380500" stroke-width="5" />
+
+                <path d="M80 40 Q61 77 80 136 M57 37 Q36 77 50 130 M103 37 Q124 77 110 130" fill="none" stroke="#721100"
+                    stroke-width="5" />
+
+                <path d="M25 52 L72 67 L65 79 L29 64Z M135 52 L88 67 L95 79 L131 64Z" fill="#160008" stroke="#390008"
+                    stroke-width="2" />
+
+                <path d="M31 72 L68 79 L58 103 L43 94Z M129 72 L92 79 L102 103 L117 94Z" fill="url(#eyeB)"
+                    filter="url(#glowB)" />
+
+                <path d="M43 75 L54 96 L45 91Z M117 75 L106 96 L115 91Z" fill="#fffbd5" />
+
+                <path d="M80 94 L69 108 L80 104 L91 108Z" fill="#250008" />
+
+                <path
+                    d="M33 108 L49 111 L61 105 L72 112 L80 107 L90 112 L101 105 L113 111 L127 106 L119 130 L101 140 L80 134 L59 140 L41 130Z"
+                    fill="#130008" stroke="#3c0008" stroke-width="3" />
+
+                <path
+                    d="M43 110 L58 112 L54 128Z M65 111 L78 112 L73 130Z M91 112 L104 111 L97 130Z M108 111 L120 108 L112 126Z"
+                    fill="#fff0ce" stroke="#9e6e59" stroke-width="1.5" />
+
+                <path d="M57 137 L68 135 L65 122Z M91 135 L103 135 L96 121Z" fill="#fff0ce" stroke="#9e6e59"
+                    stroke-width="1.5" />
+
+                <path d="M27 88 L37 92 L29 101 M133 88 L123 92 L131 101" stroke="#490600" stroke-width="3"
+                    fill="none" />
+            </svg>
+        </div>
+
+        <!-- FANTASMA IZQUIERDO -->
+        <div class="halloween-ghost ghost-left">
+            <svg viewBox="0 0 70 85">
+                <path d="M10 77 L10 35 C10 17 22 5 36 5 C51 5 61 18 61 35 L61 77 L48 69 L37 79 L25 69Z" fill="#e9e7ef"
+                    stroke="#a5a0b8" stroke-width="2" />
+                <ellipse cx="26" cy="37" rx="4" ry="7" fill="#1c1428" />
+                <ellipse cx="46" cy="37" rx="4" ry="7" fill="#1c1428" />
+                <ellipse cx="36" cy="51" rx="6" ry="8" fill="#1c1428" />
+                <path d="M17 23 Q26 14 33 18" stroke="#fff" stroke-width="3" opacity=".7" fill="none" />
+            </svg>
+        </div>
+
+        <!-- FANTASMA DERECHO -->
+        <div class="halloween-ghost ghost-right">
+            <svg viewBox="0 0 70 85">
+                <path d="M10 77 L10 35 C10 17 22 5 36 5 C51 5 61 18 61 35 L61 77 L48 69 L37 79 L25 69Z" fill="#e9e7ef"
+                    stroke="#a5a0b8" stroke-width="2" />
+                <ellipse cx="26" cy="37" rx="4" ry="7" fill="#1c1428" />
+                <ellipse cx="46" cy="37" rx="4" ry="7" fill="#1c1428" />
+                <ellipse cx="36" cy="51" rx="6" ry="8" fill="#1c1428" />
+            </svg>
+        </div>
+
+        <!-- MURCIÉLAGOS -->
+        <div class="halloween-bat bat-one">
+            <svg viewBox="0 0 80 40">
+                <path d="M40 17 L32 8 L28 20 L8 7 L14 26 L3 31 L27 33 L40 24 L53 33 L77 31 L66 26 L72 7 L52 20 L48 8Z"
+                    fill="#171020" stroke="#4d315f" stroke-width="1.5" />
+                <circle cx="36" cy="18" r="1.8" fill="#ff4b26" />
+                <circle cx="44" cy="18" r="1.8" fill="#ff4b26" />
+            </svg>
+        </div>
+
+        <div class="halloween-bat bat-two">
+            <svg viewBox="0 0 80 40">
+                <path d="M40 17 L32 8 L28 20 L8 7 L14 26 L3 31 L27 33 L40 24 L53 33 L77 31 L66 26 L72 7 L52 20 L48 8Z"
+                    fill="#171020" stroke="#4d315f" stroke-width="1.5" />
+                <circle cx="36" cy="18" r="1.8" fill="#ff4b26" />
+                <circle cx="44" cy="18" r="1.8" fill="#ff4b26" />
+            </svg>
+        </div>
+
+        <!-- BRUJA -->
+        <div class="halloween-witch">
+            <svg viewBox="0 0 200 130">
+                <path d="M42 90 L166 69" stroke="#8a542c" stroke-width="5" stroke-linecap="round" />
+                <path d="M163 68 Q180 58 194 67 Q185 77 197 84 Q179 87 164 75Z" fill="#b57a37" stroke="#6f411d"
+                    stroke-width="2" />
+                <path d="M83 43 Q65 52 72 72 L54 85 Q85 91 104 74 L126 78 Q117 57 104 43Z" fill="#39204f"
+                    stroke="#241133" stroke-width="2" />
+                <path d="M84 43 L106 44 L116 70 L91 75 L80 58Z" fill="#241133" />
+                <circle cx="92" cy="32" r="13" fill="#b77b5b" />
+                <path d="M102 33 L114 38 L103 40Z" fill="#b77b5b" />
+                <path d="M70 25 L95 1 L109 27Z" fill="#21102f" stroke="#4d286a" stroke-width="2" />
+                <path d="M64 27 Q88 20 116 29 Q92 35 64 27Z" fill="#12091d" stroke="#4d286a" stroke-width="2" />
+                <path d="M96 31 L103 33" stroke="#ffb52e" stroke-width="3" stroke-linecap="round" />
+                <path d="M105 49 L128 61 L143 59" fill="none" stroke="#b77b5b" stroke-width="5"
+                    stroke-linecap="round" />
+                <path d="M85 68 L76 83 L88 87 M101 72 L113 83 L124 82" fill="none" stroke="#21102f" stroke-width="6"
+                    stroke-linecap="round" />
+                <path d="M29 38 L32 46 L40 49 L32 52 L29 60 L26 52 L18 49 L26 46Z" fill="#d6a8ff" />
+                <path d="M151 32 L153 38 L159 40 L153 42 L151 48 L149 42 L143 40 L149 38Z" fill="#ff9c28" />
+            </svg>
+        </div>
+
+        <!-- ZOMBI IZQUIERDO -->
+        <div class="halloween-zombie zombie-left">
+            <svg viewBox="0 0 120 150">
+                <path d="M43 91 L39 115 L23 132 L28 145 L92 145 L98 131 L79 113 L76 89Z" fill="#242a24" stroke="#101510"
+                    stroke-width="3" />
+                <path d="M43 98 L60 110 L78 97 L80 126 L40 126Z" fill="#4b5435" stroke="#252b1c" stroke-width="2" />
+                <path d="M42 100 L20 105 L10 92 L5 96 L12 115 L34 119 L47 112Z" fill="#71864a" stroke="#26321e"
+                    stroke-width="3" />
+                <path d="M77 100 L96 96 L104 81 L110 84 L108 104 L87 116 L73 112Z" fill="#71864a" stroke="#26321e"
+                    stroke-width="3" />
+                <path d="M33 30 Q34 8 61 9 Q89 10 89 38 L84 71 L69 91 L48 85 L32 65Z" fill="#82995a" stroke="#26321e"
+                    stroke-width="3" />
+                <path d="M33 34 L25 21 L42 25 L43 12 L56 22 L69 10 L74 24 L89 19 L88 38 L79 33 L65 28 L48 32Z"
+                    fill="#171a15" stroke="#0b0d0a" stroke-width="3" />
+                <path d="M38 42 L55 45 L51 56 L39 53Z M64 44 L81 40 L79 53 L67 56Z" fill="#14220c" />
+                <ellipse cx="47" cy="49" rx="4" ry="5" fill="#8cff47" />
+                <ellipse cx="73" cy="48" rx="4" ry="5" fill="#8cff47" />
+                <path d="M42 64 Q59 70 79 61 L75 78 L60 83 L47 76Z" fill="#17090b" stroke="#3b1716" stroke-width="3" />
+                <path d="M47 65 L55 67 L53 74Z M63 66 L72 64 L69 72Z" fill="#e8dfba" />
+                <path d="M55 81 L58 90 L61 82" fill="#8c1018" />
+            </svg>
+        </div>
+
+        <!-- ZOMBI DERECHO -->
+        <div class="halloween-zombie zombie-right">
+            <svg viewBox="0 0 120 150">
+                <path d="M43 91 L39 115 L23 132 L28 145 L92 145 L98 131 L79 113 L76 89Z" fill="#29251e" stroke="#101510"
+                    stroke-width="3" />
+                <path d="M43 98 L60 110 L78 97 L80 126 L40 126Z" fill="#66503c" stroke="#252b1c" stroke-width="2" />
+                <path d="M42 100 L20 105 L10 92 L5 96 L12 115 L34 119 L47 112Z" fill="#71864a" stroke="#26321e"
+                    stroke-width="3" />
+                <path d="M77 100 L96 96 L104 81 L110 84 L108 104 L87 116 L73 112Z" fill="#71864a" stroke="#26321e"
+                    stroke-width="3" />
+                <path d="M33 30 Q34 8 61 9 Q89 10 89 38 L84 71 L69 91 L48 85 L32 65Z" fill="#82995a" stroke="#26321e"
+                    stroke-width="3" />
+                <path d="M33 34 L25 21 L42 25 L43 12 L56 22 L69 10 L74 24 L89 19 L88 38 L79 33 L65 28 L48 32Z"
+                    fill="#171a15" stroke="#0b0d0a" stroke-width="3" />
+                <path d="M38 42 L55 45 L51 56 L39 53Z M64 44 L81 40 L79 53 L67 56Z" fill="#14220c" />
+                <ellipse cx="47" cy="49" rx="4" ry="5" fill="#8cff47" />
+                <ellipse cx="73" cy="48" rx="4" ry="5" fill="#8cff47" />
+                <path d="M42 64 Q59 70 79 61 L75 78 L60 83 L47 76Z" fill="#17090b" stroke="#3b1716" stroke-width="3" />
+                <path d="M47 65 L55 67 L53 74Z M63 66 L72 64 L69 72Z" fill="#e8dfba" />
+            </svg>
+        </div>
+
+        <!-- CALAVERAS -->
+        <div class="halloween-skull skull-one">
+            <svg viewBox="0 0 100 110">
+                <path
+                    d="M50 7 C24 7 12 25 14 48 C15 62 23 72 33 77 L34 95 L66 95 L67 77 C77 72 85 62 86 48 C88 25 76 7 50 7Z"
+                    fill="#e8dfc8" stroke="#8d7a69" stroke-width="3" />
+                <path d="M23 43 Q27 29 40 38 L38 52 L27 57Z M77 43 Q73 29 60 38 L62 52 L73 57Z" fill="#170b19" />
+                <path d="M43 57 L50 47 L57 57 L50 66Z" fill="#26131e" />
+                <path d="M36 78 L36 91 M45 79 L45 94 M55 79 L55 94 M64 78 L64 91" stroke="#3b2930" stroke-width="3" />
+                <path d="M15 58 L25 66 M85 58 L75 66" stroke="#7c101b" stroke-width="3" />
+            </svg>
+        </div>
+
+        <div class="halloween-skull skull-two">
+            <svg viewBox="0 0 100 110">
+                <path
+                    d="M50 7 C24 7 12 25 14 48 C15 62 23 72 33 77 L34 95 L66 95 L67 77 C77 72 85 62 86 48 C88 25 76 7 50 7Z"
+                    fill="#e8dfc8" stroke="#8d7a69" stroke-width="3" />
+                <path d="M23 43 Q27 29 40 38 L38 52 L27 57Z M77 43 Q73 29 60 38 L62 52 L73 57Z" fill="#20091c" />
+                <path d="M43 57 L50 47 L57 57 L50 66Z" fill="#26131e" />
+                <path d="M36 78 L36 91 M45 79 L45 94 M55 79 L55 94 M64 78 L64 91" stroke="#3b2930" stroke-width="3" />
+            </svg>
+        </div>
+
+        <div class="halloween-skull skull-three">
+            <svg viewBox="0 0 100 110">
+                <path
+                    d="M50 7 C24 7 12 25 14 48 C15 62 23 72 33 77 L34 95 L66 95 L67 77 C77 72 85 62 86 48 C88 25 76 7 50 7Z"
+                    fill="#e8dfc8" stroke="#8d7a69" stroke-width="3" />
+                <path d="M23 43 Q27 29 40 38 L38 52 L27 57Z M77 43 Q73 29 60 38 L62 52 L73 57Z" fill="#20091c" />
+                <path d="M43 57 L50 47 L57 57 L50 66Z" fill="#26131e" />
+                <path d="M36 78 L36 91 M45 79 L45 94 M55 79 L55 94 M64 78 L64 91" stroke="#3b2930" stroke-width="3" />
+            </svg>
+        </div>
+
+        <!-- TUMBAS -->
+        <div class="halloween-grave grave-left">
+            <svg viewBox="0 0 120 180">
+                <path d="M17 174 L22 53 Q23 15 60 10 Q97 15 98 53 L103 174Z" fill="#28232f" stroke="#75677d"
+                    stroke-width="3" />
+                <path d="M60 42 L60 76 M45 53 L75 53" stroke="#a9a0b2" stroke-width="7" stroke-linecap="round" />
+                <path d="M60 43 L60 75 M45 54 L75 54" stroke="#201723" stroke-width="3" stroke-linecap="round" />
+                <text x="60" y="100" text-anchor="middle" fill="#c8b9c9" font-size="12" font-family="serif"
+                    letter-spacing="2">R.I.P.</text>
+                <path d="M35 114 L46 120 L40 131 L48 141 M81 105 L74 118 L82 126 L76 137" fill="none" stroke="#17111d"
+                    stroke-width="3" />
+                <path d="M13 174 L107 174" stroke="#b12b42" stroke-width="3" />
+            </svg>
+        </div>
+
+        <div class="halloween-grave grave-right">
+            <svg viewBox="0 0 120 180">
+                <path d="M17 174 L22 53 Q23 15 60 10 Q97 15 98 53 L103 174Z" fill="#29202f" stroke="#79647e"
+                    stroke-width="3" />
+                <path d="M60 42 L60 76 M45 53 L75 53" stroke="#c02b45" stroke-width="7" stroke-linecap="round" />
+                <path d="M60 43 L60 75 M45 54 L75 54" stroke="#201723" stroke-width="3" stroke-linecap="round" />
+                <text x="60" y="100" text-anchor="middle" fill="#c8b9c9" font-size="12" font-family="serif"
+                    letter-spacing="2">R.I.P.</text>
+                <path d="M35 114 L46 120 L40 131 L48 141 M81 105 L74 118 L82 126" fill="none" stroke="#17111d"
+                    stroke-width="3" />
+                <path d="M13 174 L107 174" stroke="#b12b42" stroke-width="3" />
+            </svg>
+        </div>
+
+        <div class="halloween-grave grave-center">
+            <svg viewBox="0 0 120 180">
+                <path d="M17 174 L22 53 Q23 15 60 10 Q97 15 98 53 L103 174Z" fill="#211a29" stroke="#55435d"
+                    stroke-width="3" />
+                <path d="M60 42 L60 76 M45 53 L75 53" stroke="#87768d" stroke-width="6" stroke-linecap="round" />
+                <text x="60" y="101" text-anchor="middle" fill="#a79aad" font-size="12"
+                    font-family="serif">R.I.P.</text>
+            </svg>
+        </div>
+
+        <!-- NIEBLA Y SUELO -->
+        <div class="halloween-niebla"></div>
+        <div class="halloween-ground"></div>
+
+    </div>
+
+    <!-- =====================================================
+         APLICACIÓN ORIGINAL
+    ====================================================== -->
+
     <div class="app">
 
-        <!-- =====================================================
-             ENCABEZADO
-        ====================================================== -->
-
+        <!-- ENCABEZADO -->
         <header class="hearder">
 
-            <!-- MENÚ -->
-
             <button class="menu-btn" type="button" id="menuBtn">
-
                 <i class="fa-solid fa-bars"></i>
-
             </button>
 
-
-            <!-- YA NO HAY LOGO AQUÍ -->
-
-
-            <!-- NOTIFICACIONES -->
-
             <button class="notificacion" type="button" id="notificacionBtn">
-
                 <i class="fa-regular fa-bell"></i>
-
                 <span></span>
-
             </button>
 
         </header>
 
-
-        <!-- =====================================================
-             CONTENIDO
-        ====================================================== -->
-
+        <!-- CONTENIDO -->
         <main class="content">
 
-            <!-- ENCABEZADO -->
-
+            <!-- ENCABEZADO FAVORITOS -->
             <section class="favoritos-header">
 
                 <div>
-
                     <span class="favoritos-label">
                         TU COLECCIÓN
                     </span>
@@ -77,265 +793,144 @@
                     <p>
                         Guarda aquí los productos que más te gustan.
                     </p>
-
                 </div>
 
-
                 <div class="favoritos-contador">
-
                     <i class="fa-regular fa-heart"></i>
 
                     <span id="contadorFavoritos">
                         0
                     </span>
-
                 </div>
 
             </section>
 
-
-            <!-- =================================================
-                 FILTROS / ACCIONES
-            ================================================== -->
-
+            <!-- FILTROS / ACCIONES -->
             <section class="favoritos-barra">
 
                 <div class="favoritos-resultados">
-
                     <strong id="textoResultados">
                         0 productos
                     </strong>
-
                 </div>
 
-
                 <button type="button" class="btn-limpiar" id="limpiarFavoritos">
-
                     <i class="fa-solid fa-trash-can"></i>
-
                     Limpiar favoritos
-
                 </button>
 
             </section>
 
-
-            <!-- =================================================
-                 PRODUCTOS FAVORITOS
-            ================================================== -->
-
+            <!-- PRODUCTOS FAVORITOS -->
             <section class="favoritos-container" id="favoritosContainer">
-
                 <!-- JAVASCRIPT INSERTA LOS PRODUCTOS -->
-
             </section>
 
-
-            <!-- =================================================
-                 SIN FAVORITOS
-            ================================================== -->
-
+            <!-- SIN FAVORITOS -->
             <section class="sin-favoritos" id="sinFavoritos">
 
                 <div class="sin-favoritos-icon">
-
                     <i class="fa-regular fa-heart"></i>
-
                 </div>
-
 
                 <h2>
                     Aún no tienes favoritos
                 </h2>
-
 
                 <p>
                     Explora nuestra tienda y guarda los productos
                     que más te gusten.
                 </p>
 
-
                 <a href="tienda.html" class="btn-ir-tienda">
-
                     <i class="fa-solid fa-bag-shopping"></i>
-
                     Explorar tienda
-
                 </a>
 
             </section>
 
         </main>
 
-
-        <!-- =====================================================
-             NAVEGACIÓN INFERIOR
-        ====================================================== -->
-
+        <!-- NAVEGACIÓN INFERIOR -->
         <nav class="bottom-nav">
 
-            <!-- INICIO -->
-
             <a href="index.html" class="nav-item">
-
                 <i class="fa-solid fa-house"></i>
-
-                <span>
-                    Inicio
-                </span>
-
+                <span>Inicio</span>
             </a>
-
-
-            <!-- TIENDA -->
 
             <a href="tienda.html" class="nav-item">
-
                 <i class="fa-solid fa-bag-shopping"></i>
-
-                <span>
-                    Tienda
-                </span>
-
+                <span>Tienda</span>
             </a>
-
-
-            <!-- FAVORITOS -->
 
             <a href="favoritos.html" class="nav-item active">
-
                 <i class="fa-solid fa-heart"></i>
-
-                <span>
-                    Favoritos
-                </span>
-
+                <span>Favoritos</span>
             </a>
-
-
-            <!-- CARRITO -->
 
             <a href="carrito.html" class="nav-item cart">
-
                 <i class="fa-solid fa-cart-shopping"></i>
-
-                <b id="contadorCarrito">
-                    0
-                </b>
-
-                <span>
-                    Carrito
-                </span>
-
+                <b id="contadorCarrito">0</b>
+                <span>Carrito</span>
             </a>
 
-
-            <!-- PERFIL -->
-
             <a href="perfil.html" class="nav-item">
-
                 <i class="fa-regular fa-user"></i>
-
-                <span>
-                    Perfil
-                </span>
-
+                <span>Perfil</span>
             </a>
 
         </nav>
 
     </div>
 
-
-    <!-- =========================================================
+    <!-- =====================================================
          MODAL PRODUCTO
-    ========================================================== -->
+    ====================================================== -->
 
     <div class="modal-producto" id="modalProducto">
 
         <div class="modal-producto-contenido">
 
-            <!-- CERRAR -->
-
             <button type="button" class="modal-cerrar" id="cerrarModal">
-
                 <i class="fa-solid fa-xmark"></i>
-
             </button>
 
-
-            <!-- IMAGEN -->
-
             <div class="modal-producto-imagen">
-
                 <img id="modalImagen" src="" alt="Producto">
-
             </div>
-
-
-            <!-- INFORMACIÓN -->
 
             <div class="modal-producto-info">
 
                 <span class="modal-categoria" id="modalCategoria">
-
                     Producto
-
                 </span>
-
 
                 <h2 id="modalNombre">
                     Producto
                 </h2>
 
-
-                <p class="modal-descripcion" id="modalDescripcion">
-                </p>
-
+                <p class="modal-descripcion" id="modalDescripcion"></p>
 
                 <div class="modal-precios">
-
                     <span class="modal-precio" id="modalPrecio">
-
                         Q0.00
-
                     </span>
-
                 </div>
 
-
                 <p class="modal-stock">
-
                     Stock disponible:
-
-                    <strong id="modalStock">
-                        0
-                    </strong>
-
+                    <strong id="modalStock">0</strong>
                 </p>
 
-
-                <!-- =================================================
-                     BOTÓN DEL MODAL
-                ================================================== -->
-
                 <button type="button" class="modal-btn-carrito" id="modalAgregarCarrito">
-
                     <i class="fa-solid fa-cart-shopping"></i>
-
                     Agregar al carrito
-
                 </button>
 
-
-                <!-- QUITAR FAVORITO -->
-
                 <button type="button" class="modal-btn-favorito" id="modalQuitarFavorito">
-
                     <i class="fa-solid fa-heart"></i>
-
                     Quitar de favoritos
-
                 </button>
 
             </div>
@@ -344,18 +939,10 @@
 
     </div>
 
-
-    <!-- =========================================================
-         SUPABASE
-    ========================================================== -->
-
+    <!-- SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
-    <!-- =========================================================
-         JAVASCRIPT FAVORITOS
-    ========================================================== -->
-
+    <!-- JAVASCRIPT ORIGINAL -->
     <script src="favoritos.js"></script>
 
 </body>
