@@ -7,576 +7,473 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Mi Perfil - DL Luxury</title>
-
-    <!-- FONT AWESOME -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="perfil.css">
-
-</head>
-
-<body>
-
-    <main class="perfil-container">
-
-        <!-- =================================================
-             ENCABEZADO
-        ================================================== -->
-
-        <section class="perfil-header">
-
-            <div class="perfil-avatar">
-                <i class="fa-regular fa-user"></i>
-            </div>
-
-            <div class="perfil-header-info">
-
-                <span class="perfil-label">
-                    DL LUXURY
-                </span>
-
-                <h1>
-                    Mi Perfil
-                </h1>
-
-                <p id="estadoSesion">
-                    Inicia sesión para continuar
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             LOGIN
-        ================================================== -->
-
-        <section id="seccionLogin" class="perfil-section">
-
-            <div class="section-title">
-
-                <i class="fa-solid fa-right-to-bracket"></i>
-
-                <div>
-
-                    <h2>
-                        Iniciar sesión
-                    </h2>
-
-                    <p>
-                        Accede a tu cuenta DL Luxury
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <form id="formLogin" class="perfil-form">
-
-                <div class="input-group">
-
-                    <label for="loginCorreo">
-                        Correo electrónico
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        <i class="fa-regular fa-envelope"></i>
-
-                        <input type="email" id="loginCorreo" placeholder="tu@correo.com" autocomplete="email" required>
-
-                    </div>
-
-                </div>
-
-
-                <div class="input-group">
-
-                    <label for="loginPassword">
-                        Contraseña
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        <i class="fa-solid fa-lock"></i>
-
-                        <input type="password" id="loginPassword" placeholder="Tu contraseña"
-                            autocomplete="current-password" required>
-
-                        <button type="button" id="mostrarPassword" class="btn-mostrar-password"
-                            aria-label="Mostrar contraseña">
-
-                            <i class="fa-regular fa-eye"></i>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <button type="submit" class="btn-principal" id="btnLogin">
-
-                    <i class="fa-solid fa-right-to-bracket"></i>
-
-                    Iniciar sesión
-
-                </button>
-
-
-                <p id="mensajeLogin" class="mensaje-form"></p>
-
-            </form>
-
-        </section>
-
-
-        <!-- =================================================
-             USUARIO
-        ================================================== -->
-
-        <section id="seccionUsuario" class="perfil-section" style="display:none;">
-
-            <div class="usuario-card">
-
-                <div class="usuario-avatar">
-
-                    <i class="fa-regular fa-user"></i>
-
-                </div>
-
-
-                <div class="usuario-info">
-
-                    <span class="usuario-verificado">
-
-                        <i class="fa-solid fa-circle-check"></i>
-
-                        Cuenta activa
-
-                    </span>
-
-
-                    <h2 id="usuarioNombre">
-                        Usuario
-                    </h2>
-
-
-                    <p id="usuarioCorreo">
-                        correo@ejemplo.com
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <button type="button" id="btnCerrarSesion" class="btn-cerrar-sesion">
-
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                Cerrar sesión
-
-            </button>
-
-        </section>
-
-
-        <!-- =================================================
-             PUNTOS
-        ================================================== -->
-
-        <section id="seccionPuntos" class="perfil-section" style="display:none;">
-
-            <div class="section-title">
-
-                <i class="fa-solid fa-star"></i>
-
-                <div>
-
-                    <h2>
-                        Mis puntos
-                    </h2>
-
-                    <p>
-                        Acumula puntos con tus compras y canjéalos
-                        por productos DL Luxury
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="puntos-panel">
-
-                <div class="puntos-panel-icono">
-
-                    <i class="fa-solid fa-star"></i>
-
-                </div>
-
-
-                <div class="puntos-panel-info">
-
-                    <span>
-                        PUNTOS DISPONIBLES
-                    </span>
-
-
-                    <strong id="puntosUsuario">
-                        0
-                    </strong>
-
-
-                    <small>
-                        puntos
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <div class="puntos-beneficios">
-
-                <div class="beneficio">
-
-                    <i class="fa-solid fa-cart-shopping"></i>
-
-                    <span>
-                        Compra productos
-                    </span>
-
-                </div>
-
-
-                <div class="beneficio">
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <span>
-                        Acumula puntos
-                    </span>
-
-                </div>
-
-
-                <div class="beneficio">
-
-                    <i class="fa-solid fa-gift"></i>
-
-                    <span>
-                        Canjea productos
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="aviso-puntos">
-
-                <i class="fa-solid fa-circle-info"></i>
-
-                <p>
-                    Tus puntos son exclusivos de DL Luxury.
-                    Puedes utilizarlos para obtener productos
-                    disponibles en la tienda.
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             CATÁLOGO DE CANJE
-        ================================================== -->
-
-        <section id="seccionCanje" class="perfil-section" style="display:none;">
-
-            <div class="section-title">
-
-                <i class="fa-solid fa-gift"></i>
-
-                <div>
-
-                    <h2>
-                        Canjear puntos
-                    </h2>
-
-                    <p>
-                        Escoge directamente cualquier producto de la tienda
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div id="catalogoCanje">
-
-                <div class="productos-canje-cargando">
-
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-
-                    <span>
-                        Cargando productos...
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="aviso-canje">
-
-                <i class="fa-solid fa-circle-info"></i>
-
-                <p>
-                    Puedes escoger cualquier producto disponible.
-                    El costo del canje corresponde al precio del producto
-                    convertido en puntos.
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             HISTORIAL
-        ================================================== -->
-
-        <section id="seccionHistorial" class="perfil-section" style="display:none;">
-
-            <div class="section-title">
-
-                <i class="fa-solid fa-clock-rotate-left"></i>
-
-                <div>
-
-                    <h2>
-                        Historial de canjes
-                    </h2>
-
-                    <p>
-                        Consulta tus productos canjeados
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div id="historialCanjes" class="historial-canjes">
-
-                <div class="historial-vacio">
-
-                    <i class="fa-solid fa-gift"></i>
-
-                    <p>
-                        Aún no has realizado ningún canje.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
+    <title>Drip Luxury - Perfumes</title>
 
 
     <!-- =====================================================
-         MODAL DETALLE DEL PRODUCTO
-    ====================================================== -->
+         ESTILOS GENERALES
+    ===================================================== -->
 
-    <div id="modalDetalleProducto" class="modal-detalle-producto" aria-hidden="true">
-
-        <div class="detalle-producto-contenido" role="dialog" aria-modal="true" aria-labelledby="detalleNombreProducto">
-
-            <button type="button" id="cerrarModalDetalleProducto" class="cerrar-modal-detalle" aria-label="Cerrar">
-
-                <i class="fa-solid fa-xmark"></i>
-
-            </button>
+    <link rel="stylesheet" href="playeras.css">
 
 
-            <!-- IMAGEN -->
+    <!-- =====================================================
+         ICONOS
+    ===================================================== -->
 
-            <div class="detalle-producto-imagen">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-                <img id="detalleImagenProducto" src="" alt="Producto">
+</head>
 
-                <div id="detalleSinImagenProducto" class="detalle-sin-imagen" style="display:none;">
 
-                    <i class="fa-solid fa-image"></i>
 
-                    <span>
-                        Sin imagen disponible
-                    </span>
 
-                </div>
+<body>
+
+
+    <!-- =====================================================
+         APP
+    ===================================================== -->
+
+    <div class="app">
+
+
+        <!-- =================================================
+             TIENDA
+        ================================================= -->
+
+        <main class="tienda">
+
+
+            <!-- =================================================
+                 ENCABEZADO
+            ================================================= -->
+
+            <div class="tienda-header">
+
+                <h1>
+                    Perfumes
+                </h1>
+
+                <p>
+                    Encuentra los mejores perfumes.
+                </p>
 
             </div>
 
 
-            <!-- INFORMACIÓN -->
 
-            <div class="detalle-producto-info">
+            <!-- =================================================
+                 HOMBRE / MUJER
+            ================================================= -->
 
-                <span class="detalle-producto-marca">
-                    DL LUXURY
-                </span>
-
-
-                <span id="detalleCategoriaProducto" class="detalle-categoria">
-                    Categoría
-                </span>
+            <div class="categorias-genero">
 
 
-                <h2 id="detalleNombreProducto">
-                    Producto
-                </h2>
+                <!-- TODOS -->
 
+                <button type="button" class="genero-btn active" data-genero="todos">
 
-                <p id="detalleDescripcionProducto">
-                    Sin descripción disponible.
-                </p>
-
-
-                <div class="detalle-producto-precio-wrap">
+                    <i class="fa-solid fa-border-all"></i>
 
                     <span>
-                        Precio
+                        Todos
                     </span>
 
-                    <strong id="detallePrecioProducto">
-                        Q0.00
-                    </strong>
+                </button>
+
+
+
+                <!-- HOMBRE -->
+
+                <button type="button" class="genero-btn" data-genero="hombre">
+
+                    <i class="fa-solid fa-person"></i>
+
+                    <span>
+                        Perfumes para él
+                    </span>
+
+                </button>
+
+
+
+                <!-- MUJER -->
+
+                <button type="button" class="genero-btn" data-genero="mujer">
+
+                    <i class="fa-solid fa-person-dress"></i>
+
+                    <span>
+                        Perfumes para ella
+                    </span>
+
+                </button>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 BUSCADOR
+            ================================================= -->
+
+            <div class="buscador-tienda">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input type="text" id="buscarProducto" placeholder="Buscar perfumes..." autocomplete="off">
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FILTROS
+            ================================================= -->
+
+            <div class="tienda-controles">
+
+
+                <!-- CATEGORÍA -->
+
+                <select id="filtroCategoria">
+
+                    <option value="todos">
+                        Todas las categorías
+                    </option>
+
+                    <option value="perfumes">
+                        Perfumes
+                    </option>
+
+                </select>
+
+
+
+                <!-- ORDEN -->
+
+                <select id="ordenarProductos">
+
+                    <option value="default">
+                        Ordenar por
+                    </option>
+
+                    <option value="precio-menor">
+                        Precio: menor a mayor
+                    </option>
+
+                    <option value="precio-mayor">
+                        Precio: mayor a menor
+                    </option>
+
+                    <option value="nombre-az">
+                        Nombre: A - Z
+                    </option>
+
+                    <option value="nombre-za">
+                        Nombre: Z - A
+                    </option>
+
+                    <option value="nuevo">
+                        Más nuevos
+                    </option>
+
+                    <option value="stock">
+                        Mayor stock
+                    </option>
+
+                </select>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PRODUCTOS
+            ================================================= -->
+
+            <div class="productos-tienda" id="productosTienda">
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SIN RESULTADOS
+            ================================================= -->
+
+            <div id="sinResultados" class="sin-resultados" style="display: none;">
+
+                <i class="fa-solid fa-box-open"></i>
+
+                <h3>
+                    No encontramos perfumes
+                </h3>
+
+                <p>
+                    Intenta buscar otro producto.
+                </p>
+
+            </div>
+
+
+        </main>
+
+
+
+        <!-- =====================================================
+             MODAL PRODUCTO
+        ===================================================== -->
+
+        <div class="modal-producto" id="modalProducto">
+
+            <div class="modal-producto-contenido">
+
+
+                <!-- =================================================
+                     BOTÓN CERRAR
+                ================================================= -->
+
+                <button class="modal-cerrar" id="cerrarModalProducto" type="button" aria-label="Cerrar">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+
+
+                <!-- =================================================
+                     IMAGEN DEL PRODUCTO
+                ================================================= -->
+
+                <div class="modal-producto-imagen">
+
+                    <img id="modalProductoImagen" src="" alt="Producto">
 
                 </div>
 
 
-                <div class="detalle-producto-puntos">
 
-                    <i class="fa-solid fa-star"></i>
+                <!-- =================================================
+                     INFORMACIÓN DEL PRODUCTO
+                ================================================= -->
 
-                    <span>
+                <div class="modal-producto-info">
 
-                        Necesitas
 
-                        <strong id="detallePuntosProducto">
+                    <!-- CATEGORÍA -->
+
+                    <span class="modal-producto-categoria">
+                        Perfumes
+                    </span>
+
+
+
+                    <!-- NOMBRE -->
+
+                    <h2 id="modalProductoNombre">
+                        Producto
+                    </h2>
+
+
+
+                    <!-- =================================================
+                         DESCRIPCIÓN
+                    ================================================= -->
+
+                    <div class="modal-producto-descripcion">
+
+                        <span class="modal-descripcion-titulo">
+                            Descripción
+                        </span>
+
+                        <p id="modalProductoDescripcion">
+                            Sin descripción disponible.
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         PRECIOS
+                    ================================================= -->
+
+                    <div class="modal-producto-precios">
+
+                        <span class="modal-precio-original" id="modalProductoPrecioOriginal">
+                            Q0.00
+                        </span>
+
+
+                        <span class="modal-precio-final" id="modalProductoPrecio">
+                            Q0.00
+                        </span>
+
+
+                        <span class="modal-descuento" id="modalProductoDescuento">
+                            -0%
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         STOCK
+                    ================================================= -->
+
+                    <p class="modal-producto-stock">
+
+                        Stock disponible:
+
+                        <strong id="modalProductoStock">
                             0
                         </strong>
 
-                        puntos para canjearlo.
+                    </p>
 
-                    </span>
+
+
+                    <!-- =================================================
+                         CARRITO
+                    ================================================= -->
+
+                    <button class="modal-btn-carrito" id="modalProductoComprar" type="button">
+
+                        <i class="fa-solid fa-cart-shopping"></i>
+
+                        Agregar al carrito
+
+                    </button>
+
+
+
+                    <!-- =================================================
+                         FAVORITO
+                    ================================================= -->
+
+                    <button class="modal-btn-favorito" id="modalProductoFavorito" type="button">
+
+                        <i class="fa-regular fa-heart"></i>
+
+                        Favorito
+
+                    </button>
+
 
                 </div>
-
-
-                <div id="detalleStockProducto" class="detalle-stock">
-                    Disponible
-                </div>
-
-
-                <button type="button" id="btnCanjearDesdeDetalle" class="btn-canjear-detalle">
-
-                    <i class="fa-solid fa-gift"></i>
-
-                    Canjear producto
-
-                </button>
 
             </div>
 
         </div>
 
+
+
+        <!-- =====================================================
+             NAVEGACIÓN INFERIOR
+        ===================================================== -->
+
+        <nav class="bottom-nav">
+
+
+            <!-- INICIO -->
+
+            <a href="index.html" class="nav-item">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Inicio
+                </span>
+
+            </a>
+
+
+
+            <!-- TIENDA -->
+
+            <a href="tienda.html" class="nav-item active">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+                <span>
+                    Tienda
+                </span>
+
+            </a>
+
+
+
+            <!-- FAVORITOS -->
+
+            <a href="favorito.html" class="nav-item">
+
+                <i class="fa-regular fa-heart"></i>
+
+                <span>
+                    Favoritos
+                </span>
+
+            </a>
+
+
+
+            <!-- CARRITO -->
+
+            <a href="carrito.html" class="nav-item cart">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <b id="contadorCarrito">
+                    0
+                </b>
+
+                <span>
+                    Carrito
+                </span>
+
+            </a>
+
+
+
+            <!-- PERFIL -->
+
+            <a href="perfil.html" class="nav-item">
+
+                <i class="fa-regular fa-user"></i>
+
+                <span>
+                    Perfil
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
     </div>
 
-
-    <!-- =====================================================
-         MENÚ INFERIOR
-    ====================================================== -->
-
-    <nav class="bottom-nav">
-
-        <a href="index.html" class="nav-item">
-
-            <i class="fa-solid fa-house"></i>
-
-            <span>
-                Inicio
-            </span>
-
-        </a>
-
-
-        <a href="tienda.html" class="nav-item">
-
-            <i class="fa-solid fa-bag-shopping"></i>
-
-            <span>
-                Tienda
-            </span>
-
-        </a>
-
-
-        <a href="favorito.html" class="nav-item">
-
-            <i class="fa-regular fa-heart"></i>
-
-            <span>
-                Favoritos
-            </span>
-
-        </a>
-
-
-        <a href="carrito.html" class="nav-item cart">
-
-            <i class="fa-solid fa-cart-shopping"></i>
-
-            <b id="contadorCarrito">
-                0
-            </b>
-
-            <span>
-                Carrito
-            </span>
-
-        </a>
-
-
-        <a href="perfil.html" class="nav-item active">
-
-            <i class="fa-regular fa-user"></i>
-
-            <span>
-                Perfil
-            </span>
-
-        </a>
-
-    </nav>
 
 
     <!-- =====================================================
          SUPABASE
-    ====================================================== -->
+    ===================================================== -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script src="perfil.js"></script>
+
+
+    <!-- =====================================================
+         PERFUMES JS
+    ===================================================== -->
+
+    <script src="perfumes.js"></script>
+
 
 </body>
 
