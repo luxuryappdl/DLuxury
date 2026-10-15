@@ -1,33 +1,9 @@
 /* =========================================================
-   DL LUXURY
-   CARRITO - HALLOWEEN EDITION 🎃
+   DL LUXURY — CARRITO HALLOWEEN CHUCKY
    CSS COMPLETO
+   PALETA IGUAL A FAVORITOS
+   DISEÑO RESPONSIVE ORIGINAL CONSERVADO
 ========================================================= */
-
-
-/* =========================================================
-   VARIABLES HALLOWEEN
-========================================================= */
-
-:root {
-    --halloween-black: #08060a;
-    --halloween-dark: #100b13;
-    --halloween-card: #151019;
-
-    --halloween-purple: #7627a8;
-    --halloween-purple-dark: #3b1457;
-
-    --halloween-orange: #ff6a00;
-    --halloween-orange-light: #ff8c1a;
-
-    --halloween-red: #9d1725;
-
-    --halloween-text: #f4eee7;
-    --halloween-muted: #aaa0aa;
-
-    --halloween-border: rgba(255, 106, 0, 0.25);
-}
-
 
 /* =========================================================
    RESET
@@ -41,17 +17,23 @@
 
 html {
     scroll-behavior: smooth;
+    background: #080607;
 }
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background:
-        radial-gradient(circle at 10% 10%, rgba(118, 39, 168, 0.12), transparent 25%),
-        radial-gradient(circle at 90% 20%, rgba(255, 106, 0, 0.08), transparent 25%),
-        #08060a;
-    color: var(--halloween-text);
+    background-color: #050303;
+    background-image:
+        linear-gradient(rgba(5, 0, 2, 0.35),
+            rgba(5, 0, 2, 0.60)),
+        url("chuky.jpg");
+    background-size: 75% auto;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #f5eeee;
+    min-height: 100vh;
 }
-
 
 /* =========================================================
    APP
@@ -62,16 +44,10 @@ body {
     min-height: 100vh;
     max-width: 1200px;
     margin: 0 auto;
-
-    background:
-        radial-gradient(circle at 20% 30%, rgba(118, 39, 168, 0.035), transparent 25%),
-        radial-gradient(circle at 80% 70%, rgba(255, 106, 0, 0.025), transparent 25%),
-        var(--halloween-black);
-
+    background: rgba(8, 6, 7, 0.45);
     position: relative;
     overflow-x: hidden;
 }
-
 
 /* =========================================================
    HEADER
@@ -80,82 +56,29 @@ body {
 .hearder {
     width: 100%;
     height: 75px;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     padding: 0 30px;
-
-    background:
-        linear-gradient(135deg,
-            #08060a,
-            #170d1d,
-            #0b080e);
-
-    color: var(--halloween-text);
-
-    border-bottom: 1px solid rgba(255, 106, 0, 0.45);
-
-    box-shadow:
-        0 5px 25px rgba(0, 0, 0, 0.55),
-        0 1px 15px rgba(118, 39, 168, 0.15);
-
+    background: rgba(5, 3, 4, 0.97);
+    color: #fff;
     position: relative;
     z-index: 20;
+    border-bottom: 1px solid #59101e;
+    box-shadow:
+        0 5px 25px rgba(0, 0, 0, 0.65),
+        0 2px 15px rgba(130, 0, 20, 0.12);
 }
-
-
-/* TELARAÑA DEL HEADER */
-
-.hearder::before {
-    content: "🕸️";
-
-    position: absolute;
-    top: -4px;
-    left: 15px;
-
-    font-size: 43px;
-
-    opacity: 0.16;
-
-    pointer-events: none;
-}
-
-
-/* CALABAZA DEL HEADER */
-
-.hearder::after {
-    content: "🎃";
-
-    position: absolute;
-    right: 70px;
-    top: 8px;
-
-    font-size: 43px;
-
-    opacity: 0.18;
-
-    pointer-events: none;
-
-    animation: halloweenGlow 3s ease-in-out infinite;
-}
-
 
 .carrito-volver {
     width: 42px;
     height: 42px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    color: var(--halloween-text);
-
+    color: #fff;
     text-decoration: none;
-
     border-radius: 50%;
-
     transition:
         background 0.25s ease,
         color 0.25s ease,
@@ -163,65 +86,39 @@ body {
 }
 
 .carrito-volver:hover {
-    background: var(--halloween-orange);
-    color: #111;
-
+    background: #a00016;
+    color: #fff;
     transform: translateX(-2px);
-
-    box-shadow:
-        0 0 18px rgba(255, 106, 0, 0.45);
 }
-
 
 .carrito-header-titulo {
     text-align: center;
 }
 
-
 .carrito-header-titulo span {
     display: block;
-
-    color: var(--halloween-orange);
-
+    color: #e00025;
     font-size: 9px;
     font-weight: 800;
-
     letter-spacing: 3px;
-
-    text-shadow:
-        0 0 10px rgba(255, 106, 0, 0.45);
 }
-
 
 .carrito-header-titulo h1 {
     margin-top: 3px;
-
     color: #fff;
-
     font-size: 18px;
     font-weight: 800;
-
-    text-shadow:
-        0 0 12px rgba(118, 39, 168, 0.45);
 }
-
 
 .carrito-header-icono {
     width: 42px;
     height: 42px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    color: var(--halloween-orange);
-
+    color: #e00025;
     font-size: 18px;
-
-    text-shadow:
-        0 0 12px rgba(255, 106, 0, 0.5);
 }
-
 
 /* =========================================================
    CONTENIDO
@@ -229,30 +126,9 @@ body {
 
 .content {
     width: 100%;
-
     padding: 35px 45px 110px;
-
-    position: relative;
+    background: transparent;
 }
-
-
-/* TELARAÑA DECORATIVA */
-
-.content::before {
-    content: "🕸️";
-
-    position: absolute;
-
-    top: 5px;
-    right: 8px;
-
-    font-size: 75px;
-
-    opacity: 0.08;
-
-    pointer-events: none;
-}
-
 
 /* =========================================================
    INTRO
@@ -260,76 +136,37 @@ body {
 
 .carrito-intro {
     width: 100%;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 30px;
-
     margin-bottom: 30px;
-
-    position: relative;
 }
-
-
-/* FANTASMA */
-
-.carrito-intro::after {
-    content: "👻";
-
-    position: absolute;
-
-    right: 105px;
-    top: -15px;
-
-    font-size: 42px;
-
-    opacity: 0.12;
-
-    pointer-events: none;
-
-    animation: ghostGlow 4s ease-in-out infinite;
-}
-
 
 .carrito-label {
     display: inline-block;
-
     margin-bottom: 8px;
-
-    color: var(--halloween-orange);
-
+    color: #e00025;
     font-size: 11px;
     font-weight: 800;
-
     letter-spacing: 2px;
-
-    text-shadow:
-        0 0 10px rgba(255, 106, 0, 0.35);
 }
-
 
 .carrito-intro h2 {
-    color: var(--halloween-text);
-
+    color: #fff0f2;
     font-size: 32px;
     font-weight: 800;
-
     text-shadow:
-        0 0 15px rgba(118, 39, 168, 0.3);
+        0 0 15px rgba(160, 0, 22, 0.35),
+        2px 2px 3px #000;
 }
-
 
 .carrito-intro p {
     margin-top: 8px;
-
-    color: var(--halloween-muted);
-
+    color: #bbaeb1;
     font-size: 14px;
     line-height: 1.5;
 }
-
 
 /* =========================================================
    CONTADOR
@@ -338,76 +175,35 @@ body {
 .carrito-contador {
     min-width: 85px;
     height: 85px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     flex-direction: column;
-
     gap: 2px;
-
-    border: 1px solid rgba(255, 106, 0, 0.35);
-
+    border: 1px solid #55202c;
     border-radius: 14px;
-
-    background:
-        linear-gradient(145deg,
-            rgba(118, 39, 168, 0.18),
-            rgba(21, 16, 25, 0.96));
-
+    background: linear-gradient(145deg, #1a0b10, #0b0709);
     box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.35),
-        0 0 20px rgba(118, 39, 168, 0.08);
-
-    position: relative;
-
-    overflow: hidden;
+        0 8px 25px rgba(0, 0, 0, 0.45),
+        inset 0 0 15px rgba(110, 0, 20, 0.12);
 }
-
-
-/* CALABAZA */
-
-.carrito-contador::after {
-    content: "🎃";
-
-    position: absolute;
-
-    right: -7px;
-    bottom: -8px;
-
-    font-size: 30px;
-
-    opacity: 0.16;
-
-    pointer-events: none;
-}
-
 
 .carrito-contador i {
-    color: var(--halloween-orange);
-
+    color: #e00025;
     font-size: 19px;
-
-    text-shadow:
-        0 0 10px rgba(255, 106, 0, 0.55);
+    filter: drop-shadow(0 0 5px rgba(224, 0, 37, 0.45));
 }
-
 
 .carrito-contador strong {
     color: #fff;
-
     font-size: 17px;
     font-weight: 900;
 }
 
-
 .carrito-contador span {
-    color: var(--halloween-muted);
-
+    color: #b5a7aa;
     font-size: 9px;
 }
-
 
 /* =========================================================
    LAYOUT
@@ -415,17 +211,11 @@ body {
 
 .carrito-layout {
     width: 100%;
-
     display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr) 330px;
-
+    grid-template-columns: minmax(0, 1fr) 330px;
     gap: 25px;
-
     align-items: start;
 }
-
 
 /* =========================================================
    PRODUCTOS
@@ -433,12 +223,8 @@ body {
 
 .carrito-productos {
     width: 100%;
-
     min-width: 0;
-
-    position: relative;
 }
-
 
 /* =========================================================
    BARRA
@@ -446,51 +232,20 @@ body {
 
 .carrito-barra {
     width: 100%;
-
     min-height: 55px;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 15px;
-
     padding: 12px 0;
-
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    border-bottom: 1px solid rgba(255, 106, 0, 0.2);
-
-    position: relative;
+    border-top: 1px solid #38151e;
+    border-bottom: 1px solid #38151e;
 }
-
-
-/* CALAVERA */
-
-.carrito-barra::after {
-    content: "💀";
-
-    position: absolute;
-
-    right: 160px;
-    top: 7px;
-
-    font-size: 31px;
-
-    opacity: 0.12;
-
-    pointer-events: none;
-}
-
 
 .carrito-barra strong {
-    color: var(--halloween-text);
-
+    color: #e8dadd;
     font-size: 13px;
-
-    text-shadow:
-        0 0 8px rgba(118, 39, 168, 0.25);
 }
-
 
 /* =========================================================
    VACIAR
@@ -500,53 +255,28 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-
     gap: 7px;
-
     min-height: 35px;
-
     padding: 0 13px;
-
-    border: 1px solid rgba(255, 106, 0, 0.25);
-
+    border: 1px solid #54202b;
     border-radius: 7px;
-
-    background:
-        linear-gradient(135deg,
-            #171019,
-            #0d0a0f);
-
-    color: #bdb3bd;
-
+    background: #160b0f;
+    color: #e9dfe1;
     font-size: 11px;
     font-weight: 700;
-
     cursor: pointer;
-
     transition:
         background 0.25s ease,
         color 0.25s ease,
-        border-color 0.25s ease,
-        transform 0.2s ease;
+        border-color 0.25s ease;
 }
-
 
 .btn-vaciar:hover {
-    background:
-        linear-gradient(135deg,
-            var(--halloween-red),
-            #5c1018);
-
-    border-color: #d42b39;
-
+    background: #a00016;
+    border-color: #e00025;
     color: #fff;
-
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 0 15px rgba(157, 23, 37, 0.35);
+    box-shadow: 0 0 18px rgba(160, 0, 22, 0.3);
 }
-
 
 /* =========================================================
    LISTA
@@ -556,60 +286,20 @@ body {
     width: 100%;
 }
 
-
 /* =========================================================
    PRODUCTO
 ========================================================= */
 
 .carrito-item {
     width: 100%;
-
     display: grid;
-
-    grid-template-columns:
-        100px minmax(0, 1fr) auto;
-
+    grid-template-columns: 100px minmax(0, 1fr) auto;
     gap: 15px;
-
     align-items: center;
-
     padding: 18px 0;
-
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-
-    position: relative;
-
-    transition:
-        background 0.25s ease;
+    border-bottom: 1px solid #46202a;
+    background: transparent;
 }
-
-
-.carrito-item:hover {
-    background:
-        linear-gradient(90deg,
-            rgba(118, 39, 168, 0.04),
-            rgba(255, 106, 0, 0.025),
-            transparent);
-}
-
-
-/* TELARAÑA */
-
-.carrito-item:nth-child(3n)::after {
-    content: "🕷️";
-
-    position: absolute;
-
-    right: 2px;
-    top: 5px;
-
-    font-size: 22px;
-
-    opacity: 0.10;
-
-    pointer-events: none;
-}
-
 
 /* =========================================================
    IMAGEN
@@ -618,50 +308,22 @@ body {
 .carrito-item-imagen {
     width: 100px;
     height: 100px;
-
     overflow: hidden;
-
     border-radius: 10px;
-
     background:
-        linear-gradient(145deg,
-            #171019,
-            #0d0a0f);
-
-    border: 1px solid rgba(255, 106, 0, 0.22);
-
-    box-shadow:
-        0 6px 18px rgba(0, 0, 0, 0.35);
-
-    position: relative;
+        radial-gradient(circle at center,
+            #281017 0%,
+            #10090c 72%,
+            #080607 100%);
+    border: 1px solid #35151e;
 }
-
-
-.carrito-item-imagen::after {
-    content: "🎃";
-
-    position: absolute;
-
-    right: 4px;
-    bottom: 2px;
-
-    font-size: 19px;
-
-    opacity: 0.12;
-
-    pointer-events: none;
-}
-
 
 .carrito-item-imagen img {
     width: 100%;
     height: 100%;
-
     display: block;
-
     object-fit: contain;
 }
-
 
 /* =========================================================
    INFORMACIÓN
@@ -671,68 +333,43 @@ body {
     min-width: 0;
 }
 
-
 .carrito-item-categoria {
     display: block;
-
     margin-bottom: 5px;
-
-    color: var(--halloween-orange);
-
+    color: #e00025;
     font-size: 9px;
     font-weight: 800;
-
     letter-spacing: 1px;
-
     text-transform: uppercase;
 }
 
-
 .carrito-item-info h3 {
     margin: 0;
-
-    color: var(--halloween-text);
-
+    color: #fff1f2;
     font-size: 15px;
     font-weight: 800;
-
     line-height: 1.3;
 }
 
-
 .carrito-item-descripcion {
     margin-top: 5px;
-
-    color: var(--halloween-muted);
-
+    color: #b5a5a9;
     font-size: 11px;
-
     line-height: 1.5;
-
     display: -webkit-box;
-
     -webkit-line-clamp: 2;
-
     -webkit-box-orient: vertical;
-
     overflow: hidden;
 }
 
-
 .carrito-item-precio {
     display: block;
-
     margin-top: 8px;
-
-    color: var(--halloween-orange-light);
-
+    color: #fff;
     font-size: 14px;
     font-weight: 900;
-
-    text-shadow:
-        0 0 8px rgba(255, 106, 0, 0.25);
+    text-shadow: 0 0 10px rgba(160, 0, 22, 0.15);
 }
-
 
 /* =========================================================
    ACCIONES
@@ -740,12 +377,9 @@ body {
 
 .carrito-item-acciones {
     display: flex;
-
     align-items: center;
-
     gap: 12px;
 }
-
 
 /* =========================================================
    CANTIDAD
@@ -753,63 +387,42 @@ body {
 
 .cantidad-control {
     height: 36px;
-
     display: flex;
-
     align-items: center;
-
-    border: 1px solid rgba(255, 106, 0, 0.25);
-
+    border: 1px solid #54202c;
     border-radius: 8px;
-
     overflow: hidden;
-
-    background: #100b13;
+    background: #10090c;
 }
-
 
 .cantidad-btn {
     width: 32px;
     height: 100%;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border: none;
-
-    background: transparent;
-
-    color: #d2c8d2;
-
+    background: #180b10;
+    color: #e9dfe1;
     font-size: 12px;
-
     cursor: pointer;
-
     transition:
         background 0.2s ease,
         color 0.2s ease;
 }
 
-
 .cantidad-btn:hover {
-    background: var(--halloween-orange);
-
-    color: #111;
+    background: #a00016;
+    color: #fff;
 }
-
 
 .cantidad-numero {
     min-width: 30px;
-
     text-align: center;
-
     color: #fff;
-
     font-size: 12px;
     font-weight: 800;
 }
-
 
 /* =========================================================
    TOTAL ITEM
@@ -817,18 +430,14 @@ body {
 
 .carrito-item-total {
     min-width: 90px;
-
     text-align: right;
 }
 
-
 .carrito-item-total strong {
-    color: var(--halloween-text);
-
+    color: #fff;
     font-size: 15px;
     font-weight: 900;
 }
-
 
 /* =========================================================
    ELIMINAR
@@ -837,42 +446,28 @@ body {
 .btn-eliminar-item {
     width: 34px;
     height: 34px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    border: 1px solid rgba(255, 106, 0, 0.12);
-
+    border: 1px solid #61202e;
     border-radius: 50%;
-
-    background: #171019;
-
-    color: #958b95;
-
+    background: rgba(12, 5, 8, 0.94);
+    color: #b5a7aa;
     cursor: pointer;
-
     transition:
         background 0.25s ease,
         color 0.25s ease,
-        transform 0.2s ease,
-        border-color 0.25s ease;
+        border-color 0.25s ease,
+        transform 0.2s ease;
 }
-
 
 .btn-eliminar-item:hover {
-    background: var(--halloween-red);
-
-    border-color: #d42b39;
-
+    background: #b00020;
+    border-color: #f00030;
     color: #fff;
-
     transform: scale(1.05);
-
-    box-shadow:
-        0 0 14px rgba(157, 23, 37, 0.35);
+    box-shadow: 0 0 15px rgba(224, 0, 37, 0.3);
 }
-
 
 /* =========================================================
    RESUMEN
@@ -880,90 +475,31 @@ body {
 
 .carrito-resumen {
     width: 100%;
-
     padding: 25px;
-
-    border: 1px solid rgba(255, 106, 0, 0.25);
-
+    border: 1px solid #54202c;
     border-radius: 14px;
-
-    background:
-        linear-gradient(145deg,
-            #171019,
-            #0d0a0f);
-
+    background: rgba(15, 7, 10, 0.96);
     box-shadow:
-        0 10px 35px rgba(0, 0, 0, 0.45),
-        0 0 25px rgba(118, 39, 168, 0.07);
-
+        0 8px 25px rgba(0, 0, 0, 0.45),
+        inset 0 0 15px rgba(110, 0, 20, 0.08);
     position: sticky;
-
     top: 20px;
-
-    overflow: hidden;
 }
-
-
-/* TELARAÑA RESUMEN */
-
-.carrito-resumen::before {
-    content: "🕸️";
-
-    position: absolute;
-
-    right: -2px;
-    top: -5px;
-
-    font-size: 62px;
-
-    opacity: 0.10;
-
-    pointer-events: none;
-}
-
-
-/* CALAVERA */
-
-.carrito-resumen::after {
-    content: "💀";
-
-    position: absolute;
-
-    bottom: 8px;
-    right: 12px;
-
-    font-size: 28px;
-
-    opacity: 0.08;
-
-    pointer-events: none;
-}
-
 
 .resumen-header span {
     display: block;
-
     margin-bottom: 5px;
-
-    color: var(--halloween-orange);
-
+    color: #e00025;
     font-size: 9px;
     font-weight: 800;
-
     letter-spacing: 2px;
 }
 
-
 .resumen-header h2 {
-    color: #fff;
-
+    color: #fff0f2;
     font-size: 22px;
     font-weight: 800;
-
-    text-shadow:
-        0 0 12px rgba(118, 39, 168, 0.35);
 }
-
 
 /* =========================================================
    LÍNEAS
@@ -971,30 +507,22 @@ body {
 
 .resumen-linea {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
-
     gap: 15px;
-
     margin-top: 18px;
 }
 
-
 .resumen-linea span {
-    color: var(--halloween-muted);
-
+    color: #b5a7aa;
     font-size: 12px;
 }
 
-
 .resumen-linea strong {
-    color: var(--halloween-text);
-
+    color: #f5eeee;
     font-size: 12px;
     font-weight: 800;
 }
-
 
 /* =========================================================
    SEPARADOR
@@ -1002,19 +530,10 @@ body {
 
 .resumen-separador {
     width: 100%;
-
     height: 1px;
-
     margin: 20px 0;
-
-    background:
-        linear-gradient(90deg,
-            transparent,
-            rgba(255, 106, 0, 0.5),
-            rgba(118, 39, 168, 0.5),
-            transparent);
+    background: #46202a;
 }
-
 
 /* =========================================================
    TOTAL
@@ -1022,32 +541,23 @@ body {
 
 .resumen-total {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
-
     gap: 15px;
 }
 
-
 .resumen-total span {
-    color: var(--halloween-text);
-
+    color: #fff0f2;
     font-size: 14px;
     font-weight: 800;
 }
 
-
 .resumen-total strong {
-    color: var(--halloween-orange-light);
-
+    color: #fff;
     font-size: 21px;
     font-weight: 900;
-
-    text-shadow:
-        0 0 12px rgba(255, 106, 0, 0.35);
+    text-shadow: 0 0 10px rgba(160, 0, 22, 0.2);
 }
-
 
 /* =========================================================
    FINALIZAR
@@ -1056,66 +566,40 @@ body {
 .btn-finalizar {
     width: 100%;
     height: 50px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     gap: 9px;
-
     margin-top: 22px;
-
-    border: 1px solid var(--halloween-orange);
-
+    border: 1px solid #a51b31;
     border-radius: 9px;
-
-    background:
-        linear-gradient(135deg,
-            #ff6a00,
-            #c94d00);
-
+    background: linear-gradient(135deg, #8e0018, #51000e);
     color: #fff;
-
     font-size: 13px;
     font-weight: 800;
-
     cursor: pointer;
-
     transition:
         background 0.25s ease,
         border-color 0.25s ease,
         color 0.25s ease,
-        transform 0.2s ease,
-        box-shadow 0.25s ease;
+        transform 0.2s ease;
 }
-
 
 .btn-finalizar i {
     color: #fff;
 }
 
-
 .btn-finalizar:hover {
-    background:
-        linear-gradient(135deg,
-            #7627a8,
-            #4b166b);
-
-    border-color: #9d42d0;
-
+    background: linear-gradient(135deg, #e00025, #8e0018);
+    border-color: #ff344d;
     color: #fff;
-
     transform: translateY(-2px);
-
-    box-shadow:
-        0 8px 25px rgba(118, 39, 168, 0.35);
+    box-shadow: 0 0 18px rgba(224, 0, 37, 0.3);
 }
-
 
 .btn-finalizar:hover i {
     color: #fff;
 }
-
 
 /* =========================================================
    NOTA
@@ -1123,16 +607,11 @@ body {
 
 .resumen-nota {
     margin-top: 13px;
-
-    color: #8f858f;
-
+    color: #b5a5a9;
     font-size: 10px;
-
     line-height: 1.6;
-
     text-align: center;
 }
-
 
 /* =========================================================
    CARRITO VACÍO
@@ -1140,182 +619,78 @@ body {
 
 .carrito-vacio {
     width: 100%;
-
     display: none;
-
     align-items: center;
     justify-content: center;
-
     flex-direction: column;
-
     padding: 75px 20px;
-
     text-align: center;
-
-    position: relative;
+    background: rgba(15, 7, 10, 0.82);
+    border: 1px solid #46202a;
+    border-radius: 14px;
 }
-
-
-/* FANTASMA */
-
-.carrito-vacio::before {
-    content: "👻";
-
-    position: absolute;
-
-    top: 35px;
-    left: 20%;
-
-    font-size: 42px;
-
-    opacity: 0.10;
-
-    pointer-events: none;
-
-    animation: ghostGlow 4s ease-in-out infinite;
-}
-
-
-/* ARAÑA */
-
-.carrito-vacio::after {
-    content: "🕷️";
-
-    position: absolute;
-
-    bottom: 30px;
-    right: 20%;
-
-    font-size: 34px;
-
-    opacity: 0.10;
-
-    pointer-events: none;
-}
-
 
 .carrito-vacio.visible {
     display: flex;
 }
 
-
 .carrito-vacio-icono {
     width: 80px;
     height: 80px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     margin-bottom: 20px;
-
+    border: 1px solid #59202c;
     border-radius: 50%;
-
-    background:
-        linear-gradient(145deg,
-            #1c1221,
-            #0e0a10);
-
-    border: 1px solid rgba(255, 106, 0, 0.3);
-
-    color: var(--halloween-orange);
-
+    background: radial-gradient(circle, #32101a, #10090c);
+    color: #e00025;
     font-size: 28px;
-
-    box-shadow:
-        0 0 25px rgba(255, 106, 0, 0.12);
-
-    position: relative;
+    box-shadow: 0 0 25px rgba(160, 0, 22, 0.14);
 }
-
-
-.carrito-vacio-icono::after {
-    content: "💀";
-
-    position: absolute;
-
-    right: -15px;
-    top: -13px;
-
-    font-size: 24px;
-
-    opacity: 0.45;
-}
-
 
 .carrito-vacio h3 {
-    color: var(--halloween-text);
-
+    color: #fff0f2;
     font-size: 21px;
     font-weight: 800;
 }
 
-
 .carrito-vacio p {
     max-width: 400px;
-
     margin-top: 9px;
-
-    color: var(--halloween-muted);
-
+    color: #b5a5a9;
     font-size: 13px;
-
     line-height: 1.6;
 }
 
-
 .btn-ir-tienda {
     height: 44px;
-
     display: inline-flex;
-
     align-items: center;
     justify-content: center;
-
     gap: 8px;
-
     margin-top: 22px;
-
     padding: 0 20px;
-
+    border: 1px solid #9d2438;
     border-radius: 8px;
-
-    background:
-        linear-gradient(135deg,
-            var(--halloween-orange),
-            #c94d00);
-
-    border: 1px solid var(--halloween-orange);
-
+    background: linear-gradient(135deg, #a0001c, #51000e);
     color: #fff;
-
     text-decoration: none;
-
     font-size: 12px;
     font-weight: 800;
-
     transition:
         background 0.25s ease,
         color 0.25s ease,
-        transform 0.2s ease,
-        box-shadow 0.25s ease;
+        transform 0.2s ease;
 }
-
 
 .btn-ir-tienda:hover {
-    background:
-        linear-gradient(135deg,
-            var(--halloween-purple),
-            #4b166b);
-
+    background: #e00025;
+    border-color: #ff344d;
     color: #fff;
-
     transform: translateY(-2px);
-
-    box-shadow:
-        0 8px 20px rgba(118, 39, 168, 0.3);
+    box-shadow: 0 0 18px rgba(224, 0, 37, 0.35);
 }
-
 
 /* =========================================================
    NAVEGACIÓN INFERIOR
@@ -1324,105 +699,56 @@ body {
 .bottom-nav {
     width: 100%;
     height: 72px;
-
     display: flex;
     align-items: center;
     justify-content: space-around;
-
     position: fixed;
-
     bottom: 0;
     left: 50%;
-
     transform: translateX(-50%);
-
     max-width: 1200px;
-
     z-index: 100;
-
-    background:
-        linear-gradient(90deg,
-            #08060a,
-            #160d1b,
-            #08060a);
-
-    border-top: 1px solid rgba(255, 106, 0, 0.35);
-
+    background: rgba(5, 3, 4, 0.98);
+    border-top: 1px solid #5b1524;
     box-shadow:
-        0 -8px 25px rgba(0, 0, 0, 0.55),
-        0 -1px 12px rgba(118, 39, 168, 0.1);
-
-    position: fixed;
+        0 -5px 25px rgba(0, 0, 0, 0.6),
+        0 -2px 15px rgba(130, 0, 20, 0.12);
 }
-
-
-/* ARAÑA EN NAV */
-
-.bottom-nav::before {
-    content: "🕷️";
-
-    position: absolute;
-
-    top: -18px;
-    right: 17%;
-
-    font-size: 24px;
-
-    opacity: 0.16;
-
-    pointer-events: none;
-}
-
 
 .nav-item {
     min-width: 70px;
     height: 100%;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     flex-direction: column;
-
     position: relative;
-
     gap: 5px;
-
-    color: #8f858f;
-
+    color: #9c8b90;
     font-size: 10px;
     font-weight: 700;
-
     text-decoration: none;
-
     transition:
         color 0.25s ease,
         transform 0.2s ease;
 }
 
-
 .nav-item i {
     font-size: 17px;
 }
-
 
 .nav-item:hover {
     color: #fff;
 }
 
-
 .nav-item.active {
-    color: var(--halloween-orange);
-
-    text-shadow:
-        0 0 10px rgba(255, 106, 0, 0.45);
+    color: #ff263f;
+    text-shadow: 0 0 10px rgba(224, 0, 37, 0.4);
 }
-
 
 .nav-item:active {
     transform: scale(0.95);
 }
-
 
 /* =========================================================
    CONTADOR CARRITO
@@ -1432,79 +758,27 @@ body {
     position: relative;
 }
 
-
 .nav-item.cart b {
     min-width: 17px;
     height: 17px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     position: absolute;
-
     top: 10px;
     left: 50%;
-
     margin-left: 6px;
-
     border-radius: 50%;
-
-    background: var(--halloween-orange);
-
-    color: #111;
-
+    background: #e00025;
+    color: #fff;
     font-size: 9px;
     font-weight: 800;
-
-    box-shadow:
-        0 0 10px rgba(255, 106, 0, 0.45);
+    box-shadow: 0 0 9px rgba(224, 0, 37, 0.45);
 }
-
-
-/* =========================================================
-   ANIMACIONES HALLOWEEN
-========================================================= */
-
-@keyframes halloweenGlow {
-
-    0%,
-    100% {
-        transform: scale(1);
-
-        filter:
-            drop-shadow(0 0 4px rgba(255, 106, 0, 0.15));
-    }
-
-    50% {
-        transform: scale(1.08);
-
-        filter:
-            drop-shadow(0 0 12px rgba(255, 106, 0, 0.55));
-    }
-}
-
-
-@keyframes ghostGlow {
-
-    0%,
-    100% {
-        transform: translateY(0);
-
-        opacity: 0.08;
-    }
-
-    50% {
-        transform: translateY(-5px);
-
-        opacity: 0.18;
-    }
-}
-
 
 /* =========================================================
    RESPONSIVE 900px
+   DIMENSIONES ORIGINALES CONSERVADAS
 ========================================================= */
 
 @media (max-width: 900px) {
@@ -1515,8 +789,7 @@ body {
     }
 
     .carrito-layout {
-        grid-template-columns:
-            minmax(0, 1fr) 290px;
+        grid-template-columns: minmax(0, 1fr) 290px;
     }
 
     .carrito-resumen {
@@ -1524,7 +797,6 @@ body {
     }
 
 }
-
 
 /* =========================================================
    RESPONSIVE 800px
@@ -1542,44 +814,30 @@ body {
 
 }
 
-
 /* =========================================================
    RESPONSIVE 600px
 ========================================================= */
 
 @media (max-width: 600px) {
 
+    body {
+        background-size: 100% auto;
+        background-position: center top;
+        background-attachment: scroll;
+        background-repeat: no-repeat;
+    }
+
     .hearder {
         height: 68px;
-
         padding: 0 20px;
-    }
-
-    .hearder::before {
-        font-size: 30px;
-    }
-
-    .hearder::after {
-        right: 48px;
-        top: 10px;
-        font-size: 30px;
     }
 
     .content {
         padding: 28px 20px 100px;
     }
 
-    .content::before {
-        font-size: 50px;
-    }
-
     .carrito-intro {
         align-items: flex-start;
-    }
-
-    .carrito-intro::after {
-        right: 70px;
-        font-size: 30px;
     }
 
     .carrito-intro h2 {
@@ -1595,10 +853,6 @@ body {
         height: 68px;
     }
 
-    .carrito-contador::after {
-        font-size: 22px;
-    }
-
     .carrito-contador i {
         font-size: 16px;
     }
@@ -1612,9 +866,7 @@ body {
     }
 
     .carrito-item {
-        grid-template-columns:
-            75px minmax(0, 1fr);
-
+        grid-template-columns: 75px minmax(0, 1fr);
         gap: 12px;
     }
 
@@ -1625,9 +877,7 @@ body {
 
     .carrito-item-acciones {
         grid-column: 2;
-
         justify-content: space-between;
-
         margin-top: 5px;
     }
 
@@ -1649,12 +899,16 @@ body {
 
 }
 
-
 /* =========================================================
    RESPONSIVE 420px
 ========================================================= */
 
 @media (max-width: 420px) {
+
+    body {
+        background-size: 150% auto;
+        background-position: center top;
+    }
 
     .content {
         padding: 25px 14px 95px;
@@ -1679,7 +933,6 @@ body {
     .carrito-contador {
         min-width: 58px;
         height: 58px;
-
         border-radius: 10px;
     }
 
@@ -1697,7 +950,6 @@ body {
 
     .carrito-barra {
         flex-direction: column;
-
         align-items: flex-start;
     }
 
@@ -1706,11 +958,8 @@ body {
     }
 
     .carrito-item {
-        grid-template-columns:
-            65px minmax(0, 1fr);
-
+        grid-template-columns: 65px minmax(0, 1fr);
         gap: 10px;
-
         padding: 14px 0;
     }
 
@@ -1762,9 +1011,7 @@ body {
 
     .nav-item {
         min-width: 52px;
-
         gap: 3px;
-
         font-size: 9px;
     }
 
@@ -1776,14 +1023,48 @@ body {
         top: 7px;
     }
 
-    .carrito-vacio::before {
-        left: 8%;
-        font-size: 30px;
-    }
+}
 
-    .carrito-vacio::after {
-        right: 8%;
-        font-size: 27px;
+/* =========================================================
+   SCROLLBAR TERRORÍFICA
+========================================================= */
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #761326 #0b0709;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #0b0709;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #761326;
+    border-radius: 10px;
+    border: 2px solid #0b0709;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #c00025;
+}
+
+/* =========================================================
+   MOVIMIENTO REDUCIDO
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 
 }
